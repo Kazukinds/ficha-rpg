@@ -9,7 +9,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Ficha de personagem RPG — sistema completo de atributos, inventário, perícias, veículos e combate.">
-<title>Ficha RPG · Aventureiro</title>
+<meta name="application-name" content="ficha.dexport">
+<meta name="apple-mobile-web-app-title" content="ficha.dexport">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<title>ficha.dexport</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -74,6 +81,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 .topbar-icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
 .save-wrap{position:relative}
 .notif-wrap{position:relative}
+.pwa-install-btn{color:var(--lime)!important;border-color:var(--lime-dim)!important;background:var(--lime-bg)!important;animation:pwa-pulse 2.5s ease-in-out infinite}
+@keyframes pwa-pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,245,66,.3)}50%{box-shadow:0 0 0 6px rgba(200,245,66,0)}}
+.pwa-install-btn:hover{animation:none;color:#09090b!important;background:var(--lime)!important}
 .notif-badge{position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:var(--red);font-size:0;color:transparent;pointer-events:none;box-shadow:0 0 6px rgba(239,68,68,.6),0 0 0 2px var(--bg-body)}
 .notif-badge:empty{display:none}
 .notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:320px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .2s,transform .2s;z-index:60;overflow:hidden}
@@ -1507,6 +1517,7 @@ input[type="number"]{-moz-appearance:textfield}
         </div>
       </div>
       <div class="notif-wrap">
+        <button class="topbar-icon-btn pwa-install-btn" id="pwa-install-btn" onclick="triggerPWAInstall()" title="Instalar app" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 3v13"/><polyline points="7 11 12 16 17 11"/><path d="M3 18v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg></button>
         <button class="topbar-icon-btn" onclick="toggleNotif()"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge"></span></button>
         <div class="notif-dropdown" id="notif-dropdown">
           <div class="notif-header"><h4>Notificações</h4><span class="notif-count" id="notif-count">0 novas</span></div>
@@ -4375,6 +4386,30 @@ document.querySelectorAll('.veh-attr input').forEach(input=>{
     if(bar)bar.style.width=v+'%';
   });
 });
+// ═══ PWA / SERVICE WORKER ═══
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>console.log('SW falhou:',err));
+  });
+}
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  const btn=document.getElementById('pwa-install-btn');
+  if(btn)btn.style.display='flex';
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  const btn=document.getElementById('pwa-install-btn');
+  if(btn)btn.style.display='none';
+  if(typeof toast==='function')toast('ficha.dexport instalado ✓');
+});
+function triggerPWAInstall(){
+  if(!deferredInstallPrompt){if(typeof toast==='function')toast('Instalação não disponível neste navegador');return}
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(()=>{deferredInstallPrompt=null;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none'});
+}
 // ═══ ORIENTATION / DEVICE DETECTION ═══
 function updateDeviceOrientation(){
   const w=window.innerWidth,h=window.innerHeight;

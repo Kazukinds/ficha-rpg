@@ -1624,12 +1624,30 @@ input[type="number"]{-moz-appearance:textfield}
 /* Proficiencia — tag "Não possui" em cinza discreto (substitui travessão) */
 .prof-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:10px;white-space:nowrap}
 
-/* Pills de "drena de" (status) no modal de Nova Habilidade — Córtex fica de fora */
-.skill-cost-pills{display:flex;flex-wrap:wrap;gap:4px;padding:4px 0}
-.skill-cost-pill{display:inline-flex;align-items:center;padding:5px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;color:var(--text-dim);cursor:pointer;transition:all .15s;user-select:none}
+/* ═══ MODAL NOVA HABILIDADE — visual refinado ═══ */
+.skill-new-head{display:flex;align-items:center;gap:14px;padding:12px 14px;margin-bottom:14px;border-radius:var(--radius-sm);background:color-mix(in srgb,var(--c,var(--lime)) 10%,var(--bg-card-inner));border:1px solid color-mix(in srgb,var(--c,var(--lime)) 35%,var(--border))}
+.skill-new-badge{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--c,var(--lime));color:#09090b;box-shadow:0 4px 12px color-mix(in srgb,var(--c,var(--lime)) 35%,transparent)}
+.skill-new-badge svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.skill-new-head-info{flex:1;min-width:0}
+.skill-new-head-sub{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:2px}
+.skill-new-head-origin{font-size:17px;font-weight:700;color:var(--c,var(--lime));letter-spacing:-.2px;line-height:1}
+
+.skill-cost-preview{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;float:right;transition:color .2s}
+.skill-cost-row{display:flex;gap:10px;align-items:center}
+.skill-cost-stepper{display:flex;align-items:center;gap:6px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;width:100%}
+.skill-cost-stepper button{width:34px;height:34px;min-width:34px;border-radius:var(--radius-xs);background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-size:18px;font-weight:700;cursor:pointer;padding:0;transition:all .15s;font-family:inherit;line-height:1}
+.skill-cost-stepper button:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
+.skill-cost-stepper input{flex:1;background:transparent!important;border:none!important;outline:none;box-shadow:none!important;text-align:center;font-family:'JetBrains Mono',monospace!important;font-size:18px!important;font-weight:700!important;color:var(--text-primary)!important;-moz-appearance:textfield;padding:0!important;min-width:0;height:34px}
+.skill-cost-stepper input::-webkit-outer-spin-button,.skill-cost-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+/* Pills de status (com ícone) — Córtex fica de fora */
+.skill-cost-pills{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;padding:4px 0}
+.skill-cost-pill{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-dim);cursor:pointer;transition:all .15s;user-select:none}
 .skill-cost-pill input{display:none}
-.skill-cost-pill:hover{color:var(--c,var(--lime));border-color:color-mix(in srgb,var(--c,var(--lime)) 45%,var(--border))}
-.skill-cost-pill.active{color:var(--c,var(--lime));border-color:var(--c,var(--lime));background:color-mix(in srgb,var(--c,var(--lime)) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--lime)) 30%,transparent)}
+.skill-cost-pill svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;opacity:.8}
+.skill-cost-pill:hover{color:var(--c,var(--lime));border-color:color-mix(in srgb,var(--c,var(--lime)) 45%,var(--border));transform:translateY(-1px)}
+.skill-cost-pill.active{color:var(--c,var(--lime));border-color:var(--c,var(--lime));background:color-mix(in srgb,var(--c,var(--lime)) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--lime)) 35%,transparent)}
+.skill-cost-pill.active svg{opacity:1}
 
 /* Botão pequeno "+ Habilidade" no label de Passado/Caminho */
 .profile-field label{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -4462,41 +4480,81 @@ function renderProfile(){
 }
 
 const SKILL_COST_STATUSES=[
-  {key:'hp',label:'Vitalidade',color:'var(--red)'},
-  {key:'esforco',label:'Esforço',color:'#fb923c'},
-  {key:'foco',label:'Foco',color:'var(--blue)'},
-  {key:'determinacao',label:'Determinação',color:'var(--purple)'},
-  {key:'neural',label:'Neural',color:'var(--cyan)'}
+  {key:'hp',          label:'Vitalidade',   short:'VIT',color:'var(--red)',    icon:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'},
+  {key:'esforco',     label:'Esforço',      short:'ESF',color:'#fb923c',      icon:'<path d="M4 11c2 0 3-.5 4-2 1-1.5 3-2 5-2 3 0 5 1 6 3v4h-3l-1 4h-4l-1-4"/><circle cx="5" cy="10" r="2"/>'},
+  {key:'foco',        label:'Foco',         short:'FOC',color:'var(--blue)',  icon:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'},
+  {key:'determinacao',label:'Determinação', short:'DET',color:'var(--purple)',icon:'<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>'},
+  {key:'neural',      label:'Neural',       short:'NEU',color:'var(--cyan)',  icon:'<path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 5 3 3 0 0 0 2 5v1a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3"/><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 5 3 3 0 0 1-2 5v1a3 3 0 0 1-6 0"/>'}
 ];
+const ORIGIN_COLORS={Linhagem:'var(--cyan)',Arquétipo:'var(--purple)',Passado:'var(--yellow)',Caminho:'var(--lime)'};
+const ORIGIN_ICONS={
+  Linhagem:'<circle cx="12" cy="8" r="3"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/><path d="M12 11v3"/><path d="M8 17h8"/>',
+  Arquétipo:'<polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/>',
+  Passado:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  Caminho:'<path d="M3 21l6-6 4 4 8-8"/><polyline points="14 11 21 11 21 18"/>'
+};
 function addSkillFromOrigin(origin){
   if(typeof currentModal!=='undefined')currentModal='skillOrigin';
   const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
   if(!title||!body)return;
-  title.textContent=`Nova Habilidade · ${origin}`;
-  const statusPills=SKILL_COST_STATUSES.map((s,i)=>`<label class="skill-cost-pill${i===0?' active':''}" style="--c:${s.color}"><input type="radio" name="m-scost-status" value="${s.key}" ${i===0?'checked':''}><span>${s.label}</span></label>`).join('');
+  title.textContent=`Nova Habilidade`;
+  const oColor=ORIGIN_COLORS[origin]||'var(--lime)';
+  const oIcon=ORIGIN_ICONS[origin]||'';
+  const statusPills=SKILL_COST_STATUSES.map((s,i)=>`<label class="skill-cost-pill${i===2?' active':''}" style="--c:${s.color}" data-key="${s.key}" data-short="${s.short}" data-color="${s.color}"><input type="radio" name="m-scost-status" value="${s.key}" ${i===2?'checked':''}><svg viewBox="0 0 24 24">${s.icon}</svg><span>${s.label}</span></label>`).join('');
   body.innerHTML=`
-    <div class="form-group"><label>Nome da habilidade</label><input type="text" id="m-sname-orig" placeholder="Ex: Técnica de sobrevivência"></div>
-    <div class="form-group"><label>Descrição</label><textarea id="m-sdesc-orig" rows="3" placeholder="O que essa habilidade faz, quando pode ser usada..."></textarea></div>
-    <div class="form-row">
-      <div class="form-group"><label>Custo (opcional)</label><input type="number" id="m-scost-orig" value="0" min="0" placeholder="0 = sem custo"></div>
-      <div class="form-group"><label>Drena de</label><div class="skill-cost-pills" id="m-scost-status-wrap">${statusPills}</div></div>
+    <div class="skill-new-head" style="--c:${oColor}">
+      <div class="skill-new-badge"><svg viewBox="0 0 24 24">${oIcon}</svg></div>
+      <div class="skill-new-head-info">
+        <div class="skill-new-head-sub">Origem</div>
+        <div class="skill-new-head-origin">${origin}</div>
+      </div>
     </div>
-    <div style="font-size:11px;color:var(--text-dim);padding:8px 12px;background:var(--bg-card-inner);border:1px dashed var(--border);border-radius:8px;margin-bottom:12px">
-      <b style="color:var(--lime)">Origem:</b> ${origin}. A habilidade vai aparecer na aba <b>Progresso</b>.
+    <div class="form-group"><label>Nome da habilidade</label><input type="text" id="m-sname-orig" placeholder="Ex: Técnica de sobrevivência" maxlength="60"></div>
+    <div class="form-group"><label>Descrição</label><textarea id="m-sdesc-orig" rows="3" placeholder="O que essa habilidade faz, quando pode ser usada..."></textarea></div>
+    <div class="form-group">
+      <label>Custo <span class="skill-cost-preview" id="skill-cost-preview" style="color:var(--blue)">sem custo</span></label>
+      <div class="skill-cost-row">
+        <div class="skill-cost-stepper">
+          <button type="button" onclick="skillCostStep(-1)">−</button>
+          <input type="number" id="m-scost-orig" value="0" min="0" max="99" oninput="skillCostSync()">
+          <button type="button" onclick="skillCostStep(1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Drena de <span style="color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0">— escolha qual status é gasto</span></label>
+      <div class="skill-cost-pills" id="m-scost-status-wrap">${statusPills}</div>
     </div>
     <div class="modal-btns">
       <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
-      <button class="modal-btn primary" onclick="saveSkillFromOrigin('${origin}')">Adicionar</button>
+      <button class="modal-btn primary" style="background:${oColor};color:#09090b" onclick="saveSkillFromOrigin('${origin}')">Adicionar</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
-  // Sync visual estado da pill quando clica
   document.querySelectorAll('#m-scost-status-wrap .skill-cost-pill').forEach(p=>{
     p.addEventListener('click',()=>{
       document.querySelectorAll('#m-scost-status-wrap .skill-cost-pill').forEach(x=>x.classList.remove('active'));
       p.classList.add('active');
+      skillCostSync();
     });
   });
+  skillCostSync();
   setTimeout(()=>document.getElementById('m-sname-orig')?.focus(),200);
+}
+function skillCostStep(delta){
+  const el=document.getElementById('m-scost-orig');if(!el)return;
+  el.value=Math.max(0,Math.min(99,(parseInt(el.value)||0)+delta));
+  skillCostSync();
+}
+function skillCostSync(){
+  const v=parseInt(document.getElementById('m-scost-orig')?.value)||0;
+  const active=document.querySelector('#m-scost-status-wrap .skill-cost-pill.active');
+  const short=active?.dataset.short||'VIT';
+  const color=active?.dataset.color||'var(--red)';
+  const prev=document.getElementById('skill-cost-preview');
+  if(prev){
+    if(v<=0){prev.textContent='sem custo';prev.style.color='var(--text-dim)'}
+    else{prev.textContent=`${v} ${short} por uso`;prev.style.color=color}
+  }
 }
 function saveSkillFromOrigin(origin){
   const nameEl=document.getElementById('m-sname-orig');

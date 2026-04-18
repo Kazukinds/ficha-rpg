@@ -1631,14 +1631,6 @@ input[type="number"]{-moz-appearance:textfield}
   .credit-top-val{display:flex;align-items:baseline;gap:4px;flex-wrap:nowrap}
 }
 
-/* Layout mobile: só o conteúdo central rola. Topbar e nav ficam realmente fixos. */
-@media (max-width:640px) and (orientation:portrait){
-  html,body{height:100vh;height:100dvh;overflow:hidden!important;position:fixed;width:100%;inset:0}
-  .main-wrapper{height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;margin-left:0}
-  .topbar{flex-shrink:0;position:relative!important;top:auto!important}
-  .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}
-}
-
 /* Sidebar fixa no mobile — barra inferior sempre visível */
 @media (max-width:640px) and (orientation:portrait){
   .sidebar{

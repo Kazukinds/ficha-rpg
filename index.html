@@ -4506,7 +4506,6 @@ function addSkillFromOrigin(origin){
   const statusPills=SKILL_COST_STATUSES.map((s,i)=>`<label class="skill-cost-pill${i===2?' active':''}" style="--c:${s.color}" data-key="${s.key}" data-short="${s.short}" data-color="${s.color}"><input type="radio" name="m-scost-status" value="${s.key}" ${i===2?'checked':''}><svg viewBox="0 0 24 24">${s.icon}</svg><span>${s.label}</span></label>`).join('');
   body.innerHTML=`
     <div class="skill-new-head" style="--c:${oColor}">
-      <div class="skill-new-badge"><svg viewBox="0 0 24 24">${oIcon}</svg></div>
       <div class="skill-new-head-info">
         <div class="skill-new-head-sub">Origem</div>
         <div class="skill-new-head-origin">${origin}</div>

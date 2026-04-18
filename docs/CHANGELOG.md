@@ -4,6 +4,35 @@ Histórico de versões do Ficha Eclipse. Este arquivo é espelho do `APP_CHANGEL
 
 Formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) adaptado.
 
+## [v1.4] — 2026-04-18
+
+### Added
+- Botão `+` circular dentro de **Linhagem / Arquétipo / Passado / Caminho** (só em modo editar) que abre modal de Nova Habilidade
+- Modal Nova Habilidade redesenhado: header colorido por origem (ciano/roxo/amarelo/lime), stepper de custo, preview ao vivo `"5 FOC por uso"`
+- Seletor **"Drena de"** no custo da habilidade: Vitalidade / Esforço / Foco / Determinação / Neural (Córtex fica de fora)
+- Modal de Crédito redesenhado: header colorido por operação, pills rápidos (10/50/100/500/1000), preview do saldo após, chips de descrição contextual
+- Animações temáticas nos ícones dos atributos de veículo ao hover/touch
+- Ícone de Aceleração com animação de batimento cardíaco (stroke-dasharray + dashoffset em loop)
+- Botão de tema (lua/sol) movido para o topbar, acessível sem scroll
+- Bloco **Log** no perfil, abaixo de Estatísticas, com histórico versionado
+
+### Changed
+- Linhagem / Arquétipo / Passado / Caminho movidos para o card **Detalhes do Personagem**
+- Data de Criação removida do perfil
+- Proficiência usa pill "Não possui" em vez de travessão
+- Scrollbar invisível globalmente (rolagem continua funcionando)
+- Sidebar do perfil sticky e cards com espaçamento uniforme
+
+### Fixed
+- Campo Telefone vazio agora tem mesma largura do Fuso Horário
+- Custo da habilidade não sobrepõe mais o botão de usar
+- Barra inferior de navegação realmente fixa no mobile (fix: `transform` do body criava containing block que quebrava `position:fixed`)
+- Botões circulares não viram mais ovais no mobile (`aspect-ratio:1/1` global)
+- Saves antigos com `Nível=20 / Estágio=20 / XP=0` são tratados como default antigo e resetam para 0
+
+### Removed
+- Sistema de entalhe / modo imersivo (botão fullscreen e toggle)
+
 ## [v1.3] — 2026-04-18
 
 ### Added

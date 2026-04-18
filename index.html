@@ -5052,6 +5052,26 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v1.4',date:'2026-04-18',title:'Habilidades por origem, perfil reorganizado e polimentos',items:[
+    {tag:'feat',text:'Botão "+" circular dentro de Linhagem/Arquétipo/Passado/Caminho (só em modo editar) abre modal de Nova Habilidade'},
+    {tag:'feat',text:'Modal Nova Habilidade: header colorido por origem (ciano/roxo/amarelo/lime), stepper de custo, preview ao vivo "5 FOC por uso"'},
+    {tag:'feat',text:'Seletor "Drena de" no custo: Vitalidade / Esforço / Foco / Determinação / Neural (Córtex fora)'},
+    {tag:'feat',text:'Modal de Crédito redesenhado: header por tipo (verde/vermelho/azul), pills rápidos 10/50/100/500/1000, preview do saldo após operação'},
+    {tag:'feat',text:'Animações temáticas nos ícones dos atributos de veículo ao passar o dedo/mouse (Velocidade, Aceleração, Manuseio, Frenagem, Nitro, Blindagem)'},
+    {tag:'feat',text:'Ícone de Aceleração desenha em loop como monitor de batimento cardíaco'},
+    {tag:'feat',text:'Botão de tema (lua/sol) no topbar, acessível sem scroll'},
+    {tag:'feat',text:'Bloco Log no perfil abaixo de Estatísticas, com histórico versionado'},
+    {tag:'ui',text:'Linhagem/Arquétipo/Passado/Caminho movidos para o card Detalhes do Personagem'},
+    {tag:'ui',text:'Data de Criação removida do perfil'},
+    {tag:'ui',text:'Proficiência usa pill "Não possui" em vez de travessão'},
+    {tag:'ui',text:'Scrollbar invisível globalmente (rolagem continua funcionando)'},
+    {tag:'ui',text:'Sidebar do perfil sticky e cards com espaçamento uniforme'},
+    {tag:'fix',text:'Campo Telefone vazio agora tem mesma largura do Fuso Horário'},
+    {tag:'fix',text:'Custo da habilidade não sobrepõe mais o botão de usar'},
+    {tag:'fix',text:'Barra inferior de navegação realmente fixa no mobile (transform do body criava containing block)'},
+    {tag:'fix',text:'Botões circulares não viram ovais (aspect-ratio:1/1 global)'},
+    {tag:'fix',text:'Saves antigos com Nível=20 e Estágio=20 sem XP são tratados como default e zeram'},
+  ]},
   {version:'v1.3',date:'2026-04-18',title:'Tela cheia, UI polida e remoção do inventário',items:[
     {tag:'feat',text:'Modo tela cheia imersivo por padrão — barra do sistema oculta, revela com swipe'},
     {tag:'feat',text:'Área de Atualizações (este painel) no topo, para acompanhar novidades'},

@@ -1614,6 +1614,40 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
 .xp-gear,.attr-gear,.size-gear{transform:none!important}
 .xp-gear:hover,.attr-gear:hover,.size-gear:hover{transform:scale(1.06)!important}
 
+/* Campos de perfil vazios — sem travessão, apenas espaço limpo */
+.profile-field-val.empty{min-height:38px}
+
+/* Log no perfil — mesmo estilo de blocos (estatisticas/notas), sem icone */
+.profile-log{display:flex;flex-direction:column;gap:10px;max-height:320px;overflow-y:auto;padding-right:4px}
+.profile-log::-webkit-scrollbar{width:4px}
+.profile-log::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:2px}
+.plog-entry{padding:10px 0;border-bottom:1px dashed var(--border)}
+.plog-entry:last-child{border-bottom:none;padding-bottom:0}
+.plog-entry:first-child{padding-top:0}
+.plog-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
+.plog-ver{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--lime);letter-spacing:.8px;text-transform:uppercase}
+.plog-date{font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
+.plog-title{font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:4px}
+.plog-item{font-size:11px;color:var(--text-secondary);line-height:1.5;padding-left:10px;position:relative;margin-top:2px}
+.plog-item::before{content:'·';position:absolute;left:0;color:var(--lime);font-weight:700}
+
+/* Proficiencia — tag "Não possui" em cinza discreto (substitui travessão) */
+.prof-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:10px;white-space:nowrap}
+
+/* Sidebar fixa no mobile — força camada própria pra não "deslizar" */
+@media (max-width:640px) and (orientation:portrait){
+  /* Credit summary — alinhamento consistente: rótulo ↔ valor + barrinha em pill */
+  .summary-bar{display:flex;flex-direction:column;gap:10px}
+  .summary-block{display:grid!important;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:12px;row-gap:2px;align-items:center}
+  .summary-block .summary-label{grid-column:1;grid-row:1;font-size:11px}
+  .summary-block .summary-value{grid-column:2;grid-row:1/span 2;align-self:center;font-size:22px;white-space:nowrap}
+  .summary-block .summary-sub{grid-column:1;grid-row:2;font-size:10px;display:flex;align-items:center;gap:6px;color:var(--text-dim)}
+  .summary-progress-row{grid-column:1/-1;height:6px}
+
+  /* Credito topo — valor + badge na mesma linha, botoes 2x2 */
+  .credit-top-val{display:flex;align-items:baseline;gap:4px;flex-wrap:nowrap}
+}
+
 /* Sidebar fixa no mobile — força camada própria pra não "deslizar" */
 @media (max-width:640px) and (orientation:portrait){
   .sidebar{
@@ -1912,7 +1946,7 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
         <div class="profile-avatar" onclick="changeProfileAvatar()" style="cursor:pointer" title="Trocar foto"><span id="profile-avatar-content"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></div>
         <div class="profile-header-info">
           <h2 id="profile-display-name">Aventureiro</h2>
-          <div class="profile-role" id="profile-role-text">Nível 1</div>
+          <div class="profile-role" id="profile-role-text">Nível 0</div>
           <div class="profile-header-meta">
             <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span id="profile-email">email@exemplo.com</span></div>
             <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span id="profile-phone"></span></div>
@@ -1930,10 +1964,10 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
               <div class="profile-field"><label>Telefone</label><div class="profile-field-val" id="pf-phone"></div></div>
               <div class="profile-field"><label>Fuso Horário</label><div class="profile-field-val" id="pf-tz">UTC-03:00 Brasília</div></div>
               <div class="profile-field"><label>Data de Criação</label><div class="profile-field-val" id="pf-created"></div></div>
-              <div class="profile-field"><label>Linhagem</label><div class="profile-field-val" id="pf-linhagem">—</div></div>
-              <div class="profile-field"><label>Passado</label><div class="profile-field-val" id="pf-passado">—</div></div>
-              <div class="profile-field"><label>Arquétipo</label><div class="profile-field-val" id="pf-arquetipo">—</div></div>
-              <div class="profile-field"><label>Caminho</label><div class="profile-field-val" id="pf-caminho">—</div></div>
+              <div class="profile-field"><label>Linhagem</label><div class="profile-field-val empty" id="pf-linhagem"></div></div>
+              <div class="profile-field"><label>Passado</label><div class="profile-field-val empty" id="pf-passado"></div></div>
+              <div class="profile-field"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo"></div></div>
+              <div class="profile-field"><label>Caminho</label><div class="profile-field-val empty" id="pf-caminho"></div></div>
             </div>
           </div>
           <div class="profile-section">
@@ -1968,6 +2002,10 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
               <div class="profile-stat-row"><span class="stat-label">Materiais</span><span class="stat-val" id="ps-materiais">0</span></div>
               <div class="profile-stat-row"><span class="stat-label">Chaves</span><span class="stat-val" id="ps-chaves">0</span></div>
             </div>
+          </div>
+          <div class="profile-sidebar-card">
+            <h4>Log</h4>
+            <div id="profile-log" class="profile-log"></div>
           </div>
         </div>
       </div>
@@ -3325,7 +3363,7 @@ function renderProficiencias(){
   el.innerHTML=PROF_DATA.map(cat=>{
     return`<div class="prof-section"><div class="prof-section-label" style="color:${cat.color}">${cat.icon} ${cat.cat}</div>${cat.items.map(it=>{
       const has=!!profState[it.id];
-      return`<div class="prof-row" onclick="toggleProf('${it.id}')"><div class="prof-dot" style="background:${has?'var(--lime)':'var(--border)'}"></div><span class="prof-name" style="color:${has?'var(--text-primary)':'var(--text-dim)'}">${it.name}</span><span class="prof-tag" style="background:${has?'var(--lime-bg)':'var(--bg-input)'};color:${has?'var(--lime)':'var(--text-dim)'}">${has?'Proficiente':'—'}</span></div>`;
+      return`<div class="prof-row" onclick="toggleProf('${it.id}')"><div class="prof-dot" style="background:${has?'var(--lime)':'var(--border)'}"></div><span class="prof-name" style="color:${has?'var(--text-primary)':'var(--text-dim)'}">${it.name}</span><span class="prof-tag" style="background:${has?'var(--lime-bg)':'var(--bg-input)'};color:${has?'var(--lime)':'var(--text-dim)'}">${has?'Proficiente':'Não possui'}</span></div>`;
     }).join('')}</div>`;
   }).join('');
 }
@@ -4246,7 +4284,7 @@ function renderProfile(){
   document.getElementById('pf-phone').textContent=profileData.phone;
   document.getElementById('pf-tz').textContent=profileData.tz;
   document.getElementById('pf-created').textContent=profileData.created;
-  const setPf=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v||'—'};
+  const setPf=(id,v)=>{const el=document.getElementById(id);if(!el)return;const val=(v||'').toString().trim();el.textContent=val;el.classList.toggle('empty',!val)};
   setPf('pf-linhagem',profileData.linhagem);
   setPf('pf-passado',profileData.passado);
   setPf('pf-arquetipo',profileData.arquetipo);
@@ -4265,6 +4303,16 @@ function renderProfile(){
   document.getElementById('ps-materiais').textContent=cats.material;
   document.getElementById('ps-chaves').textContent=cats.chave;
   document.querySelector('.topbar-welcome h2').textContent=profileData.name;
+  renderProfileLog();
+}
+
+function renderProfileLog(){
+  const el=document.getElementById('profile-log');
+  if(!el||typeof APP_CHANGELOG==='undefined')return;
+  el.innerHTML=APP_CHANGELOG.map(e=>{
+    const items=e.items.map(it=>`<div class="plog-item">${it.text}</div>`).join('');
+    return `<div class="plog-entry"><div class="plog-head"><span class="plog-ver">${e.version}</span><span class="plog-date">${e.date}</span></div><div class="plog-title">${e.title}</div>${items}</div>`;
+  }).join('');
 }
 
 function toggleProfileEdit(){

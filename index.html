@@ -3986,9 +3986,15 @@ function collectAllData(){
 
 function applyAllData(d){
   if(!d||!d.version)return false;
-  playerLevel=Math.min(MAX_LEVEL,d.player.level||0);playerXP=d.player.xp||0;xpToNext=d.player.xpToNext||5000;
+  // Migração: saves antigos nasciam com level=20/stage=20 sem XP. Se não houve progresso, zera.
+  const _lvOld=d.player.level||0,_xpOld=d.player.xp||0;
+  playerLevel=(_lvOld===20&&_xpOld===0)?0:Math.min(MAX_LEVEL,_lvOld);
+  playerXP=_xpOld;xpToNext=d.player.xpToNext||5000;
   playerHP=d.player.hp||0;playerHPMax=d.player.hpMax||100;playerGold=d.player.gold||0;
-  if(d.player.stage!==undefined)playerStage=Math.min(MAX_STAGE,d.player.stage);if(d.player.stageXP!==undefined)stageXP=d.player.stageXP;if(d.player.stageToNext)stageToNext=d.player.stageToNext;
+  // Mesma migração para estágio
+  const _stOld=d.player.stage,_stxpOld=d.player.stageXP||0;
+  if(_stOld!==undefined)playerStage=(_stOld===20&&_stxpOld===0)?0:Math.min(MAX_STAGE,_stOld);
+  stageXP=_stxpOld;if(d.player.stageToNext)stageToNext=d.player.stageToNext;
   if(d.status)Object.keys(d.status).forEach(k=>{if(playerStatus[k])Object.assign(playerStatus[k],d.status[k])});
   if(d.attributes)attributes=d.attributes;
   if(d.skills)skills=d.skills;

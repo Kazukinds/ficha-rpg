@@ -1610,6 +1610,24 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
 .modal{border-radius:16px}
 .topbar{backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg-body) 85%,transparent)}
 
+/* Remove rotações decorativas dos botões em repouso (ficavam tortos) */
+.xp-gear,.attr-gear,.size-gear{transform:none!important}
+.xp-gear:hover,.attr-gear:hover,.size-gear:hover{transform:scale(1.06)!important}
+
+/* Sidebar fixa no mobile — força camada própria pra não "deslizar" */
+@media (max-width:640px) and (orientation:portrait){
+  .sidebar{
+    position:fixed!important;bottom:0!important;top:auto!important;left:0!important;right:0!important;
+    transform:translate3d(0,0,0);will-change:transform;backface-visibility:hidden;
+    z-index:200;contain:layout paint
+  }
+  /* Reverte status-row para o visual original (sem mini-cards) */
+  .status-row{background:transparent!important;border:none!important;padding:6px 8px!important}
+  .status-row:hover{background:var(--bg-input)!important}
+  .status-icon{border-radius:var(--radius-sm)!important;width:32px!important;height:32px!important}
+  .status-icon svg{width:15px!important;height:15px!important}
+}
+
 /* ═══════════ CHANGELOG / ATUALIZAÇÕES ═══════════ */
 .changelog-body{max-height:60vh;overflow-y:auto;padding-right:6px;margin-top:4px}
 .changelog-body::-webkit-scrollbar{width:4px}
@@ -1691,9 +1709,9 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
       </div>
       <div class="dash-grid">
         <div class="card"><div class="card-header"><div class="card-title">Evolução</div><div class="toggle-pills"><button class="toggle-pill active" data-mode="xp">XP</button><button class="toggle-pill" data-mode="credito">Crédito</button></div></div><div class="chart-area"><canvas class="chart-canvas" id="lineChart"></canvas></div><div class="chart-time-pills"><span style="font-size:11px;color:var(--text-dim)" id="chart-info">Sem dados</span></div></div>
-        <!-- ROW 2: Status | Atributos -->
+        <!-- ROW 2: Evolução | Atributos -->
         <div class="card">
-          <div class="card-header"><div class="card-title">Status</div></div>
+          <div class="card-header"><div class="card-title">Evolução</div></div>
           <div class="status-list" id="status-list">
             <div class="status-row"><div class="status-icon st-vit" style="background:rgba(248,113,113,.12);color:var(--red)" onclick="openStatusEdit('hp')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="status-info"><div class="status-name">Vitalidade</div><div class="status-track"><div class="status-fill" id="st-hp-fill" style="width:0%;visibility:hidden;background:var(--red)"></div><div class="status-fill-bonus" id="st-hp-bonus" style="width:0%;visibility:hidden"></div></div></div><div class="status-val" id="st-hp-val" style="color:var(--red)">0</div></div>
             <div class="status-row"><div class="status-icon st-esf" style="background:rgba(251,146,60,.12);color:#fb923c" onclick="openStatusEdit('str')"><svg viewBox="0 0 24 24"><path d="M4 11c2 0 3-.5 4-2 1-1.5 3-2 5-2 3 0 5 1 6 3v4h-3l-1 4h-4l-1-4"/><path d="M8 9c1.5 0 3-.8 3-2"/><circle cx="5" cy="10" r="2"/></svg></div><div class="status-info"><div class="status-name">Esforço</div><div class="status-track"><div class="status-fill" id="st-str-fill" style="width:0%;visibility:hidden;background:#fb923c"></div><div class="status-fill-bonus" id="st-str-bonus" style="width:0%;visibility:hidden"></div></div></div><div class="status-val" id="st-str-val" style="color:#fb923c">0</div></div>
@@ -2034,9 +2052,10 @@ let inventory=[];
 let nextId=1,currentFilter='all',GRID_SIZE=70;
 let gridSlots=new Array(GRID_SIZE).fill(null);
 
-let playerLevel=20,playerXP=0,xpToNext=5000;
-let playerStage=20,stageXP=0,stageToNext=1000;
-const LEVEL_LOCKED=true,STAGE_LOCKED=true;
+let playerLevel=0,playerXP=0,xpToNext=5000;
+let playerStage=0,stageXP=0,stageToNext=1000;
+const MAX_LEVEL=20,MAX_STAGE=20;
+const LEVEL_LOCKED=false,STAGE_LOCKED=false;
 let playerGold=0,playerHP=0,playerHPMax=0,playerHPBonus=0;
 let playerStatus={
   esforco:{val:0,max:0,bonus:0},
@@ -2957,7 +2976,7 @@ function addXP(amount,desc){
   playerXP+=amount;
   const now=new Date();
   xpLog.unshift({val:amount,desc:desc||'XP adicionado',target:'nivel',time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),day:now.getDate().toString().padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')});
-  while(playerXP>=xpToNext){playerXP-=xpToNext;if(!LEVEL_LOCKED){playerLevel++;xpToNext=Math.round(xpToNext*1.2);toast(`Nível ${playerLevel} alcançado!`)}else{playerXP=xpToNext-1;break}}
+  while(playerXP>=xpToNext){if(playerLevel>=MAX_LEVEL){playerXP=xpToNext;break}playerXP-=xpToNext;playerLevel++;xpToNext=Math.round(xpToNext*1.2);toast(`Nível ${playerLevel} alcançado!`)}
   renderXP();renderSummary();
 }
 function addStageXP(amount,desc){
@@ -2965,7 +2984,7 @@ function addStageXP(amount,desc){
   stageXP+=amount;
   const now=new Date();
   xpLog.unshift({val:amount,desc:desc||'Estágio XP',target:'estagio',time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),day:now.getDate().toString().padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')});
-  while(stageXP>=stageToNext){stageXP-=stageToNext;if(!STAGE_LOCKED){playerStage++;stageToNext=Math.round(stageToNext*1.3);toast(`Estágio ${playerStage} alcançado!`)}else{stageXP=stageToNext-1;break}}
+  while(stageXP>=stageToNext){if(playerStage>=MAX_STAGE){stageXP=stageToNext;break}stageXP-=stageToNext;playerStage++;stageToNext=Math.round(stageToNext*1.3);toast(`Estágio ${playerStage} alcançado!`)}
   renderXP();renderSummary();
 }
 function openAddXPModal(){
@@ -3925,9 +3944,9 @@ function collectAllData(){
 
 function applyAllData(d){
   if(!d||!d.version)return false;
-  playerLevel=d.player.level||1;playerXP=d.player.xp||0;xpToNext=d.player.xpToNext||5000;
+  playerLevel=Math.min(MAX_LEVEL,d.player.level||0);playerXP=d.player.xp||0;xpToNext=d.player.xpToNext||5000;
   playerHP=d.player.hp||0;playerHPMax=d.player.hpMax||100;playerGold=d.player.gold||0;
-  if(d.player.stage)playerStage=d.player.stage;if(d.player.stageXP!==undefined)stageXP=d.player.stageXP;if(d.player.stageToNext)stageToNext=d.player.stageToNext;
+  if(d.player.stage!==undefined)playerStage=Math.min(MAX_STAGE,d.player.stage);if(d.player.stageXP!==undefined)stageXP=d.player.stageXP;if(d.player.stageToNext)stageToNext=d.player.stageToNext;
   if(d.status)Object.keys(d.status).forEach(k=>{if(playerStatus[k])Object.assign(playerStatus[k],d.status[k])});
   if(d.attributes)attributes=d.attributes;
   if(d.skills)skills=d.skills;

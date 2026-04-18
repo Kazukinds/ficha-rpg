@@ -1621,6 +1621,11 @@ input[type="number"]{-moz-appearance:textfield}
 /* Proficiencia — tag "Não possui" em cinza discreto (substitui travessão) */
 .prof-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:10px;white-space:nowrap}
 
+/* Botão pequeno "+ Habilidade" no label de Passado/Caminho */
+.profile-field label{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pf-add-skill{font-family:inherit;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;background:var(--lime-bg);border:1px solid var(--lime-dim);border-radius:12px;color:var(--lime);cursor:pointer;transition:all .15s;white-space:nowrap}
+.pf-add-skill:hover{background:var(--lime);color:#09090b;transform:translateY(-1px);box-shadow:0 0 10px rgba(200,245,66,.25)}
+
 /* ═══════════ ANIMAÇÕES DOS ATRIBUTOS DE VEÍCULO (hover + touch) ═══════════ */
 .veh-service-card .veh-service-icon{will-change:transform,filter;transform-origin:center}
 
@@ -2047,8 +2052,8 @@ input[type="number"]{-moz-appearance:textfield}
             <div class="profile-fields" id="profile-details-fields">
               <div class="profile-field"><label>Linhagem</label><div class="profile-field-val empty" id="pf-linhagem"></div></div>
               <div class="profile-field"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo"></div></div>
-              <div class="profile-field"><label>Passado</label><div class="profile-field-val empty" id="pf-passado"></div></div>
-              <div class="profile-field"><label>Caminho</label><div class="profile-field-val empty" id="pf-caminho"></div></div>
+              <div class="profile-field"><label>Passado <button type="button" class="pf-add-skill" onclick="addSkillFromOrigin('Passado')" title="Adicionar habilidade do Passado">+ Habilidade</button></label><div class="profile-field-val empty" id="pf-passado"></div></div>
+              <div class="profile-field"><label>Caminho <button type="button" class="pf-add-skill" onclick="addSkillFromOrigin('Caminho')" title="Adicionar habilidade do Caminho">+ Habilidade</button></label><div class="profile-field-val empty" id="pf-caminho"></div></div>
               <div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">0</div></div>
               <div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">0 / 5.000</div></div>
               <div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">0 / 0</div></div>
@@ -4446,6 +4451,46 @@ function renderProfile(){
   renderProfileLog();
 }
 
+function addSkillFromOrigin(origin){
+  if(typeof currentModal!=='undefined')currentModal='skillOrigin';
+  const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+  if(!title||!body)return;
+  title.textContent=`Nova Habilidade · ${origin}`;
+  body.innerHTML=`
+    <div class="form-group"><label>Nome da habilidade</label><input type="text" id="m-sname-orig" placeholder="Ex: Técnica de sobrevivência"></div>
+    <div class="form-group"><label>Descrição</label><textarea id="m-sdesc-orig" rows="3" placeholder="O que essa habilidade faz, quando pode ser usada..."></textarea></div>
+    <div class="form-group"><label>Custo (opcional)</label><input type="number" id="m-scost-orig" value="0" min="0" placeholder="0 = sem custo"></div>
+    <div style="font-size:11px;color:var(--text-dim);padding:8px 12px;background:var(--bg-card-inner);border:1px dashed var(--border);border-radius:8px;margin-bottom:12px">
+      <b style="color:var(--lime)">Origem:</b> ${origin}. A habilidade vai aparecer na aba <b>Progresso</b>.
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="saveSkillFromOrigin('${origin}')">Adicionar</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('m-sname-orig')?.focus(),200);
+}
+function saveSkillFromOrigin(origin){
+  const nameEl=document.getElementById('m-sname-orig');
+  const name=(nameEl?.value||'').trim();
+  if(!name){toast('Nome da habilidade é obrigatório');return}
+  const desc=(document.getElementById('m-sdesc-orig')?.value||'').trim();
+  const cost=parseInt(document.getElementById('m-scost-orig')?.value)||0;
+  const iconKeys=Object.keys(typeof SVG!=='undefined'?SVG:{sword:1});
+  const iconKey=iconKeys[Math.floor(Math.random()*iconKeys.length)]||'sword';
+  const id=typeof nextSkillId!=='undefined'?nextSkillId++:Date.now();
+  skills.push({id,name,desc:desc?`[${origin}] ${desc}`:`[${origin}]`,cost,iconKey,origin});
+  renderSkills();
+  if(typeof renderProfile==='function')renderProfile();
+  closeModal();
+  toast(`Habilidade "${name}" adicionada em ${origin}`);
+  // Dica visual: leva o usuário pra aba Progresso pra ver a habilidade criada
+  const progBtn=document.querySelector('.sidebar-btn[data-tab="progress"]');
+  if(progBtn&&!document.getElementById('tab-progress').classList.contains('active')){
+    setTimeout(()=>{if(confirm('Ir para a aba Progresso e ver a habilidade?'))progBtn.click()},400);
+  }
+}
+
 function renderProfileLog(){
   const el=document.getElementById('profile-log');
   if(!el||typeof APP_CHANGELOG==='undefined')return;
@@ -4464,7 +4509,7 @@ function toggleProfileEdit(){
   if(profileEditing){
     btns.forEach(b=>{b.textContent='Salvar';b.style.borderColor='var(--lime)';b.style.color='var(--lime)'});
     infoFields.innerHTML=`<div class="profile-field"><label>Nome</label><input type="text" id="pf-name" value="${profileData.name}"></div><div class="profile-field"><label>Email</label><input type="text" id="pf-email" value="${profileData.email}"></div><div class="profile-field"><label>Telefone</label><input type="text" id="pf-phone" value="${profileData.phone}"></div><div class="profile-field"><label>Fuso Horário</label><select id="pf-tz">${fusosBR.map(f=>`<option${profileData.tz===f?' selected':''}>${f}</option>`).join('')}</select></div>`;
-    if(detFields)detFields.innerHTML=`<div class="profile-field"><label>Linhagem</label><input type="text" id="pf-linhagem" value="${profileData.linhagem||''}" placeholder="Ex: Humano, Elfo..."></div><div class="profile-field"><label>Arquétipo</label><input type="text" id="pf-arquetipo" value="${profileData.arquetipo||''}" placeholder="Ex: Guerreiro..."></div><div class="profile-field"><label>Passado</label><input type="text" id="pf-passado" value="${profileData.passado||''}" placeholder="Ex: Mercenário..."></div><div class="profile-field"><label>Caminho</label><input type="text" id="pf-caminho" value="${profileData.caminho||''}" placeholder="Ex: Luz, Trevas..."></div><div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">${playerLevel}</div></div><div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">${playerXP.toLocaleString()} / ${xpToNext.toLocaleString()}</div></div><div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">${playerHP} / ${playerHPMax}</div></div><div class="profile-field"><label>Crédito Total</label><div class="profile-field-val" id="pf-gold">${playerGold.toLocaleString()}</div></div><div class="profile-field"><label>Total de Itens</label><div class="profile-field-val" id="pf-items">${inventory.reduce((s,i)=>s+i.qty,0)}</div></div><div class="profile-field"><label>Habilidades</label><div class="profile-field-val" id="pf-skills">${skills.length}</div></div>`;
+    if(detFields)detFields.innerHTML=`<div class="profile-field"><label>Linhagem</label><input type="text" id="pf-linhagem" value="${profileData.linhagem||''}" placeholder="Ex: Humano, Elfo..."></div><div class="profile-field"><label>Arquétipo</label><input type="text" id="pf-arquetipo" value="${profileData.arquetipo||''}" placeholder="Ex: Guerreiro..."></div><div class="profile-field"><label>Passado <button type="button" class="pf-add-skill" onclick="addSkillFromOrigin('Passado')" title="Adicionar habilidade do Passado">+ Habilidade</button></label><input type="text" id="pf-passado" value="${profileData.passado||''}" placeholder="Ex: Mercenário..."></div><div class="profile-field"><label>Caminho <button type="button" class="pf-add-skill" onclick="addSkillFromOrigin('Caminho')" title="Adicionar habilidade do Caminho">+ Habilidade</button></label><input type="text" id="pf-caminho" value="${profileData.caminho||''}" placeholder="Ex: Luz, Trevas..."></div><div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">${playerLevel}</div></div><div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">${playerXP.toLocaleString()} / ${xpToNext.toLocaleString()}</div></div><div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">${playerHP} / ${playerHPMax}</div></div><div class="profile-field"><label>Crédito Total</label><div class="profile-field-val" id="pf-gold">${playerGold.toLocaleString()}</div></div><div class="profile-field"><label>Total de Itens</label><div class="profile-field-val" id="pf-items">${inventory.reduce((s,i)=>s+i.qty,0)}</div></div><div class="profile-field"><label>Habilidades</label><div class="profile-field-val" id="pf-skills">${skills.length}</div></div>`;
   } else {
     profileData.name=document.getElementById('pf-name').value||profileData.name;
     profileData.email=document.getElementById('pf-email').value||profileData.email;

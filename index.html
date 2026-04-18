@@ -1737,11 +1737,19 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
     <!-- ═══ DASHBOARD ═══ -->
     <section class="tab-content active" id="tab-dashboard">
       <div class="summary-bar">
-        <div class="summary-block"><div class="summary-label">Nível</div><div class="summary-value"><span id="sum-level-display">1</span></div><div class="summary-sub"><span class="dot" style="background:var(--lime)"></span><span style="color:var(--text-dim)">XP · <span id="sum-xp-display">0</span></span></div></div>
+        <div class="summary-block"><div class="summary-label">Inventário</div><div class="summary-value"><span class="unit">ITM</span><span id="sum-items">0</span></div><div class="summary-sub"><span class="dot" style="background:var(--lime)"></span><span style="color:var(--text-dim)">Capacidade &middot; <span id="sum-weight">0</span> kg</span></div></div>
         <div class="summary-block"><div class="summary-label" id="sum-currency-label">Crédito</div><div class="summary-value medium" style="color:var(--yellow)"><span class="unit" id="sum-currency-sym">C$</span><span id="sum-gold">0</span></div><div class="summary-sub"><span class="dot" style="background:var(--yellow)"></span><span style="color:var(--text-dim)">Saldo total</span></div></div>
         <div class="summary-progress-row" id="sum-progress"></div>
       </div>
       <div class="dash-grid">
+        <div class="card item-list-section">
+          <div class="card-header"><div class="card-title">Inventário</div><div class="card-actions"><div class="card-action-btn"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="16" y2="12"/><line x1="4" y1="18" x2="12" y2="18"/></svg></div></div></div>
+          <div class="item-list-group-label">ARMAS <button class="see-all">VER TUDO</button></div>
+          <div class="item-list" id="dash-weapons"></div>
+          <div class="item-list-divider"></div>
+          <div class="item-list-group-label">CONSUMÍVEIS <button class="see-all">VER TUDO</button></div>
+          <div class="item-list" id="dash-consumables"></div>
+        </div>
         <div class="card"><div class="card-header"><div class="card-title">Evolução</div><div class="toggle-pills"><button class="toggle-pill active" data-mode="xp">XP</button><button class="toggle-pill" data-mode="credito">Crédito</button></div></div><div class="chart-area"><canvas class="chart-canvas" id="lineChart"></canvas></div><div class="chart-time-pills"><span style="font-size:11px;color:var(--text-dim)" id="chart-info">Sem dados</span></div></div>
         <!-- ROW 2: Status | Atributos -->
         <div class="card">
@@ -1770,15 +1778,11 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
       </div>
     </section>
 
-    <!-- Inventário removido para ser reconstruído como módulo separado. Raízes ocultas pra estabilidade do JS. -->
+    <!-- Inventário: raízes de grid/detalhe ocultas (UI de grid removida, reconstruída como módulo separado) -->
     <div style="display:none" aria-hidden="true" id="inv-hidden-root">
       <div class="inv-grid" id="inv-grid"></div>
       <div id="inv-detail"><span id="overflow-count">0</span><div id="overflow-list"></div></div>
       <span id="inv-cap-label"></span>
-      <div id="dash-weapons"></div>
-      <div id="dash-consumables"></div>
-      <span id="sum-items"></span>
-      <span id="sum-weight"></span>
     </div>
 
     <!-- ═══ PROGRESS ═══ -->

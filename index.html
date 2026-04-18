@@ -1649,10 +1649,11 @@ input[type="number"]{-moz-appearance:textfield}
 .skill-cost-pill.active{color:var(--c,var(--lime));border-color:var(--c,var(--lime));background:color-mix(in srgb,var(--c,var(--lime)) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--lime)) 35%,transparent)}
 .skill-cost-pill.active svg{opacity:1}
 
-/* Botão pequeno "+ Habilidade" no label de Passado/Caminho */
+/* Botão circular "+" no label de Linhagem/Arquétipo/Passado/Caminho — abre modal de nova habilidade */
 .profile-field label{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.pf-add-skill{font-family:inherit;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 8px;background:var(--lime-bg);border:1px solid var(--lime-dim);border-radius:12px;color:var(--lime);cursor:pointer;transition:all .15s;white-space:nowrap}
-.pf-add-skill:hover{background:var(--lime);color:#09090b;transform:translateY(-1px);box-shadow:0 0 10px rgba(200,245,66,.25)}
+.pf-add-skill{font-family:inherit;font-size:0;width:20px;height:20px;min-width:20px;padding:0;background:var(--lime-bg);border:1px solid var(--lime-dim);border-radius:50%;color:var(--lime);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;line-height:1;position:relative}
+.pf-add-skill::before{content:'+';font-size:14px;font-weight:700;line-height:1}
+.pf-add-skill:hover{background:var(--lime);color:#09090b;transform:scale(1.1);box-shadow:0 0 10px rgba(200,245,66,.35)}
 
 /* ═══════════ ANIMAÇÕES DOS ATRIBUTOS DE VEÍCULO (hover + touch) ═══════════ */
 .veh-service-card .veh-service-icon{will-change:transform,filter;transform-origin:center}

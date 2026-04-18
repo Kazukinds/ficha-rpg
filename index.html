@@ -37,10 +37,10 @@
 html,body{overscroll-behavior-y:contain;overscroll-behavior-x:none}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);color:var(--text-primary);min-height:100vh;display:flex;user-select:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 *:focus-visible{outline:2px solid var(--lime);outline-offset:2px;border-radius:var(--radius-xs)}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--border-light)}
+/* Scrollbar invisível globalmente (rolagem continua funcionando) */
+*{scrollbar-width:none;-ms-overflow-style:none}
+::-webkit-scrollbar{width:0!important;height:0!important;display:none!important;background:transparent}
+::-webkit-scrollbar-track,::-webkit-scrollbar-thumb,::-webkit-scrollbar-corner{display:none!important;background:transparent}
 
 /* ═══ SIDEBAR ═══ */
 .sidebar{width:72px;min-height:100vh;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:flex-start;padding:16px 14px;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:width .45s cubic-bezier(.2,.8,.2,1),border-radius .45s,box-shadow .45s;overflow:hidden}

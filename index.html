@@ -843,12 +843,6 @@ input[type="number"]{-moz-appearance:textfield}
 .veh-hp-nums{display:flex;align-items:baseline;gap:3px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--text-primary);white-space:nowrap}
 .veh-hp-sep{color:var(--text-dim);font-weight:500}
 .veh-hp-label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;margin-left:4px;font-weight:700}
-.veh-desc-box{margin-top:18px;border-top:1px solid var(--border);padding-top:16px}
-.veh-desc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.veh-desc-edit{width:26px;height:26px;padding:0;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .15s}
-.veh-desc-edit:hover{color:var(--lime);border-color:var(--lime-dim)}
-.veh-desc-edit svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.veh-desc-text{font-size:12px;color:var(--text-secondary);line-height:1.6;padding:10px 12px;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:var(--radius-sm);min-height:80px;white-space:pre-wrap}
 .veh-improvement{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim)}
 .veh-improvement svg{width:12px;height:12px;stroke:var(--lime);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .veh-improvement b{color:var(--lime);font-weight:700;margin-right:2px}
@@ -857,22 +851,17 @@ input[type="number"]{-moz-appearance:textfield}
 .veh-hero:hover{background:color-mix(in srgb,var(--lime) 4%,var(--bg-card-inner));border-color:var(--lime-dim)}
 .veh-hero.has-image{border-style:solid;background:transparent}
 .veh-hero img{width:100%;height:100%;object-fit:cover;display:block;border-radius:calc(var(--radius-sm) - 1.5px)}
-.veh-hero-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-dim);text-align:center;padding:20px;transition:color .2s}
+.veh-hero-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text-dim);text-align:center;padding:16px;transition:color .2s}
 .veh-hero:hover .veh-hero-placeholder{color:var(--lime)}
-.veh-hero-placeholder svg{width:44px;height:44px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
-.veh-hero-placeholder span{font-size:13px;font-weight:700;letter-spacing:.3px;color:var(--text-secondary)}
-.veh-hero-placeholder small{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;opacity:.6}
-.veh-hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-secondary);background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s;pointer-events:none;border-radius:var(--radius-sm)}
-.veh-hero-overlay svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:none}
-.veh-hero-overlay span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
-.veh-hero:hover .veh-hero-overlay{opacity:1}
-.veh-hero-badge{position:absolute;top:10px;right:10px;width:36px;height:36px;background:linear-gradient(135deg,var(--lime) 0%,color-mix(in srgb,var(--lime) 70%,black) 100%);border:2px solid var(--bg-card);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#09090b;z-index:3;box-shadow:0 4px 12px rgba(0,0,0,.5),0 0 0 1px rgba(200,245,66,.3)}
-.veh-hero-badge svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.veh-hero.has-image .veh-hero-remove{top:8px;right:50px}
-.veh-hero-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;padding:0;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.15);border-radius:50%;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:2;transition:all .15s}
-.veh-hero.has-image .veh-hero-remove{display:flex}
-.veh-hero-remove:hover{background:var(--red);border-color:var(--red)}
-.veh-hero-remove svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;filter:none}
+.veh-hero-placeholder svg{width:38px;height:38px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.veh-hero-placeholder span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.7}
+.veh-hero-badge{position:absolute;top:8px;left:8px;width:26px;height:26px;background:linear-gradient(135deg,var(--lime) 0%,color-mix(in srgb,var(--lime) 70%,black) 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#09090b;z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.veh-hero-badge svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.veh-hero-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;z-index:4;opacity:.55;transition:opacity .2s}
+.veh-hero:hover .veh-hero-actions{opacity:1}
+.veh-hero-act{width:24px;height:24px;padding:0;background:rgba(15,15,17,.7);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:50%;color:rgba(255,255,255,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.veh-hero-act:hover{background:rgba(15,15,17,.9);color:var(--lime);border-color:var(--lime-dim)}
+.veh-hero-act svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .veh-services-title{font-size:15px;font-weight:700;margin:4px 0 12px;color:var(--text-primary);display:flex;align-items:center;gap:8px}
 .veh-services-title::before{content:'';width:3px;height:14px;background:var(--lime);border-radius:2px;display:inline-block}
 .veh-services-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -1654,15 +1643,6 @@ input[type="number"]{-moz-appearance:textfield}
         </div>
         <div class="veh-hero" id="veh-hero" onclick="document.getElementById('veh-img-input').click()">
           <input type="file" id="veh-img-input" accept="image/*" style="display:none" onchange="handleVehicleImage(event)">
-          <div class="veh-hero-overlay"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Clique para adicionar imagem</span></div>
-          <button class="veh-hero-remove" id="veh-hero-remove" onclick="event.stopPropagation();removeVehicleImage()" title="Remover imagem"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        </div>
-        <div class="veh-desc-box">
-          <div class="veh-desc-header">
-            <h3 class="veh-services-title" style="margin:0">Descrição</h3>
-            <button class="veh-desc-edit" onclick="openVehicleDesc()" title="Editar descrição"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          </div>
-          <div class="veh-desc-text" id="veh-desc-text">Clique em editar para descrever o veículo — modelo, ano, histórico e detalhes relevantes.</div>
         </div>
         <div class="veh-services">
           <h3 class="veh-services-title">Atributos</h3>
@@ -4134,11 +4114,12 @@ function renderVehicleState(){
     const hasImg=!!vehicleState.image;
     host.classList.toggle('has-image',hasImg);
     const typeIcon=VEH_TYPE_ICONS[vehicleState.type]||VEH_TYPE_ICONS.carro;
-    const badge=hasImg?`<div class="veh-hero-badge" title="${VEH_TYPE_LABELS[vehicleState.type]||'Veículo'}">${typeIcon}</div>`:'';
     const contentHTML=hasImg
       ?`<img src="${vehicleState.image}" alt="Veículo">`
-      :`<div class="veh-hero-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Imagem do veículo</span><small>Clique para adicionar</small></div>`;
-    host.innerHTML=`<input type="file" id="veh-img-input" accept="image/*" style="display:none" onchange="handleVehicleImage(event)">${contentHTML}${badge}${hasImg?`<div class="veh-hero-overlay"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Trocar imagem</span></div><button class="veh-hero-remove" onclick="event.stopPropagation();removeVehicleImage()" title="Remover imagem"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}`;
+      :`<div class="veh-hero-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Adicionar imagem</span></div>`;
+    const actions=`<div class="veh-hero-actions"><button class="veh-hero-act" onclick="event.stopPropagation();openVehicleDesc()" title="Editar descrição"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>${hasImg?`<button class="veh-hero-act" onclick="event.stopPropagation();removeVehicleImage()" title="Remover imagem"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`:''}</div>`;
+    const badge=hasImg?`<div class="veh-hero-badge" title="${VEH_TYPE_LABELS[vehicleState.type]||'Veículo'}">${typeIcon}</div>`:'';
+    host.innerHTML=`<input type="file" id="veh-img-input" accept="image/*" style="display:none" onchange="handleVehicleImage(event)">${contentHTML}${badge}${actions}`;
   }
   const typeLabel=document.getElementById('veh-summary-type');
   if(typeLabel)typeLabel.textContent=(VEH_TYPE_LABELS[vehicleState.type]||'Carro')+' · modificações instaladas';
@@ -4254,7 +4235,6 @@ function openAttributesConfig(focusKey){
   const v=vehicleState.attrs[cur.k];
   body.innerHTML=`
     <div class="acfg-wrap">
-      <div class="acfg-sidebar">${tabs}</div>
       <div class="acfg-main acfg-${cur.k}" style="--attr-color:${cur.color}">
         <div class="acfg-head">
           <div class="acfg-head-left">

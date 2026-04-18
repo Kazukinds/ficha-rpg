@@ -1574,24 +1574,7 @@ input[type="number"]{-moz-appearance:textfield}
 .status-track{box-shadow:inset 0 1px 3px rgba(0,0,0,.5),inset 0 -1px 0 rgba(255,255,255,.02)}
 .status-fill{background-image:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.02) 60%)}
 
-/* ═══════════ FULLSCREEN / IMMERSIVE MODE ═══════════ */
-/* Modo padrão já respeita safe-area. Modo imersivo estica de ponta a ponta. */
-body[data-immersive="true"]{padding:0!important}
-body[data-immersive="true"] .topbar{padding-top:max(10px,env(safe-area-inset-top,0px))}
-body[data-immersive="true"] .main-wrapper{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-@media (max-width:640px) and (orientation:portrait){
-  body[data-immersive="true"] .sidebar{padding-bottom:max(6px,env(safe-area-inset-bottom,0px))}
-  body[data-immersive="true"] .main-wrapper{padding-bottom:calc(56px + env(safe-area-inset-bottom,0px))}
-}
-
-/* Botão flutuante de alternar modo tela cheia (mobile) */
-.fs-toggle{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));z-index:180;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;aspect-ratio:1/1;flex-shrink:0;border-radius:50%;background:rgba(15,15,17,.72);backdrop-filter:blur(10px);border:1px solid var(--border);color:var(--text-secondary);display:none;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:all .2s;box-shadow:0 6px 18px rgba(0,0,0,.4);box-sizing:border-box;line-height:1}
-.fs-toggle:hover{color:var(--lime);border-color:var(--lime-dim)}
-.fs-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-@media (max-width:640px) and (orientation:portrait),(max-width:1024px) and (orientation:portrait){
-  .fs-toggle{display:flex}
-}
-body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-color:var(--lime-dim);color:var(--lime)}
+/* (sistema de entalhe removido — respeita safe-area por padrão via body padding global) */
 
 /* ═══════════ CÍRCULOS — BLINDAGEM GLOBAL (propocao 1:1) ═══════════ */
 .topbar-icon-btn,.xp-gear,.attr-gear,.size-gear,.dual-gear,.veh-cfg-btn,
@@ -1692,9 +1675,6 @@ body[data-immersive="true"] .fs-toggle{background:rgba(200,245,66,.12);border-co
   <div class="splash-bolt"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
   <div class="splash-name">Ficha<span class="splash-dot"></span>Eclipse</div>
 </div>
-<button class="fs-toggle" id="fs-toggle" onclick="toggleImmersiveMode()" title="Alternar tela cheia" aria-label="Alternar tela cheia">
-  <svg id="fs-toggle-icon" viewBox="0 0 24 24"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/></svg>
-</button>
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-grip" id="sidebar-grip"></div>
   <div class="sidebar-logo"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
@@ -4827,29 +4807,6 @@ function openChangelog(){
   const ov=document.getElementById('modal-overlay');if(ov)ov.classList.add('open');
 }
 
-
-// ═══ IMMERSIVE (FULLSCREEN) MODE ═══
-function applyImmersiveMode(on){
-  document.body.dataset.immersive=on?'true':'false';
-  const icon=document.getElementById('fs-toggle-icon');
-  if(icon){
-    icon.innerHTML=on
-      ? '<path d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 0 1-1v-4"/>'
-      : '<path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/>';
-  }
-}
-function toggleImmersiveMode(){
-  const on=document.body.dataset.immersive!=='true';
-  applyImmersiveMode(on);
-  try{localStorage.setItem('ficha-immersive',on?'1':'0')}catch(_){}
-  if(typeof toast==='function')toast(on?'Modo tela cheia ativado':'Modo seguro (respeita entalhe)');
-}
-try{
-  const stored=localStorage.getItem('ficha-immersive');
-  // Default: imersivo LIGADO (barra do sistema oculta, revela com swipe)
-  applyImmersiveMode(stored===null?true:stored==='1');
-  if(stored===null)localStorage.setItem('ficha-immersive','1');
-}catch(_){applyImmersiveMode(true)}
 
 // ═══ PWA / SERVICE WORKER ═══
 if('serviceWorker' in navigator){

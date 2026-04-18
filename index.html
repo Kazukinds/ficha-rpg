@@ -1621,6 +1621,35 @@ input[type="number"]{-moz-appearance:textfield}
 /* Proficiencia — tag "Não possui" em cinza discreto (substitui travessão) */
 .prof-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 8px;border-radius:10px;white-space:nowrap}
 
+/* ═══════════ ANIMAÇÕES DOS ATRIBUTOS DE VEÍCULO (hover + touch) ═══════════ */
+.veh-service-card .veh-service-icon{will-change:transform,filter;transform-origin:center}
+
+/* Velocidade: avanço pulsante (raio) */
+@keyframes vattr-velocidade{0%,100%{transform:translateX(0) scale(1);filter:drop-shadow(0 0 0 transparent)}40%{transform:translateX(3px) scale(1.1);filter:drop-shadow(0 0 6px currentColor)}70%{transform:translateX(-1px) scale(.98)}}
+/* Aceleração: onda acelerando */
+@keyframes vattr-aceleracao{0%,100%{transform:scaleX(1)}30%{transform:scaleX(1.15) translateX(2px)}60%{transform:scaleX(.95) translateX(-1px)}}
+/* Manuseio: volante girando */
+@keyframes vattr-manuseio{0%{transform:rotate(0)}50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
+/* Frenagem: tremor de parada brusca */
+@keyframes vattr-frenagem{0%,100%{transform:translateX(0) scale(1)}15%{transform:translateX(-2px) scale(1.05)}30%{transform:translateX(2px) scale(.97)}45%{transform:translateX(-1.5px)}60%{transform:translateX(1px)}75%{transform:translateX(-.5px)}}
+/* Nitro: chama tremulando */
+@keyframes vattr-nitro{0%,100%{transform:scaleY(1) scaleX(1);filter:drop-shadow(0 0 2px currentColor)}25%{transform:scaleY(1.15) scaleX(.92);filter:drop-shadow(0 0 10px currentColor)}50%{transform:scaleY(.95) scaleX(1.05)}75%{transform:scaleY(1.08) scaleX(.96);filter:drop-shadow(0 0 8px currentColor)}}
+/* Blindagem: pulso de escudo */
+@keyframes vattr-blindagem{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}50%{transform:scale(1.12);filter:drop-shadow(0 0 8px currentColor)}}
+
+.veh-service-card[data-vattr="velocidade"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="velocidade"].touched .veh-service-icon{animation:vattr-velocidade .7s cubic-bezier(.2,.8,.2,1) infinite}
+.veh-service-card[data-vattr="aceleracao"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="aceleracao"].touched .veh-service-icon{animation:vattr-aceleracao .6s ease infinite}
+.veh-service-card[data-vattr="manuseio"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="manuseio"].touched .veh-service-icon{animation:vattr-manuseio 1.6s linear infinite}
+.veh-service-card[data-vattr="frenagem"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="frenagem"].touched .veh-service-icon{animation:vattr-frenagem .5s ease infinite}
+.veh-service-card[data-vattr="nitro"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="nitro"].touched .veh-service-icon{animation:vattr-nitro .6s ease-in-out infinite}
+.veh-service-card[data-vattr="blindagem"]:hover   .veh-service-icon,
+.veh-service-card[data-vattr="blindagem"].touched .veh-service-icon{animation:vattr-blindagem .9s ease-in-out infinite}
+
 /* ═══════════ MODAL DE CRÉDITO (redesenhado) ═══════════ */
 .credit-modal{display:flex;flex-direction:column;gap:16px}
 .credit-modal-head{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border)}
@@ -1890,12 +1919,12 @@ input[type="number"]{-moz-appearance:textfield}
         <div class="veh-services">
           <h3 class="veh-services-title">Atributos</h3>
           <div class="veh-services-grid">
-            <div class="veh-service-card" style="--attr-color:var(--red)" onclick="openAttributesConfig('velocidade')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div><div class="veh-service-val"><span id="veh-val-velocidade">0</span><small>%</small></div><div class="veh-service-label">Velocidade</div></div>
-            <div class="veh-service-card" style="--attr-color:var(--yellow)" onclick="openAttributesConfig('aceleracao')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><polyline points="2 12 8 12 12 4 16 20 20 12 22 12"/></svg></div><div class="veh-service-val"><span id="veh-val-aceleracao">0</span><small>%</small></div><div class="veh-service-label">Aceleração</div></div>
-            <div class="veh-service-card" style="--attr-color:var(--blue)" onclick="openAttributesConfig('manuseio')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3v7"/><path d="M4.5 15.5l5.3-2"/><path d="M19.5 15.5l-5.3-2"/></svg></div><div class="veh-service-val"><span id="veh-val-manuseio">0</span><small>%</small></div><div class="veh-service-label">Manuseio</div></div>
-            <div class="veh-service-card" style="--attr-color:var(--cyan)" onclick="openAttributesConfig('frenagem')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></div><div class="veh-service-val"><span id="veh-val-frenagem">0</span><small>%</small></div><div class="veh-service-label">Frenagem</div></div>
-            <div class="veh-service-card hidden" data-extra style="--attr-color:#fb923c" onclick="openAttributesConfig('nitro')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M8 14a4 4 0 0 1 4-4c0-2 1-4 3-6 0 3 2 4 2 7a5 5 0 1 1-10 0c0-.7.2-1.5.5-2z"/></svg></div><div class="veh-service-val"><span id="veh-val-nitro">0</span><small>%</small></div><div class="veh-service-label">Nitro</div></div>
-            <div class="veh-service-card hidden" data-extra style="--attr-color:var(--purple)" onclick="openAttributesConfig('blindagem')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V6z"/></svg></div><div class="veh-service-val"><span id="veh-val-blindagem">0</span><small>%</small></div><div class="veh-service-label">Blindagem</div></div>
+            <div class="veh-service-card" data-vattr="velocidade" style="--attr-color:var(--red)" onclick="openAttributesConfig('velocidade')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div><div class="veh-service-val"><span id="veh-val-velocidade">0</span><small>%</small></div><div class="veh-service-label">Velocidade</div></div>
+            <div class="veh-service-card" data-vattr="aceleracao" style="--attr-color:var(--yellow)" onclick="openAttributesConfig('aceleracao')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><polyline points="2 12 8 12 12 4 16 20 20 12 22 12"/></svg></div><div class="veh-service-val"><span id="veh-val-aceleracao">0</span><small>%</small></div><div class="veh-service-label">Aceleração</div></div>
+            <div class="veh-service-card" data-vattr="manuseio" style="--attr-color:var(--blue)" onclick="openAttributesConfig('manuseio')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3v7"/><path d="M4.5 15.5l5.3-2"/><path d="M19.5 15.5l-5.3-2"/></svg></div><div class="veh-service-val"><span id="veh-val-manuseio">0</span><small>%</small></div><div class="veh-service-label">Manuseio</div></div>
+            <div class="veh-service-card" data-vattr="frenagem" style="--attr-color:var(--cyan)" onclick="openAttributesConfig('frenagem')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></div><div class="veh-service-val"><span id="veh-val-frenagem">0</span><small>%</small></div><div class="veh-service-label">Frenagem</div></div>
+            <div class="veh-service-card hidden" data-vattr="nitro" data-extra style="--attr-color:#fb923c" onclick="openAttributesConfig('nitro')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M8 14a4 4 0 0 1 4-4c0-2 1-4 3-6 0 3 2 4 2 7a5 5 0 1 1-10 0c0-.7.2-1.5.5-2z"/></svg></div><div class="veh-service-val"><span id="veh-val-nitro">0</span><small>%</small></div><div class="veh-service-label">Nitro</div></div>
+            <div class="veh-service-card hidden" data-vattr="blindagem" data-extra style="--attr-color:var(--purple)" onclick="openAttributesConfig('blindagem')"><div class="veh-service-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V6z"/></svg></div><div class="veh-service-val"><span id="veh-val-blindagem">0</span><small>%</small></div><div class="veh-service-label">Blindagem</div></div>
             <button class="veh-service-more" id="veh-service-more" onclick="toggleExtraAttrs()"><span id="veh-more-label">Ver mais (2)</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
         </div>
@@ -4728,6 +4757,20 @@ document.querySelectorAll('.veh-attr input').forEach(input=>{
     if(bar)bar.style.width=v+'%';
   });
 });
+// ═══ ANIMAÇÕES POR TOQUE (veh-service-card) ═══
+document.addEventListener('touchstart',e=>{
+  const c=e.target.closest('.veh-service-card[data-vattr]');
+  if(c)c.classList.add('touched');
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  // Pequeno delay pra animação dar pelo menos um ciclo visível
+  const active=document.querySelectorAll('.veh-service-card.touched');
+  active.forEach(c=>setTimeout(()=>c.classList.remove('touched'),500));
+},{passive:true});
+document.addEventListener('touchcancel',()=>{
+  document.querySelectorAll('.veh-service-card.touched').forEach(c=>c.classList.remove('touched'));
+},{passive:true});
+
 // ═══ SPLASH / INTRO ═══
 window.addEventListener('load',()=>{
   const sp=document.getElementById('app-splash');

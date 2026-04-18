@@ -1,0 +1,40 @@
+# Dependency artifacts (if future build tools added)
+node_modules/
+.cache/
+dist/
+build/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Claude workspace
+.claude/
+memory/
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+*.lcov
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+Desktop.ini
+$RECYCLE.BIN/
+
+# Save files locais do usuário (não commitar fichas pessoais)
+ficha-*.json
+*.ficha.json

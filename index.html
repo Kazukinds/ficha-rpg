@@ -1626,18 +1626,17 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* Velocidade: avanço pulsante (raio) */
 @keyframes vattr-velocidade{0%,100%{transform:translateX(0) scale(1);filter:drop-shadow(0 0 0 transparent)}40%{transform:translateX(3px) scale(1.1);filter:drop-shadow(0 0 6px currentColor)}70%{transform:translateX(-1px) scale(.98)}}
-/* Aceleração: a linha do batimento é desenhada da esquerda pra direita, em loop */
+/* Aceleração: a linha do batimento é desenhada da esquerda pra direita, em loop, sem glow */
 .pulse-line{stroke-dasharray:1;stroke-dashoffset:1;animation:pulse-draw 2.2s cubic-bezier(.55,.1,.25,1) infinite}
 @keyframes pulse-draw{
   0%{stroke-dashoffset:1;opacity:.4}
   10%{opacity:1}
-  60%{stroke-dashoffset:0;opacity:1;filter:drop-shadow(0 0 4px currentColor)}
-  80%{stroke-dashoffset:0;opacity:1}
+  60%,80%{stroke-dashoffset:0;opacity:1}
   100%{stroke-dashoffset:0;opacity:0}
 }
-/* No hover/touch a animação acelera */
+/* No hover/touch só acelera o ritmo */
 .veh-service-card[data-vattr="aceleracao"]:hover   .pulse-line,
-.veh-service-card[data-vattr="aceleracao"].touched .pulse-line{animation-duration:1s;filter:drop-shadow(0 0 6px currentColor)}
+.veh-service-card[data-vattr="aceleracao"].touched .pulse-line{animation-duration:1s}
 @keyframes vattr-aceleracao{0%,100%{transform:scaleX(1)}30%{transform:scaleX(1.15) translateX(2px)}60%{transform:scaleX(.95) translateX(-1px)}}
 /* Manuseio: volante girando */
 @keyframes vattr-manuseio{0%{transform:rotate(0)}50%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}

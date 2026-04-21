@@ -3407,6 +3407,38 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 .ia-badge{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 4px;border-radius:8px;background:var(--lime);color:#09090b;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;font-family:'JetBrains Mono',monospace;box-shadow:0 0 0 2px var(--bg-body)}
 .ia-badge.show{display:inline-flex}
 
+/* ═══ SKILL LIBRARY PICKER ═══ */
+.sklib-toolbar{display:flex;gap:8px;margin-bottom:12px}
+.sklib-toolbar input{flex:1;padding:10px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.sklib-toolbar input:focus{border-color:var(--lime-dim);box-shadow:0 0 0 3px rgba(200,245,66,.08)}
+.sklib-new-btn{padding:10px 14px;background:var(--lime);color:#09090b;border:1px solid var(--lime);border-radius:10px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:filter .15s}
+.sklib-new-btn:hover{filter:brightness(1.08)}
+.sklib-new-btn svg{width:14px;height:14px}
+.sklib-filters{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px}
+.sklib-filter-group{display:flex;flex-direction:column;gap:6px}
+.sklib-filter-group label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.sklib-chips{display:flex;flex-wrap:wrap;gap:5px}
+.sklib-chip-btn{padding:5px 11px;background:var(--bg-card);border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+.sklib-chip-btn:hover{border-color:var(--border-light);color:var(--text-primary)}
+.sklib-chip-btn.active{background:var(--lime-bg);border-color:var(--lime);color:var(--lime)}
+.sklib-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto;padding-right:2px;margin-bottom:12px}
+.sklib-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;transition:all .15s}
+.sklib-item:hover{border-color:var(--lime-dim);background:color-mix(in srgb,var(--lime) 4%,var(--bg-input))}
+.sklib-item-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.sklib-item-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.sklib-item-name{font-size:13px;font-weight:700;color:var(--text-primary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sklib-item-cost{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;flex-shrink:0}
+.sklib-item-meta{display:flex;flex-wrap:wrap;gap:4px}
+.sklib-chip{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px}
+.sklib-chip.cat{color:var(--lime);border-color:var(--lime-dim)}
+.sklib-chip.classe{color:var(--cyan);border-color:color-mix(in srgb,var(--cyan) 40%,transparent)}
+.sklib-chip.fase{color:var(--purple);border-color:color-mix(in srgb,var(--purple) 40%,transparent)}
+.sklib-item-desc{font-size:11.5px;color:var(--text-secondary);line-height:1.4}
+.sklib-add-btn{width:30px;height:30px;flex-shrink:0;border-radius:8px;background:var(--bg-card);border:1px solid var(--border-light);color:var(--text-secondary);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.sklib-add-btn:hover{background:var(--lime);color:#09090b;border-color:var(--lime);transform:scale(1.05)}
+.sklib-add-btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.sklib-empty{padding:28px 12px;text-align:center;color:var(--text-dim);font-size:12px}
+
 /* ═══ IA DRAWER ═══ */
 .ia-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:680;opacity:0;pointer-events:none;transition:opacity .2s}
 .ia-drawer-overlay.open{opacity:1;pointer-events:all}
@@ -8507,7 +8539,148 @@ const ORIGIN_ICONS={
   Passado:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   Caminho:'<path d="M3 21l6-6 4 4 8-8"/><polyline points="14 11 21 11 21 18"/>'
 };
-function addSkillFromOrigin(origin){
+// ═══ BIBLIOTECA SKILL CATALOG ═══
+const SKILL_CATALOG=[
+  // Poderes gerais
+  {cat:'Poderes Gerais',classe:'—',fase:'I',name:'Investida',cost:2,costStatus:'esforco',desc:'Avança 1 zona adicional e ataca com bônus de 1d4 ao dano.'},
+  {cat:'Poderes Gerais',classe:'—',fase:'I',name:'Esquiva Reflexa',cost:1,costStatus:'esforco',desc:'Reação: anula 1d6 de dano recebido, 1x por cena.'},
+  {cat:'Poderes Gerais',classe:'—',fase:'II',name:'Foco Mental',cost:2,costStatus:'foco',desc:'Próximo teste recebe +5 bônus automático.'},
+  {cat:'Poderes Gerais',classe:'—',fase:'II',name:'Recuperar Alento',cost:0,costStatus:'hp',desc:'Recupera 1d4 de Esforço. 1x por descanso curto.'},
+  {cat:'Poderes Gerais',classe:'—',fase:'III',name:'Intuição Crítica',cost:3,costStatus:'foco',desc:'Vê uma pista oculta na cena atual; o mestre descreve.'},
+  // Versátil
+  {cat:'Versátil',classe:'—',fase:'I',name:'Improvisar Ferramenta',cost:1,costStatus:'esforco',desc:'Converte qualquer objeto em ferramenta temporária (1 cena).'},
+  {cat:'Versátil',classe:'—',fase:'II',name:'Adaptação Rápida',cost:2,costStatus:'foco',desc:'Troca de atributo-chave no próximo teste (1 uso/cena).'},
+  {cat:'Versátil',classe:'—',fase:'II',name:'Fala de Rua',cost:0,costStatus:'foco',desc:'Consegue informação social/boato em qualquer cidade com 1 teste.'},
+  // Poderes de Classe — Guerreiro
+  {cat:'Poderes de Classe',classe:'Guerreiro',fase:'I',name:'Golpe Poderoso',cost:2,costStatus:'esforco',desc:'Ataque com dano +1d8. Alvo em 1 zona.'},
+  {cat:'Poderes de Classe',classe:'Guerreiro',fase:'II',name:'Postura Defensiva',cost:1,costStatus:'esforco',desc:'-5 dano recebido até próxima ação; perde ataque livre.'},
+  {cat:'Poderes de Classe',classe:'Guerreiro',fase:'III',name:'Execução',cost:4,costStatus:'esforco',desc:'Alvo com HP <25% perde -2d10 HP. 1x/combate.'},
+  // Poderes de Classe — Místico
+  {cat:'Poderes de Classe',classe:'Místico',fase:'I',name:'Raio Arcano',cost:2,costStatus:'foco',desc:'Ataque à distância, 2d6 de dano elemental.'},
+  {cat:'Poderes de Classe',classe:'Místico',fase:'II',name:'Barreira',cost:3,costStatus:'foco',desc:'Reduz dano em 1d8 para aliado até fim da cena.'},
+  {cat:'Poderes de Classe',classe:'Místico',fase:'III',name:'Tempestade Arcana',cost:5,costStatus:'foco',desc:'Afeta 2 zonas: 3d6 dano em área, testes de evasão DT 15.'},
+  // Poderes de Classe — Ladino
+  {cat:'Poderes de Classe',classe:'Ladino',fase:'I',name:'Ataque Furtivo',cost:1,costStatus:'esforco',desc:'Alvo desprevenido: +2d6 dano, 1x/cena por alvo.'},
+  {cat:'Poderes de Classe',classe:'Ladino',fase:'II',name:'Esgueirar-se',cost:2,costStatus:'foco',desc:'Move 2 zonas sem ser detectado se tem cobertura.'},
+  {cat:'Poderes de Classe',classe:'Ladino',fase:'III',name:'Desaparecer',cost:4,costStatus:'foco',desc:'Invisível até próxima ação ofensiva. Não detectável.'},
+  // Complicações (cursed/debuffs)
+  {cat:'Complicações',classe:'—',fase:'—',name:'Maldição da Voracidade',cost:0,costStatus:'hp',desc:'Ganha +1d4 dano, mas perde 1 HP por turno em combate.'},
+  {cat:'Complicações',classe:'—',fase:'—',name:'Marca Obscura',cost:0,costStatus:'determinacao',desc:'Inimigos obscuros detectam sua presença. -2 em stealth.'},
+  {cat:'Complicações',classe:'—',fase:'—',name:'Fadiga Crônica',cost:0,costStatus:'esforco',desc:'Máximo de Esforço -2; compensa com +1 em perícias mentais.'},
+  {cat:'Complicações',classe:'—',fase:'—',name:'Eco Interno',cost:1,costStatus:'determinacao',desc:'Ao falhar teste crítico, ouve voz que revela uma verdade oculta.'}
+];
+
+function openSkillLibrary(origin){
+  if(typeof currentModal!=='undefined')currentModal='skillLib';
+  const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+  if(!title||!body)return;
+  title.textContent='Adicionar Habilidade · Biblioteca';
+  const cats=[...new Set(SKILL_CATALOG.map(s=>s.cat))];
+  const classes=[...new Set(SKILL_CATALOG.map(s=>s.classe).filter(c=>c&&c!=='—'))];
+  const fases=[...new Set(SKILL_CATALOG.map(s=>s.fase).filter(f=>f&&f!=='—'))];
+  const esc=s=>String(s||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const statusLabel=k=>(SKILL_COST_STATUSES.find(s=>s.key===k)?.short||'VIT');
+  const statusColor=k=>(SKILL_COST_STATUSES.find(s=>s.key===k)?.color||'var(--red)');
+  const items=SKILL_CATALOG.map((s,i)=>{
+    const costStr=s.cost>0?`${s.cost} ${statusLabel(s.costStatus)}`:'sem custo';
+    const costCol=s.cost>0?statusColor(s.costStatus):'var(--text-dim)';
+    return `<div class="sklib-item" data-i="${i}" data-cat="${esc(s.cat)}" data-classe="${esc(s.classe)}" data-fase="${esc(s.fase)}" data-name="${esc(s.name.toLowerCase())}">
+      <div class="sklib-item-main">
+        <div class="sklib-item-head">
+          <div class="sklib-item-name">${esc(s.name)}</div>
+          <div class="sklib-item-cost" style="color:${costCol}">${costStr}</div>
+        </div>
+        <div class="sklib-item-meta">
+          <span class="sklib-chip cat">${esc(s.cat)}</span>
+          ${s.classe&&s.classe!=='—'?`<span class="sklib-chip classe">${esc(s.classe)}</span>`:''}
+          ${s.fase&&s.fase!=='—'?`<span class="sklib-chip fase">Fase ${esc(s.fase)}</span>`:''}
+        </div>
+        <div class="sklib-item-desc">${esc(s.desc)}</div>
+      </div>
+      <button class="sklib-add-btn" onclick="addSkillFromCatalog(${i},'${origin}')" title="Adicionar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    </div>`;
+  }).join('');
+  body.innerHTML=`
+    <div class="sklib-toolbar">
+      <input type="text" id="sklib-search" placeholder="Buscar habilidade..." oninput="sklibFilter()" autocomplete="off">
+      <button class="sklib-new-btn" onclick="addSkillFromOrigin('${origin}',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Criar nova</button>
+    </div>
+    <div class="sklib-filters">
+      <div class="sklib-filter-group">
+        <label>Categoria</label>
+        <div class="sklib-chips">
+          <button class="sklib-chip-btn active" data-filter="cat" data-value="">Todas</button>
+          ${cats.map(c=>`<button class="sklib-chip-btn" data-filter="cat" data-value="${esc(c)}">${esc(c)}</button>`).join('')}
+        </div>
+      </div>
+      ${classes.length?`<div class="sklib-filter-group">
+        <label>Classe</label>
+        <div class="sklib-chips">
+          <button class="sklib-chip-btn active" data-filter="classe" data-value="">Todas</button>
+          ${classes.map(c=>`<button class="sklib-chip-btn" data-filter="classe" data-value="${esc(c)}">${esc(c)}</button>`).join('')}
+        </div>
+      </div>`:''}
+      ${fases.length?`<div class="sklib-filter-group">
+        <label>Fase</label>
+        <div class="sklib-chips">
+          <button class="sklib-chip-btn active" data-filter="fase" data-value="">Todas</button>
+          ${fases.map(f=>`<button class="sklib-chip-btn" data-filter="fase" data-value="${esc(f)}">${esc(f)}</button>`).join('')}
+        </div>
+      </div>`:''}
+    </div>
+    <div class="sklib-list" id="sklib-list">${items}</div>
+    <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Fechar</button></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  // wire chips
+  body.querySelectorAll('.sklib-chip-btn').forEach(b=>b.addEventListener('click',()=>{
+    const g=b.dataset.filter;
+    body.querySelectorAll(`.sklib-chip-btn[data-filter="${g}"]`).forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    sklibFilter();
+  }));
+  setTimeout(()=>document.getElementById('sklib-search')?.focus(),220);
+}
+
+function sklibFilter(){
+  const q=(document.getElementById('sklib-search')?.value||'').toLowerCase().trim();
+  const sel={cat:'',classe:'',fase:''};
+  document.querySelectorAll('.sklib-chip-btn.active').forEach(b=>{sel[b.dataset.filter]=b.dataset.value});
+  let n=0;
+  document.querySelectorAll('.sklib-item').forEach(it=>{
+    const okQ=!q||it.dataset.name.includes(q);
+    const okCat=!sel.cat||it.dataset.cat===sel.cat;
+    const okCl=!sel.classe||it.dataset.classe===sel.classe;
+    const okF=!sel.fase||it.dataset.fase===sel.fase;
+    const show=okQ&&okCat&&okCl&&okF;
+    it.style.display=show?'':'none';
+    if(show)n++;
+  });
+  const list=document.getElementById('sklib-list');
+  if(list&&!n)list.innerHTML+='<div class="sklib-empty" id="sklib-empty">Nenhuma habilidade encontrada</div>';
+  else document.getElementById('sklib-empty')?.remove();
+}
+
+function addSkillFromCatalog(idx,origin){
+  const s=SKILL_CATALOG[idx];if(!s)return;
+  const iconKeys=Object.keys(typeof SVG!=='undefined'?SVG:{sword:1});
+  const iconKey=iconKeys[Math.floor(Math.random()*iconKeys.length)]||'sword';
+  const id=typeof nextSkillId!=='undefined'?nextSkillId++:Date.now();
+  const statusLabel=SKILL_COST_STATUSES.find(x=>x.key===s.costStatus)?.label||'Vitalidade';
+  const costTag=s.cost>0?` · ${s.cost} ${statusLabel}`:'';
+  const tagParts=[origin];
+  if(s.classe&&s.classe!=='—')tagParts.push(s.classe);
+  if(s.fase&&s.fase!=='—')tagParts.push('Fase '+s.fase);
+  const header=`[${tagParts.join(' · ')}${costTag}]`;
+  skills.push({id,name:s.name,desc:`${header} ${s.desc}`,cost:s.cost,costStatus:s.costStatus,iconKey,origin,category:s.cat,classe:s.classe,fase:s.fase});
+  renderSkills();
+  if(typeof renderProfile==='function')renderProfile();
+  try{window.sfx&&sfx.unlock()}catch(_){}
+  toast(`"${s.name}" adicionada`);
+  closeModal();
+}
+
+function addSkillFromOrigin(origin,skipLibrary){
+  if(!skipLibrary){return openSkillLibrary(origin)}
   if(typeof currentModal!=='undefined')currentModal='skillOrigin';
   const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
   if(!title||!body)return;

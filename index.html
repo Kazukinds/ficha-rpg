@@ -4239,6 +4239,49 @@ window.toggleSound=function(){
   const b=document.getElementById('sound-toggle-btn');if(b)b.dataset.muted=_tiksMuted?'1':'0';
   if(typeof toast==='function')toast(_tiksMuted?'Som desativado':'Som ativado','info');
 };
+
+// ═══ SFX — WebAudio procedural sounds (coin, damage, heal, levelup, etc) ═══
+(function(){
+  let ac=null;
+  function ctx(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}if(ac.state==='suspended')ac.resume().catch(()=>{});return ac}
+  function tone(freq,dur,type,gain,ramp){
+    const a=ctx();if(!a||_tiksMuted)return;
+    const t0=a.currentTime;
+    const o=a.createOscillator(),g=a.createGain();
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.value=0;
+    g.gain.linearRampToValueAtTime(gain||.15,t0+.005);
+    g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+    if(ramp){o.frequency.exponentialRampToValueAtTime(ramp,t0+dur)}
+    o.connect(g);g.connect(a.destination);
+    o.start(t0);o.stop(t0+dur+.02);
+  }
+  function noise(dur,gain,filter){
+    const a=ctx();if(!a||_tiksMuted)return;
+    const t0=a.currentTime,buf=a.createBuffer(1,a.sampleRate*dur,a.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const src=a.createBufferSource();src.buffer=buf;
+    const g=a.createGain();g.gain.value=gain||.2;
+    const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=filter||2000;
+    src.connect(f);f.connect(g);g.connect(a.destination);
+    src.start(t0);
+  }
+  window.sfx={
+    coin:()=>{tone(988,.08,'triangle',.18);setTimeout(()=>tone(1318,.12,'triangle',.16),55)},
+    coinBig:()=>{tone(784,.09,'triangle',.18);setTimeout(()=>tone(1046,.09,'triangle',.17),60);setTimeout(()=>tone(1568,.16,'triangle',.14),120)},
+    spend:()=>{tone(440,.12,'sawtooth',.12,220)},
+    damage:()=>{noise(.18,.35,800);tone(120,.15,'sawtooth',.18,60)},
+    heal:()=>{tone(523,.1,'sine',.14);setTimeout(()=>tone(784,.18,'sine',.14),80)},
+    levelup:()=>{tone(523,.08,'triangle',.16);setTimeout(()=>tone(659,.08,'triangle',.16),70);setTimeout(()=>tone(784,.08,'triangle',.16),140);setTimeout(()=>tone(1046,.22,'triangle',.18),210)},
+    critical:()=>{tone(1568,.05,'square',.12);setTimeout(()=>tone(2093,.12,'square',.14),40)},
+    hover:()=>{tone(2200,.03,'sine',.04)},
+    tick:()=>{tone(1800,.02,'square',.06)},
+    save:()=>{tone(660,.06,'sine',.12);setTimeout(()=>tone(880,.1,'sine',.13),50)},
+    unlock:()=>{tone(392,.06,'triangle',.12);setTimeout(()=>tone(523,.06,'triangle',.13),60);setTimeout(()=>tone(784,.14,'triangle',.14),120)},
+    error:()=>{tone(220,.12,'square',.14,110)},
+    whoosh:()=>{noise(.25,.18,1200)}
+  };
+})();
 window.addEventListener('DOMContentLoaded',()=>{
   document.addEventListener('click',e=>{
     if(!_tiksReady||_tiksMuted)return;
@@ -5184,7 +5227,9 @@ function addXP(amount,desc){
   playerXP+=amount;
   const now=new Date();
   xpLog.unshift({val:amount,desc:desc||'XP adicionado',target:'nivel',time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),day:now.getDate().toString().padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')});
-  while(playerXP>=xpToNext){if(playerLevel>=MAX_LEVEL){playerXP=xpToNext;break}playerXP-=xpToNext;playerLevel++;xpToNext=Math.round(xpToNext*1.2);toast(`Nível ${playerLevel} alcançado!`)}
+  let leveled=false;
+  while(playerXP>=xpToNext){if(playerLevel>=MAX_LEVEL){playerXP=xpToNext;break}playerXP-=xpToNext;playerLevel++;xpToNext=Math.round(xpToNext*1.2);toast(`Nível ${playerLevel} alcançado!`);leveled=true}
+  try{if(window.sfx){leveled?sfx.levelup():sfx.unlock()}}catch(_){}
   renderXP();renderSummary();
 }
 function addStageXP(amount,desc){
@@ -5192,7 +5237,9 @@ function addStageXP(amount,desc){
   stageXP+=amount;
   const now=new Date();
   xpLog.unshift({val:amount,desc:desc||'Estágio XP',target:'estagio',time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),day:now.getDate().toString().padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')});
-  while(stageXP>=stageToNext){if(playerStage>=MAX_STAGE){stageXP=stageToNext;break}stageXP-=stageToNext;playerStage++;stageToNext=Math.round(stageToNext*1.3);toast(`Estágio ${playerStage} alcançado!`)}
+  let leveled=false;
+  while(stageXP>=stageToNext){if(playerStage>=MAX_STAGE){stageXP=stageToNext;break}stageXP-=stageToNext;playerStage++;stageToNext=Math.round(stageToNext*1.3);toast(`Estágio ${playerStage} alcançado!`);leveled=true}
+  try{if(window.sfx){leveled?sfx.levelup():sfx.unlock()}}catch(_){}
   renderXP();renderSummary();
 }
 function openAddXPModal(){
@@ -5422,6 +5469,7 @@ function rollPericia(id,group,name){
   verdictEl.textContent=isCrit?'Crítico!':isFumble?'Falha Crítica!':success?'Sucesso':'Falha';
   verdictEl.style.color=isCrit?'var(--yellow)':isFumble?'var(--red)':success?'var(--lime)':'var(--red)';
   el.className='roll-result show '+(success?'success':'fail');
+  try{if(window.sfx){isCrit?sfx.critical():isFumble?sfx.error():success?sfx.unlock():sfx.tick()}}catch(_){}
   setTimeout(()=>el.classList.remove('show'),2500);
 }
 
@@ -5930,8 +5978,10 @@ function saveStatusEdit(){
   const mx=Math.max(1,parseInt(document.getElementById('m-se-max').value)||1);
   const bn=Math.max(0,parseInt(document.getElementById('m-se-bonus').value)||0);
   const val=Math.min(v,mx+bn);
+  const prevV=key==='hp'?playerHP:(playerStatus[s.key]&&playerStatus[s.key].val)||0;
   if(key==='hp'){playerHP=val;playerHPMax=mx;playerHPBonus=bn}
   else{playerStatus[s.key].val=val;playerStatus[s.key].max=mx;playerStatus[s.key].bonus=bn}
+  try{if(window.sfx){if(val<prevV)sfx.damage();else if(val>prevV)sfx.heal()}}catch(_){}
   renderStatus();renderDashLists();closeModal();toast(`${s.label} atualizado`);
 }
 
@@ -7474,6 +7524,7 @@ function performSave(){
   const a=document.createElement('a');
   a.href=url;a.download=filename;
   a.click();URL.revokeObjectURL(url);
+  try{if(window.sfx)sfx.save()}catch(_){}
   showSaveToast(filename,blob.size);
 }
 function showSaveToast(filename,bytes){
@@ -7614,7 +7665,9 @@ function saveCredit(){
   const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   if(type==='add'){playerGold+=val;creditTotalIn+=val;creditLog.unshift({desc,val,type:'in',time,day})}
   else{playerGold-=val;creditTotalOut+=val;creditLog.unshift({desc,val,type:'out',time,day})}
-  renderCredit();renderDashLists();drawChart(true);closeModal();toast(`${type==='add'?'+':'-'}${val} ${currencyName.toLowerCase()}`);
+  renderCredit();renderDashLists();drawChart(true);closeModal();
+  try{if(window.sfx){if(type==='add'){val>=500?sfx.coinBig():sfx.coin()}else{sfx.spend()}}}catch(_){}
+  toast(`${type==='add'?'+':'-'}${val} ${currencyName.toLowerCase()}`);
 }
 
 function renderCredit(){

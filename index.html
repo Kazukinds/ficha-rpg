@@ -3407,6 +3407,36 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 .ia-badge{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 4px;border-radius:8px;background:var(--lime);color:#09090b;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;font-family:'JetBrains Mono',monospace;box-shadow:0 0 0 2px var(--bg-body)}
 .ia-badge.show{display:inline-flex}
 
+/* Pets tab */
+.pet-wrap{display:flex;flex-direction:column;gap:16px;padding:4px 0}
+.pet-header{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px}
+.pet-header-ico{width:48px;height:48px;border-radius:12px;background:var(--lime-bg);border:1px solid var(--lime-dim);display:flex;align-items:center;justify-content:center;color:var(--lime);flex-shrink:0}
+.pet-header-ico svg{width:24px;height:24px}
+.pet-header-txt{flex:1;min-width:0}
+.pet-header-txt h2{font-size:18px;font-weight:700;color:var(--text-primary);margin:0 0 2px}
+.pet-header-txt p{font-size:12px;color:var(--text-dim);margin:0}
+.pet-add-btn{padding:9px 14px;background:var(--lime);color:#09090b;border:1px solid var(--lime);border-radius:10px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.3px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:filter .15s}
+.pet-add-btn:hover{filter:brightness(1.08)}
+.pet-add-btn svg{width:13px;height:13px}
+.pet-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.pet-empty{padding:40px;text-align:center;color:var(--text-dim);font-size:13px;background:var(--bg-card);border:1px dashed var(--border);border-radius:14px}
+.pet-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;transition:all .15s}
+.pet-card:hover{border-color:var(--lime-dim);transform:translateY(-1px)}
+.pet-card-head{display:flex;align-items:center;gap:10px}
+.pet-card-avatar{width:48px;height:48px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-size:22px}
+.pet-card-avatar img{width:100%;height:100%;object-fit:cover}
+.pet-card-info{flex:1;min-width:0}
+.pet-card-name{font-size:15px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pet-card-species{font-size:11px;color:var(--text-dim);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.pet-card-del{width:26px;height:26px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.pet-card-del:hover{color:var(--red);background:var(--red-dim);border-color:color-mix(in srgb,var(--red) 40%,transparent)}
+.pet-card-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.pet-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pet-card-stat{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.pet-card-stat span{font-size:9px;color:var(--text-dim);font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.pet-card-stat b{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--text-primary);font-weight:800}
+.pet-card-desc{font-size:11.5px;color:var(--text-secondary);line-height:1.4;padding:6px 0 0;border-top:1px solid var(--border)}
+
 /* Adventurer picker */
 .profile-field-pick label{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .pf-pick-btn{width:22px;height:22px;padding:0;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;margin-left:auto}
@@ -4295,10 +4325,16 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
     </section>
 
     <section class="tab-content" id="tab-pet">
-      <div class="card" style="padding:60px 40px;text-align:center">
-        <div style="width:80px;height:80px;margin:0 auto 20px;border-radius:50%;background:var(--lime-bg);display:flex;align-items:center;justify-content:center;color:var(--lime)"><svg viewBox="0 0 24 24" style="width:42px;height:42px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><circle cx="7" cy="11" r="2"/><circle cx="17" cy="11" r="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><path d="M12 10c-3 0-5 2-5 5 0 2 1 3 3 3h4c2 0 3-1 3-3 0-3-2-5-5-5z"/></svg></div>
-        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px">Animal</h2>
-        <p style="font-size:13px;color:var(--text-dim);max-width:420px;margin:0 auto">Seção de companheiros em construção. Em breve você poderá cadastrar seu pet, atributos e habilidades especiais.</p>
+      <div class="pet-wrap">
+        <div class="pet-header">
+          <div class="pet-header-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="11" r="2"/><circle cx="17" cy="11" r="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><path d="M12 10c-3 0-5 2-5 5 0 2 1 3 3 3h4c2 0 3-1 3-3 0-3-2-5-5-5z"/></svg></div>
+          <div class="pet-header-txt">
+            <h2>Companheiros</h2>
+            <p>Animais, familiares e montarias da sua ficha.</p>
+          </div>
+          <button class="pet-add-btn" onclick="openPetModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Novo pet</button>
+        </div>
+        <div id="pet-list" class="pet-list"></div>
       </div>
     </section>
 
@@ -10059,6 +10095,86 @@ _safe(renderGridCfgOptions,'renderGridCfgOptions');
 _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
 window.addEventListener('resize',()=>_safe(()=>drawChart(false),'drawChartResize'));
+
+// ═══ PETS / COMPANHEIROS ═══
+(function(){
+  const KEY='ficha-eclipse-pets';
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return []}}
+  function save(arr){try{localStorage.setItem(KEY,JSON.stringify(arr))}catch(_){}}
+  function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+  function render(){
+    const el=document.getElementById('pet-list');if(!el)return;
+    const arr=load();
+    if(!arr.length){el.innerHTML='<div class="pet-empty">Nenhum companheiro. Clique em <b style="color:var(--lime)">Novo pet</b> pra começar.</div>';return}
+    el.innerHTML=arr.map((p,i)=>`
+      <div class="pet-card">
+        <div class="pet-card-head">
+          <div class="pet-card-avatar">${p.img?`<img src="${esc(p.img)}" alt="">`:(p.emoji||'🐾')}</div>
+          <div class="pet-card-info">
+            <div class="pet-card-name">${esc(p.name||'Sem nome')}</div>
+            <div class="pet-card-species">${esc(p.species||'—')}${p.level?' · Lv '+p.level:''}</div>
+          </div>
+          <button class="pet-card-del" onclick="window.petRemove(${i})" title="Remover"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="pet-card-stats">
+          <div class="pet-card-stat"><span>HP</span><b>${p.hp||0}/${p.hpMax||0}</b></div>
+          <div class="pet-card-stat"><span>ATK</span><b>${p.atk||0}</b></div>
+          <div class="pet-card-stat"><span>DEF</span><b>${p.def||0}</b></div>
+        </div>
+        ${p.desc?`<div class="pet-card-desc">${esc(p.desc)}</div>`:''}
+      </div>`).join('');
+  }
+  window.openPetModal=function(){
+    const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+    if(!title||!body)return;
+    title.textContent='Novo companheiro';
+    body.innerHTML=`
+      <div class="form-group"><label>Nome</label><input type="text" id="m-pet-name" placeholder="Ex: Rex, Caninos, Astra" maxlength="40"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Espécie</label><input type="text" id="m-pet-species" placeholder="Cão, Lobo, Corvo..." list="m-pet-species-list" maxlength="30"><datalist id="m-pet-species-list"><option>Cão</option><option>Lobo</option><option>Gato</option><option>Corvo</option><option>Falcão</option><option>Cavalo</option><option>Urso</option><option>Lagarto</option><option>Familiar Místico</option></datalist></div>
+        <div class="form-group"><label>Nível</label><input type="number" id="m-pet-level" value="1" min="1" max="99"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>HP máx</label><input type="number" id="m-pet-hpmax" value="10" min="1"></div>
+        <div class="form-group"><label>ATK</label><input type="number" id="m-pet-atk" value="2" min="0"></div>
+        <div class="form-group"><label>DEF</label><input type="number" id="m-pet-def" value="1" min="0"></div>
+      </div>
+      <div class="form-group"><label>Descrição / Habilidades</label><textarea id="m-pet-desc" rows="3" placeholder="Particularidades, habilidades especiais, vínculo..."></textarea></div>
+      <div class="form-group"><label>Emoji/Ícone</label><input type="text" id="m-pet-emoji" value="🐾" maxlength="4"></div>
+      <div class="modal-btns">
+        <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+        <button class="modal-btn primary" onclick="window.petSave()">Adicionar</button>
+      </div>`;
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(()=>document.getElementById('m-pet-name')?.focus(),200);
+  };
+  window.petSave=function(){
+    const g=id=>(document.getElementById(id)||{}).value||'';
+    const name=g('m-pet-name').trim();
+    if(!name){if(typeof toast==='function')toast('Nome obrigatório','error');return}
+    const hpMax=parseInt(g('m-pet-hpmax'))||10;
+    const pet={
+      name,species:g('m-pet-species').trim(),level:parseInt(g('m-pet-level'))||1,
+      hp:hpMax,hpMax,
+      atk:parseInt(g('m-pet-atk'))||0,def:parseInt(g('m-pet-def'))||0,
+      desc:g('m-pet-desc').trim(),emoji:g('m-pet-emoji').trim()||'🐾',
+      created:new Date().toISOString()
+    };
+    const arr=load();arr.push(pet);save(arr);
+    render();if(typeof closeModal==='function')closeModal();
+    try{window.sfx&&sfx.unlock()}catch(_){}
+    if(typeof toast==='function')toast(`Pet "${name}" adicionado`,'success');
+  };
+  window.petRemove=async function(i){
+    const arr=load();
+    if(!arr[i])return;
+    const ok=await (typeof appConfirm==='function'?appConfirm(`Remover "${arr[i].name}"?`,{title:'Remover pet',okLabel:'Remover',danger:true}):Promise.resolve(confirm('Remover?')));
+    if(!ok)return;
+    arr.splice(i,1);save(arr);render();
+    if(typeof toast==='function')toast('Pet removido','info');
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render);else render();
+})();
 
 // ═══ ADVENTURER PICKERS (Linhagem/Passado/Arquétipo/Caminho) ═══
 const ADV_CATALOG={

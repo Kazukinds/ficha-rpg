@@ -4346,13 +4346,23 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
           </div>
           <div class="profile-sidebar-card profile-systems-card">
             <h4>Sistemas</h4>
-            <a class="profile-system-link" href="biblioteca.html" title="Abrir biblioteca · lore do Eclipse">
+            <a class="profile-system-link" href="#" title="Abrir biblioteca embutida" onclick="event.preventDefault();document.querySelector('.sidebar-btn[data-tab=biblioteca]')?.click();">
               <span class="profile-system-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5a2.5 2.5 0 0 0-2.5 2.5V4.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/></svg>
               </span>
               <span class="profile-system-info">
                 <span class="profile-system-name">Biblioteca</span>
                 <span class="profile-system-sub">Lore · capítulos · geradores</span>
+              </span>
+              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a class="profile-system-link" href="#" title="Abrir assistente IA" onclick="event.preventDefault();openIaDrawer();">
+              <span class="profile-system-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>
+              </span>
+              <span class="profile-system-info">
+                <span class="profile-system-name">Assistente IA</span>
+                <span class="profile-system-sub">Perguntas · fila · tópicos</span>
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>

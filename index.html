@@ -9637,10 +9637,14 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
     </div>
   </div>
   <div class="ia-drawer-foot">
-    <button class="ia-btn ghost" onclick="clearIaQ()">Limpar</button>
+    <button class="ia-btn ghost" onclick="clearIaQ()" title="Limpa o formulário">Limpar</button>
+    <button class="ia-btn ghost" onclick="exportIaQ()" title="Baixa fila como markdown — cole em Claude/ChatGPT/Gemini">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar
+    </button>
     <button id="ia-save-btn" class="ia-btn primary" onclick="saveIaQ()">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      Guardar para IA
+      Guardar
     </button>
   </div>
 </aside>
@@ -9771,6 +9775,29 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
     const arr=loadQ();
     arr.unshift(Object.assign({time:new Date().toISOString()},obj));
     saveQ(arr);renderQueue();
+  };
+  window.exportIaQ=function(){
+    const arr=loadQ();
+    if(!arr.length){if(typeof toast==='function')toast('Fila vazia','warning');return}
+    const header='# Perguntas para IA — Ficha Eclipse\n\n' +
+      '> Sistema de RPG proprietário. Responda considerando o contexto de cada pergunta.\n\n---\n\n';
+    const body=arr.map((p,i)=>{
+      const d=new Date(p.time);
+      const when=d.toLocaleDateString('pt-BR')+' '+d.toTimeString().slice(0,5);
+      const topics=(p.topics&&p.topics.length)?`\n**Tópicos:** ${p.topics.join(', ')}\n`:'';
+      const ctx=p.ctx?`\n**Contexto:** ${p.ctx}\n`:'';
+      const trecho=p.text?`\n**Trecho citado:**\n> ${p.text.replace(/\n/g,'\n> ')}\n`:'';
+      return `## ${i+1}. ${(p.qRaw||p.q).split('\n')[0]}\n\n*${when}*\n${topics}${ctx}${trecho}\n**Pergunta:**\n${p.q}\n`;
+    }).join('\n---\n\n');
+    const md=header+body;
+    const blob=new Blob([md],{type:'text/markdown'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='perguntas-ia-ficha-eclipse.md';
+    a.click();
+    URL.revokeObjectURL(url);
+    try{window.sfx&&sfx.save()}catch(_){}
+    if(typeof toast==='function')toast(`${arr.length} perguntas exportadas`,'success');
   };
 
   // postMessage bridge — biblioteca iframe envia pedidos

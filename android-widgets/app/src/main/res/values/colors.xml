@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="bg_app">#09090B</color>
     <color name="bg_card">#131316</color>
     <color name="bg_input">#18181C</color>
     <color name="border">#2A2A32</color>

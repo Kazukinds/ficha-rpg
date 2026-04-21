@@ -4,7 +4,7 @@
         android:allowBackup="true"
         android:label="Ficha Eclipse"
         android:icon="@drawable/ic_launcher"
-        android:theme="@android:style/Theme.DeviceDefault">
+        android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>

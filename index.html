@@ -3293,6 +3293,24 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
   .ia-textarea{font-size:15px}
 }
 
+/* ═══ SCROLL-TO-TOP FAB ═══ */
+.stt-fab{
+  position:fixed;right:14px;z-index:420;
+  bottom:calc(72px + env(safe-area-inset-bottom,0px));
+  width:44px;height:44px;border-radius:50%;
+  background:var(--bg-card);border:1px solid var(--border-light);
+  color:var(--text-secondary);cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-md);
+  opacity:0;pointer-events:none;transform:translateY(12px) scale(.85);
+  transition:opacity .22s,transform .22s cubic-bezier(.2,.8,.2,1),color .2s,border-color .2s;
+}
+.stt-fab.show{opacity:1;pointer-events:auto;transform:translateY(0) scale(1)}
+.stt-fab:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
+.stt-fab:active{transform:scale(.92)}
+.stt-fab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:641px){.stt-fab{bottom:28px;right:28px}}
+
 /* ═══ BIBLIOTECA TAB ═══ */
 .biblio-wrap{display:flex;flex-direction:column;height:calc(100vh - 100px);height:calc(100dvh - 100px);gap:12px}
 .biblio-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -9798,6 +9816,41 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
   });
 });
 
+</script>
+
+<!-- ═══ SCROLL-TO-TOP ═══ -->
+<button id="stt-fab" class="stt-fab" type="button" aria-label="Voltar ao topo" title="Voltar ao topo">
+  <svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg>
+</button>
+<script>
+(function(){
+  const btn=document.getElementById('stt-fab');
+  if(!btn)return;
+  function target(){
+    // em mobile portrait, scroll é no .content; senão no window
+    const isPortraitMobile=window.matchMedia('(max-width:640px) and (orientation:portrait)').matches;
+    return isPortraitMobile?document.querySelector('.content'):window;
+  }
+  function getScrollTop(t){return t===window?(window.scrollY||document.documentElement.scrollTop):t.scrollTop}
+  let ticking=false;
+  function check(){
+    ticking=false;
+    const t=target();
+    const y=getScrollTop(t);
+    btn.classList.toggle('show',y>240);
+  }
+  function onScroll(){if(!ticking){requestAnimationFrame(check);ticking=true}}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',check);
+  document.addEventListener('scroll',onScroll,{passive:true,capture:true});
+  btn.addEventListener('click',()=>{
+    const t=target();
+    if(t===window)window.scrollTo({top:0,behavior:'smooth'});
+    else t.scrollTo({top:0,behavior:'smooth'});
+    try{window.sfx&&sfx.whoosh()}catch(_){}
+  });
+  check();
+})();
 </script>
 
 <!-- ═══ IA DRAWER ═══ -->

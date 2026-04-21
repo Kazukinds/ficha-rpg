@@ -4,6 +4,36 @@ Histórico de versões do Ficha Eclipse. Este arquivo é espelho do `APP_CHANGEL
 
 Formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) adaptado.
 
+## [v1.5] — 2026-04-21
+
+### Added
+- **Banner de atualização** com barra de progresso + safe-area mobile — notifica quando nova versão está disponível e instala ao clicar
+- **Service worker v35+** com fluxo `SKIP_WAITING` controlado (não ativa automaticamente)
+- **Áudio procedural** via WebAudio: 14 sons semânticos (`coin`, `coinBig`, `spend`, `damage`, `heal`, `levelup`, `critical`, `hover`, `tick`, `save`, `unlock`, `error`, `whoosh`)
+  - Som de moedas ao depositar crédito, som diferenciado para grandes somas (≥500)
+  - Level-up distinto de progressão normal
+  - Dano/cura ao ajustar HP, crítico/falha na rolagem de perícias
+  - Pop ao equipar item, whoosh ao descartar
+- **Select-to-ask**: destaque de texto em áreas selecionáveis com botão flutuante "Perguntar à IA"
+- **Drawer IA assistente** no topbar (Alt+I): textarea + 14 tópicos clicáveis (regras, perícias, combate, caminhos, arquétipos, linhagem, poderes, vida, atributos, crédito, veículos, inventário, dados, biblioteca)
+  - Detecção de pergunta vaga → dica pra adicionar contexto
+  - Enriquecimento automático com contexto de tópicos selecionados
+  - Fila de perguntas persistida (localStorage) com badge de contagem
+- **Biblioteca integrada** como aba no app (iframe lazy-load)
+  - postMessage bridge: botão "🤖 Perguntar à IA" dentro do reader envia capítulo + trecho pra fila do drawer
+- **Templates GitHub**: issue (bug/feature) PT-BR, PR checklist, CONTRIBUTING.md
+- **README** redesenhado com badges, roadmap, tabela de download
+
+### Changed
+- **Veículos compacto**: colunas 180/1fr/300 → 160/1fr/280, paddings tightened, novo breakpoint 1100-1400 (right panel desce pra linha horizontal), carrossel vira scroller horizontal em <1100
+- **Tema claro** refinado: cores WCAG-compliant (text-dim 4.5:1), accents com mais contraste (lime #16a34a, red #dc2626), shadow stack mais rica
+- **meta[theme-color]** atualiza dinamicamente ao alternar tema
+- **Link de Biblioteca** no perfil agora abre a aba embutida em vez de página externa
+
+### Fixed
+- Banner de update respeita `env(safe-area-inset-bottom)` e empilha botões em coluna-reversa em telas <480px
+- `updateMetaTheme()` garante status bar correta em PWA Android/iOS
+
 ## [v1.4] — 2026-04-18
 
 ### Added

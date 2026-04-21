@@ -677,6 +677,7 @@
       <button class="back-btn" onclick="closeReader()">← Voltar</button>
       <span id="reader-title-text" class="reader-title"></span>
       <div class="reader-nav-btns">
+        <button class="back-btn accent hidden" id="btn-send-sheet" title="Mandar este capítulo ou trecho selecionado pra ficha">✨ Pra ficha</button>
         <button class="back-btn accent hidden" id="btn-ask-ia" title="Perguntar à IA sobre este capítulo">🤖 Perguntar à IA</button>
         <button class="back-btn accent hidden" id="btn-random">Sortear</button>
         <button class="back-btn" id="btn-prev">◀</button>
@@ -960,6 +961,28 @@ function closeReader(){reader.classList.remove('open');document.body.style.overf
           source: 'ficha-eclipse-biblio',
           type: 'ask-ia',
           chapter: (ch.title||'').toString(),
+          snippet: plainText
+        }, '*');
+      }catch(_){}
+    });
+  }
+
+  // Botão "Pra ficha" — envia capítulo ou trecho selecionado
+  const sheetBtn = document.getElementById('btn-send-sheet');
+  if(sheetBtn){
+    sheetBtn.classList.remove('hidden');
+    sheetBtn.addEventListener('click', () => {
+      const ch = CHAPTERS[currentIdx];
+      if(!ch) return;
+      const sel = window.getSelection();
+      const selText = sel && !sel.isCollapsed ? sel.toString().trim() : '';
+      const plainText = (ch.html||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,400);
+      try{
+        window.top.postMessage({
+          source: 'ficha-eclipse-biblio',
+          type: 'send-to-sheet',
+          chapter: (ch.title||'').toString(),
+          selection: selText,
           snippet: plainText
         }, '*');
       }catch(_){}

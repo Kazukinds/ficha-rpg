@@ -9452,6 +9452,75 @@ _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
 window.addEventListener('resize',()=>_safe(()=>drawChart(false),'drawChartResize'));
 
+// ═══ FILL PROFILE FROM BIBLIOTECA ═══
+window.openFillProfileModal=function(payload){
+  const overlay=document.getElementById('modal-overlay');
+  const title=document.getElementById('modal-title');
+  const body=document.getElementById('modal-body');
+  if(!overlay||!body)return;
+  const val=payload.selection||payload.chapter||'';
+  title.textContent='Usar na ficha';
+  const fields=[
+    {k:'linhagem',label:'Linhagem',desc:'Origem / raça'},
+    {k:'arquetipo',label:'Arquétipo',desc:'Classe / papel'},
+    {k:'passado',label:'Passado',desc:'Background'},
+    {k:'caminho',label:'Caminho',desc:'Especialização'},
+    {k:'nota',label:'Nota',desc:'Salva no perfil (Log)'}
+  ];
+  body.innerHTML=`
+    <div class="form-group">
+      <label>Valor</label>
+      <input type="text" id="fp-value" value="${(val||'').replace(/"/g,'&quot;').slice(0,200)}" placeholder="Texto a usar">
+      ${payload.chapter?`<div style="font-size:11px;color:var(--text-dim);margin-top:6px">De: <strong>${payload.chapter.replace(/</g,'&lt;')}</strong></div>`:''}
+    </div>
+    <div class="form-group">
+      <label>Onde aplicar?</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${fields.map(f=>`<button type="button" class="fp-field-btn" data-k="${f.k}" style="padding:12px;background:var(--bg-input);border:2px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s"><div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px">${f.label}</div><div style="font-size:11px;color:var(--text-dim)">${f.desc}</div></button>`).join('')}
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn primary" id="fp-apply" disabled style="opacity:.5">Aplicar</button>
+    </div>`;
+  overlay.classList.add('open');
+  let picked=null;
+  body.querySelectorAll('.fp-field-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      picked=btn.dataset.k;
+      body.querySelectorAll('.fp-field-btn').forEach(b=>{
+        b.style.borderColor=b===btn?'var(--lime)':'var(--border)';
+        b.style.background=b===btn?'var(--lime-bg)':'var(--bg-input)';
+      });
+      const apply=document.getElementById('fp-apply');
+      if(apply){apply.disabled=false;apply.style.opacity='1'}
+    });
+  });
+  document.getElementById('fp-apply')?.addEventListener('click',()=>{
+    const value=document.getElementById('fp-value').value.trim();
+    if(!value||!picked){if(typeof toast==='function')toast('Escolha um campo','error');return}
+    if(picked==='nota'){
+      const now=new Date();
+      if(Array.isArray(window.profileLog))profileLog.unshift({
+        date:now.toLocaleDateString('pt-BR'),
+        time:now.toTimeString().slice(0,5),
+        text:`[Biblioteca${payload.chapter?' · '+payload.chapter:''}] ${value}`
+      });
+      if(typeof renderProfileLog==='function')renderProfileLog();
+    } else {
+      if(typeof profileData==='object'){
+        profileData[picked]=value;
+        if(typeof renderProfile==='function')renderProfile();
+      }
+    }
+    closeModal();
+    try{window.sfx&&sfx.unlock()}catch(_){}
+    if(typeof toast==='function')toast(`Aplicado em ${fields.find(f=>f.k===picked)?.label}`,'success');
+    // Switch pro perfil
+    setTimeout(()=>{if(typeof switchToProfile==='function')switchToProfile()},300);
+  });
+};
+
 // ═══ OFFLINE INDICATOR ═══
 (function(){
   let wasOnline=navigator.onLine;
@@ -10070,6 +10139,16 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
       try{window.sfx&&sfx.save()}catch(_){}
       if(typeof toast==='function')toast(`Capítulo "${d.chapter}" na fila da IA`,'success');
       openIaDrawer();
+      return;
+    }
+    if(d.type==='send-to-sheet'&&d.chapter){
+      if(typeof openFillProfileModal==='function'){
+        openFillProfileModal({
+          chapter:d.chapter,
+          selection:(d.selection||'').trim(),
+          snippet:d.snippet||''
+        });
+      }
     }
   });
 

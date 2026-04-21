@@ -36,6 +36,26 @@
 }
 html,body{overscroll-behavior-y:contain;overscroll-behavior-x:none}
 body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);color:var(--text-primary);min-height:100vh;display:flex;user-select:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.selectable,.selectable *,textarea,input,[contenteditable="true"],
+.profile-note,.profile-note-text,.credit-log-info,.detail-desc,.modal-body,#modal-body,
+.reader-content,.wg-notes-text,.skill-detail,.item-desc,.peri-desc,.spell-desc-text,
+.summary-value,.profile-field-value{user-select:text;-webkit-user-select:text}
+::selection{background:color-mix(in srgb,var(--lime) 32%,transparent);color:var(--text-primary)}
+.sta-btn{position:fixed;top:0;left:0;z-index:650;padding:8px 14px;background:var(--lime);color:#09090b;border:none;border-radius:999px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.2px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08);display:none;align-items:center;gap:6px;transform:translate(-50%,calc(-100% - 10px));transition:transform .18s ease,opacity .18s;opacity:0;pointer-events:none}
+.sta-btn.show{opacity:1;pointer-events:auto;transform:translate(-50%,calc(-100% - 6px))}
+.sta-btn:hover{filter:brightness(1.1)}
+.sta-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.sta-btn::after{content:"";position:absolute;bottom:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:var(--lime)}
+.sta-quote{background:var(--bg-card-inner);border-left:3px solid var(--lime);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text-secondary);line-height:1.5;max-height:120px;overflow:auto;font-style:italic;margin-bottom:12px}
+.sta-quote::before{content:"“ ";color:var(--lime);font-size:20px;font-weight:700;font-style:normal}
+.sta-quote::after{content:" ”";color:var(--lime);font-size:20px;font-weight:700;font-style:normal}
+.sta-pending-list{max-height:240px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.sta-pending{padding:10px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;font-size:12px}
+.sta-pending-q{font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.sta-pending-ctx{color:var(--text-dim);font-style:italic;line-height:1.4;border-left:2px solid var(--border-light);padding-left:8px}
+.sta-pending-time{color:var(--text-dim);font-size:10px;font-family:'JetBrains Mono',monospace;margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.sta-pending-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:11px;padding:2px 6px;border-radius:4px;transition:all .15s}
+.sta-pending-del:hover{background:var(--red-dim);color:var(--red)}
 *:focus-visible{outline:2px solid var(--lime);outline-offset:2px;border-radius:var(--radius-xs)}
 /* Scrollbar invisível globalmente (rolagem continua funcionando) */
 *{scrollbar-width:none;-ms-overflow-style:none}
@@ -9185,6 +9205,144 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
   });
 });
 
+</script>
+
+<!-- ═══ SELECT-TO-ASK BUTTON ═══ -->
+<button id="sta-btn" class="sta-btn" type="button" aria-label="Perguntar à IA sobre trecho">
+  <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  Perguntar à IA
+</button>
+
+<script>
+// ═══ SELECT-TO-ASK ═══
+(function(){
+  const btn=document.getElementById('sta-btn');
+  if(!btn)return;
+  const KEY='ficha-eclipse-pending-questions';
+  let currentText='';
+  let currentCtx='';
+
+  const SELECTABLE_SEL='.selectable,.profile-note,.profile-note-text,.credit-log-info,.detail-desc,.modal-body,#modal-body,.reader-content,.wg-notes-text,.skill-detail,.item-desc,.peri-desc,.spell-desc-text';
+  function isInsideSelectable(node){
+    while(node&&node!==document.body){
+      if(node.nodeType===1){
+        if(node.tagName==='INPUT'||node.tagName==='TEXTAREA')return false;
+        try{if(node.matches&&node.matches(SELECTABLE_SEL))return true}catch(_){}
+      }
+      node=node.parentNode;
+    }
+    return false;
+  }
+
+  function getContext(sel){
+    const node=sel.anchorNode;
+    if(!node)return '';
+    let el=node.nodeType===1?node:node.parentElement;
+    let depth=0;
+    while(el&&depth<5){
+      const heading=el.querySelector&&el.querySelector('h1,h2,h3,h4,.section-title,.card-title,[data-ctx]');
+      if(heading)return heading.textContent.trim().slice(0,80);
+      el=el.parentElement;depth++;
+    }
+    return document.title||'';
+  }
+
+  function updateBtn(){
+    const sel=window.getSelection();
+    if(!sel||sel.isCollapsed||!sel.toString().trim()){btn.classList.remove('show');return}
+    const txt=sel.toString().trim();
+    if(txt.length<3||txt.length>500){btn.classList.remove('show');return}
+    if(!isInsideSelectable(sel.anchorNode)){btn.classList.remove('show');return}
+    currentText=txt;
+    currentCtx=getContext(sel);
+    const range=sel.getRangeAt(0);
+    const rect=range.getBoundingClientRect();
+    if(!rect||(rect.width===0&&rect.height===0)){btn.classList.remove('show');return}
+    const x=rect.left+rect.width/2;
+    const y=rect.top;
+    btn.style.left=x+'px';
+    btn.style.top=y+'px';
+    btn.classList.add('show');
+  }
+
+  document.addEventListener('selectionchange',()=>{
+    clearTimeout(window._staT);
+    window._staT=setTimeout(updateBtn,120);
+  });
+  window.addEventListener('scroll',()=>btn.classList.remove('show'),true);
+  window.addEventListener('resize',()=>btn.classList.remove('show'));
+
+  function loadPending(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return []}}
+  function savePending(arr){try{localStorage.setItem(KEY,JSON.stringify(arr.slice(0,50)))}catch(_){}}
+
+  function openQuestionModal(){
+    const overlay=document.getElementById('modal-overlay');
+    const title=document.getElementById('modal-title');
+    const body=document.getElementById('modal-body');
+    if(!overlay||!body){return}
+    const quote=currentText;
+    const ctx=currentCtx;
+    title.textContent='Perguntar sobre trecho';
+    body.innerHTML=`
+      <div class="sta-quote">${quote.replace(/</g,'&lt;')}</div>
+      <div class="form-group">
+        <label>Contexto</label>
+        <input type="text" id="sta-ctx" value="${(ctx||'').replace(/"/g,'&quot;')}" placeholder="De onde é esse trecho?">
+      </div>
+      <div class="form-group">
+        <label>Sua pergunta</label>
+        <textarea id="sta-q" placeholder="Ex: o que esse poder faz exatamente? como aplica em combate?" style="min-height:90px"></textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+        <button class="modal-btn primary" id="sta-save-btn">Guardar pergunta</button>
+      </div>`;
+    overlay.classList.add('open');
+    setTimeout(()=>{const q=document.getElementById('sta-q');if(q)q.focus()},200);
+    const saveBtn=document.getElementById('sta-save-btn');
+    if(saveBtn)saveBtn.addEventListener('click',()=>{
+      const q=document.getElementById('sta-q').value.trim();
+      const c=document.getElementById('sta-ctx').value.trim();
+      if(!q){if(typeof toast==='function')toast('Escreva uma pergunta','error');return}
+      const arr=loadPending();
+      arr.unshift({q,ctx:c,text:quote,time:new Date().toISOString()});
+      savePending(arr);
+      closeModal&&closeModal();
+      if(typeof toast==='function')toast('Pergunta guardada para IA','success');
+      try{window.sfx&&sfx.save()}catch(_){}
+      window.getSelection().removeAllRanges();
+      btn.classList.remove('show');
+    });
+  }
+
+  btn.addEventListener('mousedown',e=>e.preventDefault());
+  btn.addEventListener('click',openQuestionModal);
+
+  window.openPendingQuestions=function(){
+    const overlay=document.getElementById('modal-overlay');
+    const title=document.getElementById('modal-title');
+    const body=document.getElementById('modal-body');
+    if(!overlay||!body)return;
+    title.textContent='Perguntas pendentes para IA';
+    const arr=loadPending();
+    if(!arr.length){
+      body.innerHTML=`<p style="color:var(--text-dim);font-size:13px;padding:20px 0;text-align:center">Nenhuma pergunta guardada.<br>Selecione um trecho em área selecionável e clique em "Perguntar à IA".</p><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Fechar</button></div>`;
+    } else {
+      const items=arr.map((p,i)=>{
+        const d=new Date(p.time);
+        const when=d.toLocaleDateString('pt-BR')+' '+d.toTimeString().slice(0,5);
+        return `<div class="sta-pending"><div class="sta-pending-q">${p.q.replace(/</g,'&lt;')}</div><div class="sta-pending-ctx">${(p.text||'').replace(/</g,'&lt;').slice(0,180)}${p.text&&p.text.length>180?'…':''}</div><div class="sta-pending-time"><span>${p.ctx?p.ctx+' · ':''}${when}</span><button class="sta-pending-del" data-i="${i}">Remover</button></div></div>`;
+      }).join('');
+      body.innerHTML=`<div class="sta-pending-list">${items}</div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Fechar</button><button class="modal-btn primary" id="sta-clear-btn">Limpar tudo</button></div>`;
+      body.querySelectorAll('.sta-pending-del').forEach(b=>b.addEventListener('click',()=>{
+        const i=parseInt(b.dataset.i);const a=loadPending();a.splice(i,1);savePending(a);openPendingQuestions();
+      }));
+      const cb=document.getElementById('sta-clear-btn');
+      if(cb)cb.addEventListener('click',()=>{savePending([]);openPendingQuestions()});
+    }
+    overlay.classList.add('open');
+  };
+})();
 </script>
 
 <!-- ═══ UPDATE BANNER ═══ -->

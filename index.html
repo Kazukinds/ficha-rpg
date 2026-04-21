@@ -3157,6 +3157,64 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 [data-theme="light"] .toast-desc{color:#646465}
 @media(max-width:480px){.toast{right:16px;left:16px;bottom:16px;width:auto}}
 
+/* IA badge on topbar */
+#ia-open-btn{position:relative}
+.ia-badge{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 4px;border-radius:8px;background:var(--lime);color:#09090b;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;font-family:'JetBrains Mono',monospace;box-shadow:0 0 0 2px var(--bg-body)}
+.ia-badge.show{display:inline-flex}
+
+/* ═══ IA DRAWER ═══ */
+.ia-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:680;opacity:0;pointer-events:none;transition:opacity .2s}
+.ia-drawer-overlay.open{opacity:1;pointer-events:all}
+.ia-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);z-index:690;
+  background:var(--bg-card);border-left:1px solid var(--border-light);
+  box-shadow:-24px 0 60px rgba(0,0,0,.45);
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.ia-drawer.open{transform:translateX(0)}
+.ia-drawer-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ia-drawer-head svg{width:22px;height:22px;stroke:var(--lime);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ia-drawer-head h3{font-size:15px;font-weight:700;color:var(--text-primary);flex:1;margin:0}
+.ia-drawer-close{width:30px;height:30px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:0}
+.ia-drawer-close:hover{color:var(--red);background:color-mix(in srgb,var(--red) 12%,var(--bg-input));border-color:color-mix(in srgb,var(--red) 40%,transparent);transform:rotate(90deg)}
+.ia-drawer-close svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.5}
+.ia-drawer-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:16px}
+.ia-section{display:flex;flex-direction:column;gap:10px}
+.ia-section-label{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px}
+.ia-textarea{width:100%;min-height:100px;padding:12px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-family:inherit;font-size:14px;line-height:1.5;outline:none;resize:vertical;transition:border-color .2s,box-shadow .2s}
+.ia-textarea:focus{border-color:var(--lime-dim);box-shadow:0 0 0 3px rgba(200,245,66,.08)}
+.ia-topics{display:flex;flex-wrap:wrap;gap:6px}
+.ia-topic{padding:6px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px}
+.ia-topic:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg);transform:translateY(-1px)}
+.ia-topic.active{color:var(--lime);border-color:var(--lime);background:var(--lime-bg-strong)}
+.ia-topic svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.ia-hint{font-size:12px;color:var(--text-dim);line-height:1.5;padding:10px 12px;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:10px;border-left:3px solid var(--cyan)}
+.ia-hint strong{color:var(--cyan)}
+.ia-queue{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.ia-queue-empty{font-size:12px;color:var(--text-dim);padding:18px 12px;text-align:center;background:var(--bg-card-inner);border:1px dashed var(--border);border-radius:10px}
+.ia-queue-item{padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px}
+.ia-queue-q{font-size:13px;font-weight:600;color:var(--text-primary);line-height:1.4;margin-bottom:4px}
+.ia-queue-meta{font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.ia-queue-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:10px;padding:2px 6px;border-radius:4px;transition:all .15s}
+.ia-queue-del:hover{background:var(--red-dim);color:var(--red)}
+.ia-drawer-foot{padding:14px 18px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px}
+.ia-btn{flex:1;padding:12px 14px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid var(--border-light);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.ia-btn.primary{background:var(--lime);color:#09090b;border-color:var(--lime)}
+.ia-btn.primary:hover{filter:brightness(1.08)}
+.ia-btn.primary:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
+.ia-btn.ghost{background:var(--bg-input);color:var(--text-secondary)}
+.ia-btn.ghost:hover{color:var(--text-primary);background:var(--bg-hover)}
+.ia-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+[data-theme="light"] .ia-btn.primary{color:#fff}
+@media(max-width:640px){
+  .ia-drawer{width:100%;border-left:none}
+  .ia-drawer-body{padding:14px}
+  .ia-textarea{font-size:15px}
+}
+
 /* ═══ BIBLIOTECA TAB ═══ */
 .biblio-wrap{display:flex;flex-direction:column;height:calc(100vh - 100px);height:calc(100dvh - 100px);gap:12px}
 .biblio-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -3789,6 +3847,7 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
           <div class="notif-footer"><button onclick="clearNotifs()">Limpar Tudo</button></div>
         </div>
       </div>
+      <button class="topbar-icon-btn" id="ia-open-btn" title="IA assistente" onclick="openIaDrawer()"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg><span class="ia-badge" id="ia-badge"></span></button>
       <button class="topbar-icon-btn" id="sound-toggle-btn" title="Som" onclick="toggleSound()"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path class="snd-on" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/><line class="snd-off" x1="23" y1="9" x2="17" y2="15"/><line class="snd-off" x1="17" y1="9" x2="23" y2="15"/></svg></button>
       <button class="topbar-icon-btn" id="theme-toggle-btn" title="Alternar tema" onclick="toggleTheme()"><svg id="theme-toggle-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
       <button class="topbar-icon-btn" title="Perfil" onclick="switchToProfile()"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
@@ -9317,6 +9376,158 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
 
 </script>
 
+<!-- ═══ IA DRAWER ═══ -->
+<div id="ia-drawer-overlay" class="ia-drawer-overlay" onclick="closeIaDrawer()"></div>
+<aside id="ia-drawer" class="ia-drawer" role="dialog" aria-label="Assistente IA">
+  <div class="ia-drawer-head">
+    <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>
+    <h3>Assistente IA</h3>
+    <button class="ia-drawer-close" onclick="closeIaDrawer()" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="ia-drawer-body">
+    <div class="ia-section">
+      <label class="ia-section-label">Pergunta</label>
+      <textarea id="ia-q" class="ia-textarea" placeholder="Ex: como funciona o sistema de perícias? qual caminho combina com meu arquétipo?"></textarea>
+    </div>
+    <div class="ia-section" id="ia-topics-section">
+      <label class="ia-section-label">Sobre o quê? (clique para focar)</label>
+      <div class="ia-topics" id="ia-topics"></div>
+      <div class="ia-hint" id="ia-hint"><strong>Dica:</strong> perguntas vagas geram respostas genéricas. Clique num tópico acima ou adicione contexto específico da sua ficha.</div>
+    </div>
+    <div class="ia-section">
+      <label class="ia-section-label">Fila de perguntas</label>
+      <div id="ia-queue" class="ia-queue"></div>
+    </div>
+  </div>
+  <div class="ia-drawer-foot">
+    <button class="ia-btn ghost" onclick="clearIaQ()">Limpar</button>
+    <button id="ia-save-btn" class="ia-btn primary" onclick="saveIaQ()">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      Guardar para IA
+    </button>
+  </div>
+</aside>
+
+<script>
+// ═══ IA DRAWER ═══
+(function(){
+  const KEY='ficha-eclipse-pending-questions';
+  const drawer=document.getElementById('ia-drawer');
+  const overlay=document.getElementById('ia-drawer-overlay');
+  const qEl=document.getElementById('ia-q');
+  const topicsEl=document.getElementById('ia-topics');
+  const queueEl=document.getElementById('ia-queue');
+  const badge=document.getElementById('ia-badge');
+  const hint=document.getElementById('ia-hint');
+  const saveBtn=document.getElementById('ia-save-btn');
+
+  const TOPICS=[
+    {id:'regras',label:'Regras do sistema',ctx:'regras gerais do Eclipse, mecânica de turnos e rolagens'},
+    {id:'pericias',label:'Perícias',ctx:'perícias, DT, treinamento, rolagem 1d20'},
+    {id:'combate',label:'Combate',ctx:'combate, iniciativa, dano, crítico, cura'},
+    {id:'caminhos',label:'Caminhos',ctx:'caminhos de poder, escolha e progressão'},
+    {id:'arquetipos',label:'Arquétipos',ctx:'arquétipos e combinação com linhagem'},
+    {id:'linhagem',label:'Linhagem',ctx:'linhagens, passado e background'},
+    {id:'poderes',label:'Poderes',ctx:'poderes, feitiços e habilidades especiais'},
+    {id:'vida',label:'HP / Vida',ctx:'HP, máximo, bônus, descanso'},
+    {id:'atributos',label:'Atributos',ctx:'atributos físicos, mentais, sociais e rolagens'},
+    {id:'credito',label:'Crédito',ctx:'moeda, custos, compras e economia'},
+    {id:'veiculos',label:'Veículos',ctx:'veículos, upgrades, performance e HP'},
+    {id:'inventario',label:'Inventário',ctx:'inventário, slots, peso e raridade'},
+    {id:'dados',label:'Dados',ctx:'dados, d4 até d100, bônus e margens'},
+    {id:'biblioteca',label:'Biblioteca',ctx:'conteúdo da biblioteca (lore, sistemas)'}
+  ];
+  let activeTopics=new Set();
+
+  function loadQ(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return []}}
+  function saveQ(arr){try{localStorage.setItem(KEY,JSON.stringify(arr.slice(0,50)))}catch(_){}}
+
+  function renderTopics(){
+    topicsEl.innerHTML=TOPICS.map(t=>`<button type="button" class="ia-topic${activeTopics.has(t.id)?' active':''}" data-id="${t.id}">${t.label}</button>`).join('');
+    topicsEl.querySelectorAll('.ia-topic').forEach(b=>b.addEventListener('click',()=>{
+      const id=b.dataset.id;
+      if(activeTopics.has(id))activeTopics.delete(id);else activeTopics.add(id);
+      renderTopics();updateHint();
+    }));
+  }
+
+  function isVague(txt){
+    const t=(txt||'').trim().toLowerCase();
+    if(!t)return true;
+    if(t.length<15)return true;
+    const vague=['o que é','como','pode','ajuda','explica','?','dúvida','duvida','me fala','serve'];
+    const hasVerb=/\b(rolar|usar|calcular|aplicar|aumentar|diminuir|comprar|perder|ganhar|escolher|subir)\b/.test(t);
+    return !hasVerb&&vague.some(v=>t.includes(v))&&t.split(/\s+/).length<6;
+  }
+
+  function updateHint(){
+    const txt=qEl.value;
+    if(!hint)return;
+    if(activeTopics.size===0&&isVague(txt)){
+      hint.style.display='block';
+      hint.innerHTML='<strong>Pergunta vaga detectada.</strong> Clique num tópico acima ou adicione contexto (ex: nome do poder, nível do personagem, situação).';
+    } else if(activeTopics.size>0){
+      hint.style.display='block';
+      hint.innerHTML=`<strong>${activeTopics.size} tópico${activeTopics.size>1?'s':''} selecionado${activeTopics.size>1?'s':''}.</strong> A pergunta vai ser enriquecida com: ${[...activeTopics].map(id=>TOPICS.find(t=>t.id===id).label).join(', ')}.`;
+    } else {
+      hint.style.display='none';
+    }
+    saveBtn.disabled=!qEl.value.trim();
+  }
+
+  function renderQueue(){
+    const arr=loadQ();
+    badge.classList.toggle('show',arr.length>0);
+    badge.textContent=arr.length>9?'9+':String(arr.length||'');
+    if(!arr.length){
+      queueEl.innerHTML='<div class="ia-queue-empty">Nenhuma pergunta guardada. Escreva acima ou selecione um trecho na biblioteca/ficha e clique em "Perguntar à IA".</div>';
+      return;
+    }
+    queueEl.innerHTML=arr.map((p,i)=>{
+      const d=new Date(p.time);
+      const when=d.toLocaleDateString('pt-BR')+' '+d.toTimeString().slice(0,5);
+      const topics=(p.topics&&p.topics.length)?p.topics.join(' · ')+' · ':'';
+      return `<div class="ia-queue-item"><div class="ia-queue-q">${p.q.replace(/</g,'&lt;')}</div>${p.text?`<div style="font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.4;border-left:2px solid var(--border-light);padding-left:8px">${p.text.replace(/</g,'&lt;').slice(0,140)}${p.text.length>140?'…':''}</div>`:''}<div class="ia-queue-meta"><span>${topics}${when}</span><button class="ia-queue-del" data-i="${i}">Remover</button></div></div>`;
+    }).join('');
+    queueEl.querySelectorAll('.ia-queue-del').forEach(b=>b.addEventListener('click',()=>{
+      const i=parseInt(b.dataset.i);const a=loadQ();a.splice(i,1);saveQ(a);renderQueue();
+    }));
+  }
+
+  window.openIaDrawer=function(){
+    drawer.classList.add('open');overlay.classList.add('open');
+    renderTopics();renderQueue();updateHint();
+    setTimeout(()=>qEl.focus(),220);
+  };
+  window.closeIaDrawer=function(){
+    drawer.classList.remove('open');overlay.classList.remove('open');
+  };
+  window.clearIaQ=function(){qEl.value='';activeTopics.clear();renderTopics();updateHint();qEl.focus()};
+  window.saveIaQ=function(){
+    const q=qEl.value.trim();
+    if(!q){if(typeof toast==='function')toast('Escreva uma pergunta','error');return}
+    const topicLabels=[...activeTopics].map(id=>TOPICS.find(t=>t.id===id)?.label).filter(Boolean);
+    const arr=loadQ();
+    arr.unshift({q,topics:topicLabels,text:'',time:new Date().toISOString()});
+    saveQ(arr);
+    qEl.value='';activeTopics.clear();renderTopics();renderQueue();updateHint();
+    try{window.sfx&&sfx.save()}catch(_){}
+    if(typeof toast==='function')toast('Pergunta guardada para IA','success');
+  };
+
+  qEl&&qEl.addEventListener('input',updateHint);
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&drawer.classList.contains('open'))closeIaDrawer();
+  });
+
+  window.renderIaQueue=renderQueue;
+  // Render badge count on load
+  window.addEventListener('DOMContentLoaded',renderQueue);
+  if(document.readyState!=='loading')renderQueue();
+})();
+</script>
+
 <!-- ═══ SELECT-TO-ASK BUTTON ═══ -->
 <button id="sta-btn" class="sta-btn" type="button" aria-label="Perguntar à IA sobre trecho">
   <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -9420,6 +9631,7 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
       closeModal&&closeModal();
       if(typeof toast==='function')toast('Pergunta guardada para IA','success');
       try{window.sfx&&sfx.save()}catch(_){}
+      try{window.renderIaQueue&&window.renderIaQueue()}catch(_){}
       window.getSelection().removeAllRanges();
       btn.classList.remove('show');
     });

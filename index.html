@@ -3074,6 +3074,83 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 [data-theme="light"] .toast-desc{color:#646465}
 @media(max-width:480px){.toast{right:16px;left:16px;bottom:16px;width:auto}}
 
+/* ═══ UPDATE BANNER (SW) ═══ */
+.update-banner{
+  position:fixed;left:50%;transform:translate(-50%,calc(100% + 24px));
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:min(440px,calc(100vw - 32px));
+  background:linear-gradient(180deg,var(--bg-card),var(--bg-card-inner));
+  border:1px solid var(--border-light);border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);
+  padding:16px;z-index:600;opacity:0;pointer-events:none;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s ease;
+  display:flex;flex-direction:column;gap:12px;
+}
+.update-banner.show{transform:translate(-50%,0);opacity:1;pointer-events:all}
+.update-banner-head{display:flex;align-items:flex-start;gap:12px}
+.update-banner-icon{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;
+  background:var(--lime-bg);border:1px solid var(--lime-dim);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 24px color-mix(in srgb,var(--lime) 22%,transparent);
+  animation:ub-pulse 2.4s ease-in-out infinite;
+}
+@keyframes ub-pulse{0%,100%{box-shadow:0 0 24px color-mix(in srgb,var(--lime) 22%,transparent)}50%{box-shadow:0 0 40px color-mix(in srgb,var(--lime) 40%,transparent)}}
+.update-banner-icon svg{width:20px;height:20px;stroke:var(--lime);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.update-banner-body{flex:1;min-width:0}
+.update-banner-title{font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:2px}
+.update-banner-desc{font-size:12px;color:var(--text-secondary);line-height:1.45}
+.update-banner-close{
+  width:28px;height:28px;flex-shrink:0;border-radius:50%;
+  background:var(--bg-input);border:1px solid var(--border);
+  color:var(--text-dim);cursor:pointer;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+}
+.update-banner-close:hover{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,transparent);background:color-mix(in srgb,var(--red) 12%,var(--bg-input));transform:rotate(90deg)}
+.update-banner-close svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+.update-banner-actions{display:flex;gap:8px}
+.update-banner-btn{
+  flex:1;padding:10px 14px;border-radius:10px;
+  font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.2px;
+  cursor:pointer;transition:all .15s;border:1px solid var(--border-light);
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.update-banner-btn.ghost{background:var(--bg-input);color:var(--text-secondary)}
+.update-banner-btn.ghost:hover{color:var(--text-primary);background:var(--bg-hover)}
+.update-banner-btn.primary{background:var(--lime);color:#09090b;border-color:var(--lime)}
+.update-banner-btn.primary:hover{filter:brightness(1.08)}
+.update-banner-btn.primary:disabled{opacity:.7;cursor:default;filter:none}
+.update-banner-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.update-banner-progress{height:4px;background:var(--bg-input);border-radius:999px;overflow:hidden;position:relative;display:none}
+.update-banner.installing .update-banner-progress{display:block}
+.update-banner-progress-fill{
+  height:100%;width:0%;border-radius:999px;
+  background:linear-gradient(90deg,var(--lime),var(--cyan));
+  transition:width .3s ease;position:relative;overflow:hidden;
+  box-shadow:0 0 10px color-mix(in srgb,var(--lime) 45%,transparent);
+}
+.update-banner-progress-fill::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+  animation:ub-shimmer 1.2s linear infinite;
+}
+@keyframes ub-shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.update-banner-version{font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;letter-spacing:.3px;margin-top:2px}
+@media(max-width:480px){
+  .update-banner{
+    left:12px;right:12px;transform:translateY(calc(100% + 24px));
+    width:auto;
+    bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    padding:14px;border-radius:14px;
+  }
+  .update-banner.show{transform:translateY(0)}
+  .update-banner-actions{flex-direction:column-reverse;gap:6px}
+  .update-banner-btn{padding:12px 14px;font-size:13px;min-height:44px}
+}
+[data-theme="light"] .update-banner{background:linear-gradient(180deg,#fff,var(--bg-card-inner));box-shadow:0 20px 60px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}
+[data-theme="light"] .update-banner-btn.primary{color:#fff}
+
 /* ═══ Confirm dialog custom ═══ */
 .app-confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:700;opacity:0;pointer-events:none;transition:opacity .2s ease;padding:20px}
 .app-confirm-overlay.open{opacity:1;pointer-events:all}
@@ -8868,12 +8945,63 @@ const APP_CHANGELOG=[
   ]},
 ];
 
-// ═══ PWA / SERVICE WORKER ═══
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js').catch(err=>console.log('SW falhou:',err));
+// ═══ PWA / SERVICE WORKER + UPDATE BANNER ═══
+(function(){
+  if(!('serviceWorker' in navigator))return;
+  const banner=document.getElementById('update-banner');
+  const btnUpdate=document.getElementById('ub-update');
+  const btnLater=document.getElementById('ub-later');
+  const btnClose=document.getElementById('ub-close');
+  const progress=document.getElementById('ub-progress-fill');
+  const versionEl=document.getElementById('ub-version');
+  let waitingWorker=null;
+  let registration=null;
+
+  function showBanner(){if(banner)banner.classList.add('show')}
+  function hideBanner(){if(banner)banner.classList.remove('show');setTimeout(()=>banner&&banner.classList.remove('installing'),400)}
+  function setProgress(p){if(progress)progress.style.width=Math.min(100,Math.max(0,p))+'%'}
+
+  function onWaiting(worker){
+    waitingWorker=worker;
+    if(registration)registration.active&&registration.active.postMessage({type:'GET_VERSION'});
+    showBanner();
+  }
+
+  function applyUpdate(){
+    if(!waitingWorker)return;
+    banner&&banner.classList.add('installing');
+    if(btnUpdate)btnUpdate.disabled=true;
+    let p=0;
+    const timer=setInterval(()=>{p+=Math.random()*12+4;if(p>=92){p=92;clearInterval(timer)}setProgress(p)},180);
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      clearInterval(timer);setProgress(100);
+      setTimeout(()=>location.reload(),400);
+    },{once:true});
+    waitingWorker.postMessage({type:'SKIP_WAITING'});
+  }
+
+  navigator.serviceWorker.addEventListener('message',e=>{
+    if(e.data&&e.data.type==='VERSION'&&versionEl)versionEl.textContent='nova versão · '+e.data.version;
   });
-}
+
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      registration=reg;
+      if(reg.waiting)onWaiting(reg.waiting);
+      reg.addEventListener('updatefound',()=>{
+        const w=reg.installing;if(!w)return;
+        w.addEventListener('statechange',()=>{
+          if(w.state==='installed'&&navigator.serviceWorker.controller)onWaiting(w);
+        });
+      });
+      setInterval(()=>{try{reg.update()}catch(_){}} ,60*60*1000);
+    }).catch(err=>console.log('SW falhou:',err));
+  });
+
+  btnUpdate&&btnUpdate.addEventListener('click',applyUpdate);
+  btnLater&&btnLater.addEventListener('click',hideBanner);
+  btnClose&&btnClose.addEventListener('click',hideBanner);
+})();
 let deferredInstallPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
@@ -9005,5 +9133,31 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
 });
 
 </script>
+
+<!-- ═══ UPDATE BANNER ═══ -->
+<div id="update-banner" class="update-banner" role="dialog" aria-live="polite" aria-label="Atualização disponível">
+  <div class="update-banner-head">
+    <div class="update-banner-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+    </div>
+    <div class="update-banner-body">
+      <div class="update-banner-title">Atualização disponível</div>
+      <div class="update-banner-desc">Nova versão do app pronta pra instalar. Clique em Atualizar pra aplicar.</div>
+      <div id="ub-version" class="update-banner-version"></div>
+    </div>
+    <button id="ub-close" class="update-banner-close" type="button" aria-label="Fechar">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="update-banner-progress"><div id="ub-progress-fill" class="update-banner-progress-fill"></div></div>
+  <div class="update-banner-actions">
+    <button id="ub-later" class="update-banner-btn ghost" type="button">Depois</button>
+    <button id="ub-update" class="update-banner-btn primary" type="button">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" style="display:none"/><path d="M12 3v13m-5-5 5 5 5-5M5 21h14"/></svg>
+      Atualizar agora
+    </button>
+  </div>
+</div>
+
 </body>
 </html>

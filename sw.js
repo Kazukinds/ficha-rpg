@@ -1,6 +1,7 @@
 /* Ficha Eclipse — service worker */
-const CACHE='ficha-eclipse-v34';
-const ASSETS=[
+const VERSION = 'v35';
+const CACHE = 'ficha-eclipse-' + VERSION;
+const ASSETS = [
   './',
   './index.html',
   './biblioteca.html',
@@ -19,51 +20,54 @@ const ASSETS=[
   './icons/favicon-32.png'
 ];
 
-self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
 });
 
-self.addEventListener('activate',e=>{
+self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch',e=>{
-  const req=e.request;
-  if(req.method!=='GET')return;
-  const url=new URL(req.url);
-  if(url.origin!==location.origin)return;
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+  if (e.data && e.data.type === 'GET_VERSION' && e.source) e.source.postMessage({type:'VERSION', version: VERSION});
+});
 
-  const isDoc=req.mode==='navigate'||req.destination==='document';
-  const isAsset=['script','style','worker'].includes(req.destination);
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
 
-  if(isDoc||isAsset){
-    // network-first: sempre tenta rede, cai pro cache só offline
+  const isDoc = req.mode === 'navigate' || req.destination === 'document';
+  const isAsset = ['script', 'style', 'worker'].includes(req.destination);
+
+  if (isDoc || isAsset) {
     e.respondWith(
-      fetch(req).then(resp=>{
-        if(resp&&resp.status===200&&resp.type==='basic'){
-          const clone=resp.clone();
-          caches.open(CACHE).then(c=>c.put(req,clone));
+      fetch(req).then(resp => {
+        if (resp && resp.status === 200 && resp.type === 'basic') {
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, clone));
         }
         return resp;
-      }).catch(()=>caches.match(req).then(c=>c||caches.match('./index.html')))
+      }).catch(() => caches.match(req).then(c => c || caches.match('./index.html')))
     );
     return;
   }
 
-  // cache-first para ícones, imagens e afins
   e.respondWith(
-    caches.match(req).then(cached=>{
-      if(cached)return cached;
-      return fetch(req).then(resp=>{
-        if(resp&&resp.status===200&&resp.type==='basic'){
-          const clone=resp.clone();
-          caches.open(CACHE).then(c=>c.put(req,clone));
+    caches.match(req).then(cached => {
+      if (cached) return cached;
+      return fetch(req).then(resp => {
+        if (resp && resp.status === 200 && resp.type === 'basic') {
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, clone));
         }
         return resp;
-      }).catch(()=>cached);
+      }).catch(() => cached);
     })
   );
 });

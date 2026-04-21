@@ -3094,6 +3094,24 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 [data-theme="light"] .toast-desc{color:#646465}
 @media(max-width:480px){.toast{right:16px;left:16px;bottom:16px;width:auto}}
 
+/* ═══ BIBLIOTECA TAB ═══ */
+.biblio-wrap{display:flex;flex-direction:column;height:calc(100vh - 100px);height:calc(100dvh - 100px);gap:12px}
+.biblio-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.biblio-head-info h2{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;letter-spacing:-.3px}
+.biblio-head-info p{font-size:13px;color:var(--text-dim)}
+.biblio-head-actions{display:flex;gap:8px}
+.biblio-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;color:var(--text-secondary);cursor:pointer;text-decoration:none;transition:all .15s}
+.biblio-btn:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
+.biblio-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.biblio-frame-wrap{flex:1;min-height:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--bg-card);position:relative}
+.biblio-frame-wrap iframe{width:100%;height:100%;border:none;display:block;background:var(--bg-body);color-scheme:dark light}
+@media(max-width:640px){
+  .biblio-wrap{height:calc(100vh - 80px);height:calc(100dvh - 80px);gap:10px}
+  .biblio-head-info h2{font-size:18px}
+  .biblio-head-info p{font-size:12px}
+  .biblio-frame-wrap{border-radius:12px}
+}
+
 /* ═══ UPDATE BANNER (SW) ═══ */
 .update-banner{
   position:fixed;left:50%;transform:translate(-50%,calc(100% + 24px));
@@ -3680,6 +3698,7 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
     <button class="sidebar-btn" data-tab="feitico"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg><span class="sidebar-label">Feitiço</span></button>
     <button class="sidebar-btn" data-tab="pet"><svg viewBox="0 0 24 24"><circle cx="7" cy="11" r="2"/><circle cx="17" cy="11" r="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/><path d="M12 10c-3 0-5 2-5 5 0 2 1 3 3 3h4c2 0 3-1 3-3 0-3-2-5-5-5z"/></svg><span class="sidebar-label">Animal</span></button>
     <button class="sidebar-btn sidebar-btn-veh" data-tab="vehicles"><div class="veh-icon-morph"><svg class="veh-icon-car" viewBox="0 0 24 24"><path d="M5 17V12l2-5a2 2 0 0 1 1.9-1.4h6.2A2 2 0 0 1 17 7l2 5v5"/><path d="M3 17h18"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/><path d="M7 12h10"/></svg><svg class="veh-icon-horse" viewBox="0 0 24 24"><path d="M8 21l1-4l-2-6l-2 1v3l-2-2v-3l4-4h5c3 0 4 1 5 3l2 2l-1 1l-3-1l-1 3l1 3l-2 3l-1-4l-4-2"/></svg></div><span class="sidebar-label veh-label-text">Veículos</span></button>
+    <button class="sidebar-btn" data-tab="biblioteca" title="Biblioteca"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="sidebar-label">Biblioteca</span></button>
   </nav>
   <div class="sidebar-bottom"><div class="sidebar-divider"></div>
     <button class="sidebar-btn" onclick="toggleTheme()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><span class="sidebar-label">Tema</span></button>
@@ -4114,6 +4133,25 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
             <div class="credit-log" id="credit-log-sidebar" style="max-height:280px"></div>
             <div style="padding:10px 0 0;border-top:1px solid var(--border);margin-top:8px;text-align:center"><button onclick="document.querySelector('.sidebar-btn[data-tab=credit]').click()" style="width:100%;padding:8px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-secondary);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer">Ver relatório completo</button></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ BIBLIOTECA (lazy-loaded iframe) ═══ -->
+    <section class="tab-content" id="tab-biblioteca">
+      <div class="biblio-wrap">
+        <div class="biblio-head">
+          <div class="biblio-head-info">
+            <h2>Biblioteca</h2>
+            <p>Lore, sistemas, caminhos, arquétipos e poderes do Eclipse.</p>
+          </div>
+          <div class="biblio-head-actions">
+            <button class="biblio-btn" onclick="document.getElementById('biblio-frame').contentWindow?.location.reload()" title="Recarregar"><svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg></button>
+            <a class="biblio-btn" href="biblioteca.html" target="_blank" rel="noopener" title="Abrir em nova aba"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+          </div>
+        </div>
+        <div class="biblio-frame-wrap">
+          <iframe id="biblio-frame" data-src="biblioteca.html" loading="lazy" title="Biblioteca Eclipse" sandbox="allow-scripts allow-same-origin allow-popups allow-downloads allow-forms"></iframe>
         </div>
       </div>
     </section>
@@ -9120,6 +9158,10 @@ document.addEventListener('click',function(e){
       const tab=document.getElementById('tab-'+sb.dataset.tab);
       if(tab)tab.classList.add('active');
       if(sb.dataset.tab==='dashboard'){try{renderSummary();renderXP();setTimeout(()=>drawChart(false),60)}catch(_){}}
+      if(sb.dataset.tab==='biblioteca'){
+        const fr=document.getElementById('biblio-frame');
+        if(fr&&!fr.src&&fr.dataset.src){fr.src=fr.dataset.src}
+      }
     }catch(_){}
   }
 });

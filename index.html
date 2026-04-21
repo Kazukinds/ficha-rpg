@@ -3847,7 +3847,7 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
           <div class="notif-footer"><button onclick="clearNotifs()">Limpar Tudo</button></div>
         </div>
       </div>
-      <button class="topbar-icon-btn" id="ia-open-btn" title="IA assistente" onclick="openIaDrawer()"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg><span class="ia-badge" id="ia-badge"></span></button>
+      <button class="topbar-icon-btn" id="ia-open-btn" title="IA assistente (Alt+I)" onclick="openIaDrawer()"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg><span class="ia-badge" id="ia-badge"></span></button>
       <button class="topbar-icon-btn" id="sound-toggle-btn" title="Som" onclick="toggleSound()"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path class="snd-on" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/><line class="snd-off" x1="23" y1="9" x2="17" y2="15"/><line class="snd-off" x1="17" y1="9" x2="23" y2="15"/></svg></button>
       <button class="topbar-icon-btn" id="theme-toggle-btn" title="Alternar tema" onclick="toggleTheme()"><svg id="theme-toggle-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
       <button class="topbar-icon-btn" title="Perfil" onclick="switchToProfile()"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
@@ -9517,9 +9517,12 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
   window.saveIaQ=function(){
     const q=qEl.value.trim();
     if(!q){if(typeof toast==='function')toast('Escreva uma pergunta','error');return}
-    const topicLabels=[...activeTopics].map(id=>TOPICS.find(t=>t.id===id)?.label).filter(Boolean);
+    const picked=[...activeTopics].map(id=>TOPICS.find(t=>t.id===id)).filter(Boolean);
+    const topicLabels=picked.map(t=>t.label);
+    const contexts=picked.map(t=>t.ctx).filter(Boolean);
+    const enriched=contexts.length?`${q}\n\n[contexto: ${contexts.join('; ')}]`:q;
     const arr=loadQ();
-    arr.unshift({q,topics:topicLabels,text:'',time:new Date().toISOString()});
+    arr.unshift({q:enriched,qRaw:q,topics:topicLabels,text:'',time:new Date().toISOString()});
     saveQ(arr);
     qEl.value='';activeTopics.clear();renderTopics();renderQueue();updateHint();
     try{window.sfx&&sfx.save()}catch(_){}
@@ -9530,6 +9533,11 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
 
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'&&drawer.classList.contains('open'))closeIaDrawer();
+    // Alt+I abre drawer de qualquer lugar
+    if(e.altKey&&(e.key==='i'||e.key==='I')){
+      e.preventDefault();
+      drawer.classList.contains('open')?closeIaDrawer():openIaDrawer();
+    }
   });
 
   window.renderIaQueue=renderQueue;

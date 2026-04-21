@@ -3407,6 +3407,25 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 .ia-badge{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 4px;border-radius:8px;background:var(--lime);color:#09090b;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;line-height:1;font-family:'JetBrains Mono',monospace;box-shadow:0 0 0 2px var(--bg-body)}
 .ia-badge.show{display:inline-flex}
 
+/* Adventurer picker */
+.profile-field-pick label{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.pf-pick-btn{width:22px;height:22px;padding:0;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;margin-left:auto}
+.pf-pick-btn:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
+.pf-pick-btn svg{width:11px;height:11px}
+.profile-field-val.empty{cursor:pointer;opacity:.5}
+.profile-field-val.empty::before{content:'Clique para escolher';color:var(--text-dim);font-style:italic;font-weight:400;font-size:12px}
+.adv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px;max-height:60vh;overflow-y:auto;padding-right:2px}
+.adv-card{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--bg-input);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s;color:var(--text-primary)}
+.adv-card:hover{border-color:var(--lime-dim);background:color-mix(in srgb,var(--lime) 4%,var(--bg-input));transform:translateY(-1px)}
+.adv-card.active{border-color:var(--lime);background:var(--lime-bg);box-shadow:0 0 0 2px color-mix(in srgb,var(--lime) 30%,transparent)}
+.adv-card-ico{font-size:24px;line-height:1;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border:1px solid var(--border);border-radius:10px}
+.adv-card.active .adv-card-ico{background:var(--bg-card);border-color:var(--lime-dim)}
+.adv-card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.adv-card-name{font-size:13px;font-weight:800;color:var(--text-primary);letter-spacing:.2px}
+.adv-card-desc{font-size:11px;color:var(--text-secondary);line-height:1.4}
+.adv-card.active .adv-card-name{color:var(--lime)}
+@media(max-width:480px){.adv-grid{grid-template-columns:1fr}}
+
 /* Admin panel buttons */
 .admin-btn{justify-content:flex-start !important;gap:10px !important;padding:10px 14px !important;text-transform:none !important;letter-spacing:normal !important;font-weight:600 !important}
 .admin-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -4627,10 +4646,10 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
           <div class="profile-section">
             <div class="profile-section-title">Detalhes do Personagem <button class="profile-edit-btn" onclick="toggleProfileEdit()">Editar</button></div>
             <div class="profile-fields" id="profile-details-fields">
-              <div class="profile-field"><label>Linhagem</label><div class="profile-field-val empty" id="pf-linhagem"></div></div>
-              <div class="profile-field"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo"></div></div>
-              <div class="profile-field"><label>Passado</label><div class="profile-field-val empty" id="pf-passado"></div></div>
-              <div class="profile-field"><label>Caminho</label><div class="profile-field-val empty" id="pf-caminho"></div></div>
+              <div class="profile-field profile-field-pick"><label>Linhagem <button class="pf-pick-btn" onclick="openAdvPicker('linhagem')" title="Escolher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></label><div class="profile-field-val empty" id="pf-linhagem" onclick="openAdvPicker('linhagem')"></div></div>
+              <div class="profile-field profile-field-pick"><label>Arquétipo <button class="pf-pick-btn" onclick="openAdvPicker('arquetipo')" title="Escolher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></label><div class="profile-field-val empty" id="pf-arquetipo" onclick="openAdvPicker('arquetipo')"></div></div>
+              <div class="profile-field profile-field-pick"><label>Passado <button class="pf-pick-btn" onclick="openAdvPicker('passado')" title="Escolher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></label><div class="profile-field-val empty" id="pf-passado" onclick="openAdvPicker('passado')"></div></div>
+              <div class="profile-field profile-field-pick"><label>Caminho <button class="pf-pick-btn" onclick="openAdvPicker('caminho')" title="Escolher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></label><div class="profile-field-val empty" id="pf-caminho" onclick="openAdvPicker('caminho')"></div></div>
               <div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">0</div></div>
               <div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">0 / 5.000</div></div>
               <div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">0 / 0</div></div>
@@ -10040,6 +10059,79 @@ _safe(renderGridCfgOptions,'renderGridCfgOptions');
 _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
 window.addEventListener('resize',()=>_safe(()=>drawChart(false),'drawChartResize'));
+
+// ═══ ADVENTURER PICKERS (Linhagem/Passado/Arquétipo/Caminho) ═══
+const ADV_CATALOG={
+  linhagem:[
+    {name:'Humano',desc:'Origem versátil. +1 em qualquer atributo, 1 perícia extra treinada.',ico:'👤'},
+    {name:'Obscuro',desc:'Descendente da Eclipse. Visão noturna, +1 Foco, -1 em testes sociais diurnos.',ico:'🌙'},
+    {name:'Essência',desc:'Ligado à essência primordial. +2 Determinação, resistência a controle mental.',ico:'✨'},
+    {name:'Artificial',desc:'Construído, não nascido. +2 Córtex, imune a doenças, -1 em testes de cura.',ico:'🤖'},
+    {name:'Corrompido',desc:'Portador da marca obscura. +1 Neural, +1 dano, -2 em testes sociais.',ico:'🖤'},
+    {name:'Errante',desc:'Raça nômade. +2 Esforço, +1 em Furtividade/Perseguição.',ico:'🌿'}
+  ],
+  arquetipo:[
+    {name:'Guerreiro',desc:'Combatente direto. +2 HP/nível, proficiência em armas pesadas.',ico:'⚔'},
+    {name:'Místico',desc:'Canal de poder. +2 Foco max, acesso a poderes místicos fase I.',ico:'🔮'},
+    {name:'Ladino',desc:'Especialista em infiltração. +2 em Furtividade, crítico em 19-20.',ico:'🗡'},
+    {name:'Erudito',desc:'Sábio versado. +2 em todos os testes mentais, 2 perícias extra.',ico:'📚'},
+    {name:'Médico',desc:'Cuidador. +2 em cura, recupera aliados com ação bônus.',ico:'⚕'},
+    {name:'Artífice',desc:'Constrói ferramentas. Cria itens com 1 ação + material.',ico:'🔧'}
+  ],
+  passado:[
+    {name:'Soldado',desc:'Veterano de guerra. +1 em armas, proficiência em estratégia.',ico:'🎖'},
+    {name:'Órfão',desc:'Criado na rua. +2 em Furtividade, conhece submundo.',ico:'🏚'},
+    {name:'Nobre',desc:'Nascido em berço de ouro. +5 Crédito inicial, conexões sociais.',ico:'👑'},
+    {name:'Acadêmico',desc:'Formado em universidade. +2 perícias mentais, fala 2 idiomas.',ico:'🎓'},
+    {name:'Fora da lei',desc:'Fugitivo procurado. +2 Esforço, bônus em furtividade urbana.',ico:'🚨'},
+    {name:'Exilado',desc:'Banido de terra natal. +2 Determinação, imune a medo.',ico:'🌫'}
+  ],
+  caminho:[
+    {name:'Guardião',desc:'Protege aliados. Habilidades de defesa e cura leve.',ico:'🛡'},
+    {name:'Assassino',desc:'Especialista em eliminação silenciosa. Ataque furtivo +1d6.',ico:'💀'},
+    {name:'Arcanista',desc:'Mestre dos elementos. Poderes destrutivos em área.',ico:'🔥'},
+    {name:'Perseguidor',desc:'Rastreador implacável. +3 em Perseguição, ignora cansaço em rastreio.',ico:'🐾'},
+    {name:'Líder',desc:'Inspira o grupo. Aliados recuperam 1d4 Esforço por vitória.',ico:'🎯'},
+    {name:'Errante Negro',desc:'Caminha entre mundos. Teleporte curto 1x/cena.',ico:'🌌'}
+  ]
+};
+const ADV_LABELS={linhagem:'Linhagem',arquetipo:'Arquétipo',passado:'Passado',caminho:'Caminho'};
+
+window.openAdvPicker=function(field){
+  const cat=ADV_CATALOG[field];if(!cat)return;
+  const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+  if(!title||!body)return;
+  title.textContent=`Escolher ${ADV_LABELS[field]}`;
+  const current=(typeof profileData!=='undefined'&&profileData[field])||'';
+  const esc=s=>String(s||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  body.innerHTML=`
+    <div class="adv-grid">
+      ${cat.map(c=>`<button class="adv-card${current===c.name?' active':''}" onclick="applyAdv('${field}',${JSON.stringify(c.name).replace(/'/g,'&#39;')})">
+        <div class="adv-card-ico">${c.ico}</div>
+        <div class="adv-card-body">
+          <div class="adv-card-name">${esc(c.name)}</div>
+          <div class="adv-card-desc">${esc(c.desc)}</div>
+        </div>
+      </button>`).join('')}
+    </div>
+    ${current?`<div class="modal-btns"><button class="modal-btn secondary" onclick="clearAdv('${field}')">Remover seleção</button><button class="modal-btn primary" onclick="closeModal()">Fechar</button></div>`:`<div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>`}`;
+  document.getElementById('modal-overlay').classList.add('open');
+};
+window.applyAdv=function(field,name){
+  if(typeof profileData==='object')profileData[field]=name;
+  if(typeof renderProfile==='function')renderProfile();
+  if(typeof saveSheet==='function')saveSheet();
+  try{window.sfx&&sfx.unlock()}catch(_){}
+  if(typeof toast==='function')toast(`${ADV_LABELS[field]}: ${name}`,'success');
+  closeModal();
+};
+window.clearAdv=function(field){
+  if(typeof profileData==='object')profileData[field]='';
+  if(typeof renderProfile==='function')renderProfile();
+  if(typeof saveSheet==='function')saveSheet();
+  if(typeof toast==='function')toast(`${ADV_LABELS[field]} removido`,'info');
+  closeModal();
+};
 
 // ═══ MIGRAÇÃO v2 — reseta créditos/esforço/neural/córtex ═══
 (function(){

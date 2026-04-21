@@ -2609,11 +2609,41 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 .vg-gal-grid.dense .vg-gal-card{min-height:56px}
 .vg-gal-media{flex-shrink:0}
 .vg-gal-body{flex:1;min-height:0}
-.vg-gal-mode-toggle{display:flex;gap:4px;margin-left:8px}
-.vg-gal-mode-toggle button{width:30px;height:30px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:all .18s}
-.vg-gal-mode-toggle button:hover{color:var(--text-primary);border-color:var(--border-light)}
-.vg-gal-mode-toggle button.active{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
-.vg-gal-mode-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Garage mode toggle removido — só grid */
+.vg-gal-mode-toggle{display:none !important}
+
+/* Vehicle Identity modal — redesigned */
+.vid-hero{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,var(--lime-bg),var(--bg-card-inner));border:1px solid var(--lime-dim);border-radius:14px}
+.vid-hero-ico{width:44px;height:44px;border-radius:12px;background:var(--bg-card);border:1px solid var(--lime-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--lime);box-shadow:0 0 18px color-mix(in srgb,var(--lime) 30%,transparent)}
+.vid-hero-ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vid-hero-title{font-size:14px;font-weight:700;color:var(--text-primary);letter-spacing:.2px}
+.vid-hero-sub{font-size:11px;color:var(--text-dim);margin-top:2px;letter-spacing:.3px;text-transform:uppercase;font-weight:600}
+.vid-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.vid-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.vid-field-wide{grid-column:1/-1}
+.vid-field label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+.vid-field label svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.vid-field input{
+  width:100%;padding:11px 14px;
+  background:var(--bg-input);border:1.5px solid var(--border);
+  border-radius:10px;color:var(--text-primary);
+  font-family:inherit;font-size:14px;font-weight:500;
+  outline:none;transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.vid-field input::placeholder{color:var(--text-dim);font-weight:400}
+.vid-field input:hover{border-color:var(--border-light)}
+.vid-field input:focus{
+  border-color:var(--lime);
+  background:var(--bg-card);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--lime) 15%,transparent);
+}
+.vid-field:focus-within label{color:var(--lime)}
+@media(max-width:480px){
+  .vid-form{grid-template-columns:1fr;gap:10px}
+  .vid-field-wide{grid-column:1}
+  .vid-hero{padding:12px}
+  .vid-hero-ico{width:38px;height:38px}
+}
 .vg-gal-grid::-webkit-scrollbar{width:6px}
 .vg-gal-grid::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
 .vg-gal-card{background:linear-gradient(160deg,rgba(var(--rg),.14),rgba(20,20,28,.85));border:2px solid rgba(var(--rg),.35);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .2s,box-shadow .2s}
@@ -7140,16 +7170,9 @@ let _vgGalMode=null; // 'grid' | 'dense'
 function renderVehicleGallery(){
   const drawer=document.getElementById('vg-gallery-drawer');if(!drawer)return;
   const list=getGarageList();
-  if(_vgGalMode===null)_vgGalMode=list.length>=15?'dense':'grid';
-  const mode=_vgGalMode;
-  const gridIco='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
-  const listIco='<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1.5"/><circle cx="3.5" cy="12" r="1.5"/><circle cx="3.5" cy="18" r="1.5"/></svg>';
+  const mode='grid';_vgGalMode='grid';
   const head=`<div class="vg-gal-head">
     <div><h3>Garagem completa</h3><small>${list.length} veículo${list.length===1?'':'s'} cadastrado${list.length===1?'':'s'}</small></div>
-    <div class="vg-gal-mode-toggle">
-      <button class="${mode==='grid'?'active':''}" onclick="setVgGalMode('grid')" title="Visualização em grade" aria-label="Grade">${gridIco}</button>
-      <button class="${mode==='dense'?'active':''}" onclick="setVgGalMode('dense')" title="Visualização em lista" aria-label="Lista">${listIco}</button>
-    </div>
     <button class="vg-gal-close" onclick="closeVehicleGalleryPanel()" title="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>`;
   if(!list.length){
@@ -7230,20 +7253,60 @@ function openVehicleIdent(){
   const esc=s=>(s||'').toString().replace(/"/g,'&quot;');
   title.textContent='Identificação do Veículo';
   body.innerHTML=`
-    <div class="form-group"><label>Nome</label><input type="text" id="m-veh-nome" value="${esc(nome)}" maxlength="40" placeholder="Ex: LaVelox"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Tipo</label><input type="text" id="m-veh-tipo" value="${esc(ident.tipo)}" maxlength="24" placeholder="Carro, Moto, Barco…"></div>
-      <div class="form-group"><label>Modelo</label><input type="text" id="m-veh-modelo" value="${esc(ident.modelo)}" maxlength="40" placeholder="Ex: BMW M3 GTR"></div>
+    <div class="vid-hero">
+      <div class="vid-hero-ico"><svg viewBox="0 0 24 24"><path d="M5 17V12l2-5a2 2 0 0 1 1.9-1.4h6.2A2 2 0 0 1 17 7l2 5v5"/><path d="M3 17h18"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/><path d="M7 12h10"/></svg></div>
+      <div class="vid-hero-txt">
+        <div class="vid-hero-title">Identidade do veículo</div>
+        <div class="vid-hero-sub">Nome, tipo, modelo, ano e cor</div>
+      </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Ano</label><input type="text" id="m-veh-ano" value="${esc(ident.ano)}" maxlength="6" placeholder="2024"></div>
-      <div class="form-group"><label>Cor</label><input type="text" id="m-veh-cor" value="${esc(ident.cor)}" maxlength="24" placeholder="Azul perolado"></div>
+    <div class="vid-form">
+      <div class="vid-field vid-field-wide">
+        <label>
+          <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          Nome
+        </label>
+        <input type="text" id="m-veh-nome" value="${esc(nome)}" maxlength="40" placeholder="Ex: LaVelox" autocomplete="off">
+      </div>
+      <div class="vid-field">
+        <label>
+          <svg viewBox="0 0 24 24"><path d="M3 7h18"/><path d="M6 7v13"/><path d="M18 7v13"/><path d="M6 13h12"/><path d="M3 20h18"/></svg>
+          Tipo
+        </label>
+        <input type="text" id="m-veh-tipo" value="${esc(ident.tipo)}" maxlength="24" placeholder="Carro, Moto, Barco…" list="m-veh-tipo-list" autocomplete="off">
+        <datalist id="m-veh-tipo-list"><option>Carro</option><option>Moto</option><option>Caminhão</option><option>Van</option><option>Barco</option><option>Aeronave</option></datalist>
+      </div>
+      <div class="vid-field">
+        <label>
+          <svg viewBox="0 0 24 24"><path d="M20 7h-3.5a2.5 2.5 0 0 0 0 5H20v5H4V4h16z"/><circle cx="16" cy="9.5" r="1.5"/></svg>
+          Modelo
+        </label>
+        <input type="text" id="m-veh-modelo" value="${esc(ident.modelo)}" maxlength="40" placeholder="Ex: BMW M3 GTR" autocomplete="off">
+      </div>
+      <div class="vid-field">
+        <label>
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Ano
+        </label>
+        <input type="number" id="m-veh-ano" value="${esc(ident.ano)}" min="1900" max="2200" placeholder="2024" inputmode="numeric">
+      </div>
+      <div class="vid-field">
+        <label>
+          <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 1 1 0-20h1c2 0 3 1 3 3s-1 2-2 2h-1c-1 0-2 1-2 2s1 2 2 2 2 1 2 2-1 3-3 3z"/></svg>
+          Cor
+        </label>
+        <input type="text" id="m-veh-cor" value="${esc(ident.cor)}" maxlength="24" placeholder="Azul perolado" autocomplete="off">
+      </div>
     </div>
     <div class="modal-btns">
       <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
-      <button class="modal-btn primary" onclick="saveVehicleIdent()">Salvar</button>
+      <button class="modal-btn primary" onclick="saveVehicleIdent()">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-right:6px;vertical-align:-2px"><polyline points="20 6 9 17 4 12"/></svg>
+        Salvar
+      </button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>{const f=document.getElementById('m-veh-nome');if(f)f.focus()},180);
 }
 function saveVehicleIdent(){
   if(!vehicleState)return;

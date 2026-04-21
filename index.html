@@ -9522,6 +9522,29 @@ document.querySelectorAll('.chart-time-pill').forEach(btn=>{
   });
 
   window.renderIaQueue=renderQueue;
+  window.iaEnqueue=function(obj){
+    const arr=loadQ();
+    arr.unshift(Object.assign({time:new Date().toISOString()},obj));
+    saveQ(arr);renderQueue();
+  };
+
+  // postMessage bridge — biblioteca iframe envia pedidos
+  window.addEventListener('message',e=>{
+    const d=e.data;
+    if(!d||d.source!=='ficha-eclipse-biblio')return;
+    if(d.type==='ask-ia'&&d.chapter){
+      window.iaEnqueue({
+        q:`(Biblioteca) Me explica melhor o capítulo "${d.chapter}"`,
+        topics:['Biblioteca'],
+        text:d.snippet||'',
+        ctx:d.chapter
+      });
+      try{window.sfx&&sfx.save()}catch(_){}
+      if(typeof toast==='function')toast(`Capítulo "${d.chapter}" na fila da IA`,'success');
+      openIaDrawer();
+    }
+  });
+
   // Render badge count on load
   window.addEventListener('DOMContentLoaded',renderQueue);
   if(document.readyState!=='loading')renderQueue();

@@ -674,6 +674,7 @@
       <button class="back-btn" onclick="closeReader()">← Voltar</button>
       <span id="reader-title-text" class="reader-title"></span>
       <div class="reader-nav-btns">
+        <button class="back-btn accent hidden" id="btn-ask-ia" title="Perguntar à IA sobre este capítulo">🤖 Perguntar à IA</button>
         <button class="back-btn accent hidden" id="btn-random">Sortear</button>
         <button class="back-btn" id="btn-prev">◀</button>
         <button class="back-btn" id="btn-next">▶</button>
@@ -935,6 +936,49 @@ function openReader(idx){
   wireDiceRolls(readerContent);
 }
 function closeReader(){reader.classList.remove('open');document.body.style.overflow='';}
+
+// ═══ POSTMESSAGE BRIDGE — só ativo quando embedado em iframe ═══
+(function(){
+  const IS_EMBEDDED = window.top !== window.self;
+  if(!IS_EMBEDDED) return;
+
+  // Botão "Voltar à ficha" — substitui comportamento padrão
+  const backBtns = document.querySelectorAll('.back-btn, .header-back-btn');
+  // Botão "Perguntar à IA"
+  const askBtn = document.getElementById('btn-ask-ia');
+  if(askBtn){
+    askBtn.classList.remove('hidden');
+    askBtn.addEventListener('click', () => {
+      const ch = CHAPTERS[currentIdx];
+      if(!ch) return;
+      const plainText = (ch.html||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,400);
+      try{
+        window.top.postMessage({
+          source: 'ficha-eclipse-biblio',
+          type: 'ask-ia',
+          chapter: (ch.title||'').toString(),
+          snippet: plainText
+        }, '*');
+      }catch(_){}
+    });
+  }
+
+  // Avisa parent quando capítulo abre (pra contexto futuro)
+  const origOpen = window.openReader;
+  if(typeof origOpen === 'function'){
+    window.openReader = function(idx){
+      origOpen(idx);
+      try{
+        const ch = CHAPTERS[idx];
+        window.top.postMessage({
+          source: 'ficha-eclipse-biblio',
+          type: 'chapter-open',
+          chapter: (ch&&ch.title)||''
+        }, '*');
+      }catch(_){}
+    };
+  }
+})();
 function updateNav(){btnPrev.disabled=currentIdx<=0;btnNext.disabled=currentIdx>=CHAPTERS.length-1;btnPrev.style.opacity=btnPrev.disabled?.3:1;btnNext.style.opacity=btnNext.disabled?.3:1;}
 
 btnPrev.addEventListener('click',()=>{if(currentIdx>0)openReader(currentIdx-1);});

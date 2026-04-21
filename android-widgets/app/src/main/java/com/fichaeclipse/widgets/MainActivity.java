@@ -1,229 +1,317 @@
 package com.fichaeclipse.widgets;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    private float d;
+    private static final String APP_URL = "https://kazukinds.github.io/ficha-rpg/";
+    private WebView webView;
+    private FrameLayout splash;
+    private FrameLayout offline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        d = getResources().getDisplayMetrics().density;
+        getWindow().setStatusBarColor(Color.parseColor("#09090B"));
+        getWindow().setNavigationBarColor(Color.parseColor("#09090B"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(true);
+        }
 
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(Color.parseColor("#09090B"));
-        scroll.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        scroll.setFillViewport(true);
-
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        int pad = dp(20);
-        root.setPadding(pad, dp(32), pad, dp(32));
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.parseColor("#09090B"));
         root.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Hero
+        webView = buildWebView();
+        root.addView(webView);
+
+        splash = buildSplash();
+        root.addView(splash);
+
+        offline = buildOfflinePanel();
+        root.addView(offline);
+        offline.setVisibility(View.GONE);
+
+        setContentView(root);
+
+        if (isOnline()) {
+            webView.loadUrl(APP_URL);
+        } else {
+            webView.loadUrl(APP_URL); // SW deve servir do cache
+            offline.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private WebView buildWebView() {
+        WebView wv = new WebView(this);
+        wv.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        wv.setBackgroundColor(Color.parseColor("#09090B"));
+
+        WebSettings s = wv.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        s.setDatabaseEnabled(true);
+        s.setAllowFileAccess(true);
+        s.setAllowContentAccess(true);
+        s.setLoadsImagesAutomatically(true);
+        s.setUseWideViewPort(true);
+        s.setLoadWithOverviewMode(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
+        s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        s.setCacheMode(isOnline() ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        s.setUserAgentString(s.getUserAgentString() + " FichaEclipseApp/1.0");
+        s.setSupportZoom(true);
+        s.setBuiltInZoomControls(false);
+        s.setDisplayZoomControls(false);
+
+        CookieManager.getInstance().setAcceptCookie(true);
+        CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true);
+
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri u = request.getUrl();
+                String scheme = u.getScheme();
+                if (scheme != null && (scheme.equals("mailto") || scheme.equals("tel") ||
+                        scheme.equals("whatsapp") || scheme.equals("intent") ||
+                        scheme.equals("market") || scheme.startsWith("http") && isExternalHost(u.getHost()))) {
+                    if (scheme.startsWith("http") && !isExternalHost(u.getHost())) return false;
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, u);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } catch (Exception e) { /* ignore */ }
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (splash != null) {
+                    splash.animate().alpha(0f).setDuration(350).withEndAction(() -> splash.setVisibility(View.GONE)).start();
+                }
+                offline.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                if (request.isForMainFrame() && !isOnline()) {
+                    offline.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        wv.setWebChromeClient(new WebChromeClient());
+
+        wv.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
+                try {
+                    DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
+                    req.setMimeType(mimeType);
+                    req.addRequestHeader("User-Agent", userAgent);
+                    req.setDescription("Ficha Eclipse");
+                    req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    String name = android.webkit.URLUtil.guessFileName(url, contentDisposition, mimeType);
+                    req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name);
+                    DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    if (dm != null) dm.enqueue(req);
+                } catch (Exception ignored) {}
+            }
+        });
+
+        return wv;
+    }
+
+    private boolean isExternalHost(String host) {
+        if (host == null) return false;
+        return !host.endsWith("github.io") && !host.endsWith("kazukinds.github.io")
+                && !host.endsWith("fichaeclipse") && !host.endsWith("localhost");
+    }
+
+    private FrameLayout buildSplash() {
+        FrameLayout s = new FrameLayout(this);
+        s.setBackgroundColor(Color.parseColor("#09090B"));
+        s.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout.LayoutParams bp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        bp.gravity = android.view.Gravity.CENTER;
+        box.setLayoutParams(bp);
+        box.setGravity(android.view.Gravity.CENTER);
+
         TextView brand = new TextView(this);
         brand.setText("FICHA ECLIPSE");
         brand.setTextColor(Color.parseColor("#C8F542"));
-        brand.setTextSize(12);
-        brand.setLetterSpacing(0.3f);
+        brand.setTextSize(14);
         brand.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
-        root.addView(brand);
+        brand.setLetterSpacing(0.35f);
+        brand.setGravity(android.view.Gravity.CENTER);
 
-        TextView title = new TextView(this);
-        title.setText("Widgets");
-        title.setTextColor(Color.parseColor("#F0F0F5"));
-        title.setTextSize(34);
-        title.setTypeface(null, android.graphics.Typeface.BOLD);
-        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
+        TextView loading = new TextView(this);
+        loading.setText("Carregando…");
+        loading.setTextColor(Color.parseColor("#A0A0B0"));
+        loading.setTextSize(12);
+        loading.setGravity(android.view.Gravity.CENTER);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        tlp.topMargin = dp(4);
-        title.setLayoutParams(tlp);
-        root.addView(title);
+        lp2.topMargin = dp(12);
+        loading.setLayoutParams(lp2);
 
-        TextView sub = new TextView(this);
-        sub.setText("Acesso rápido pra tua ficha direto da home screen.");
-        sub.setTextColor(Color.parseColor("#A0A0B0"));
-        sub.setTextSize(14);
-        LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        slp.topMargin = dp(8);
-        sub.setLayoutParams(slp);
-        root.addView(sub);
-
-        // Instructions card
-        LinearLayout card = card();
-        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        clp.topMargin = dp(24);
-        card.setLayoutParams(clp);
-
-        TextView ch = new TextView(this);
-        ch.setText("Como instalar");
-        ch.setTextColor(Color.parseColor("#C8F542"));
-        ch.setTextSize(13);
-        ch.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
-        ch.setLetterSpacing(0.2f);
-        card.addView(ch);
-
-        card.addView(step("1", "Long-press na home screen"));
-        card.addView(step("2", "Toca em \"Widgets\""));
-        card.addView(step("3", "Procura \"Ficha Eclipse\""));
-        card.addView(step("4", "Arrasta o widget pra tela"));
-
-        root.addView(card);
-
-        // Available widgets
-        TextView avail = new TextView(this);
-        avail.setText("DISPONÍVEIS");
-        avail.setTextColor(Color.parseColor("#5A5A6E"));
-        avail.setTextSize(11);
-        avail.setLetterSpacing(0.3f);
-        avail.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
-        LinearLayout.LayoutParams alp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        alp.topMargin = dp(28);
-        alp.leftMargin = dp(4);
-        avail.setLayoutParams(alp);
-        root.addView(avail);
-
-        root.addView(widgetRow("Dados", "Rolar d4–d100", "#C8F542"));
-
-        // Footer
-        TextView foot = new TextView(this);
-        foot.setText("v1.0 · fichaeclipse");
-        foot.setTextColor(Color.parseColor("#5A5A6E"));
-        foot.setTextSize(11);
-        foot.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.NORMAL);
-        foot.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        flp.topMargin = dp(32);
-        foot.setLayoutParams(flp);
-        root.addView(foot);
-
-        scroll.addView(root);
-        setContentView(scroll);
+        box.addView(brand);
+        box.addView(loading);
+        s.addView(box);
+        return s;
     }
 
-    private LinearLayout card() {
-        LinearLayout c = new LinearLayout(this);
-        c.setOrientation(LinearLayout.VERTICAL);
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(Color.parseColor("#131316"));
-        bg.setCornerRadius(dp(16));
-        bg.setStroke(dp(1), Color.parseColor("#2A2A32"));
-        c.setBackground(bg);
-        int p = dp(20);
-        c.setPadding(p, p, p, p);
-        return c;
-    }
+    private FrameLayout buildOfflinePanel() {
+        FrameLayout o = new FrameLayout(this);
+        o.setBackgroundColor(Color.parseColor("#09090B"));
+        o.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
-    private View step(String n, String text) {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        rlp.topMargin = dp(14);
-        row.setLayoutParams(rlp);
-
-        TextView num = new TextView(this);
-        num.setText(n);
-        num.setTextColor(Color.parseColor("#C8F542"));
-        num.setTextSize(13);
-        num.setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD);
-        num.setGravity(Gravity.CENTER);
-        GradientDrawable nb = new GradientDrawable();
-        nb.setShape(GradientDrawable.OVAL);
-        nb.setColor(Color.parseColor("#1F2610"));
-        nb.setStroke(dp(1), Color.parseColor("#3A4A1A"));
-        num.setBackground(nb);
-        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(dp(28), dp(28));
-        nlp.rightMargin = dp(12);
-        num.setLayoutParams(nlp);
-        row.addView(num);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout.LayoutParams bp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        bp.gravity = android.view.Gravity.CENTER;
+        int pad = dp(24);
+        box.setPadding(pad, pad, pad, pad);
+        box.setLayoutParams(bp);
+        box.setGravity(android.view.Gravity.CENTER);
 
         TextView t = new TextView(this);
-        t.setText(text);
-        t.setTextColor(Color.parseColor("#D0D0D8"));
-        t.setTextSize(15);
-        row.addView(t);
+        t.setText("Sem internet");
+        t.setTextColor(Color.parseColor("#F0F0F5"));
+        t.setTextSize(20);
+        t.setTypeface(null, android.graphics.Typeface.BOLD);
+        t.setGravity(android.view.Gravity.CENTER);
 
-        return row;
-    }
+        TextView s2 = new TextView(this);
+        s2.setText("Tentando carregar do cache local.\nToque pra tentar de novo.");
+        s2.setTextColor(Color.parseColor("#A0A0B0"));
+        s2.setTextSize(13);
+        s2.setGravity(android.view.Gravity.CENTER);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = dp(10);
+        s2.setLayoutParams(lp);
 
-    private View widgetRow(String name, String desc, String accent) {
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
+        TextView btn = new TextView(this);
+        btn.setText("TENTAR NOVAMENTE");
+        btn.setTextColor(Color.parseColor("#09090B"));
+        btn.setTextSize(12);
+        btn.setTypeface(null, android.graphics.Typeface.BOLD);
+        btn.setLetterSpacing(0.2f);
+        btn.setGravity(android.view.Gravity.CENTER);
+        btn.setPadding(dp(24), dp(12), dp(24), dp(12));
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(Color.parseColor("#131316"));
-        bg.setCornerRadius(dp(14));
-        bg.setStroke(dp(1), Color.parseColor("#2A2A32"));
-        row.setBackground(bg);
-        int p = dp(16);
-        row.setPadding(p, p, p, p);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        rlp.topMargin = dp(10);
-        row.setLayoutParams(rlp);
+        bg.setColor(Color.parseColor("#C8F542"));
+        bg.setCornerRadius(dp(10));
+        btn.setBackground(bg);
+        btn.setClickable(true);
+        LinearLayout.LayoutParams lpb = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lpb.topMargin = dp(18);
+        lpb.gravity = android.view.Gravity.CENTER_HORIZONTAL;
+        btn.setLayoutParams(lpb);
+        btn.setOnClickListener(v -> {
+            if (isOnline()) {
+                offline.setVisibility(View.GONE);
+                webView.reload();
+            }
+        });
 
-        View dot = new View(this);
-        GradientDrawable db = new GradientDrawable();
-        db.setShape(GradientDrawable.OVAL);
-        db.setColor(Color.parseColor(accent));
-        dot.setBackground(db);
-        LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(dp(10), dp(10));
-        dlp.rightMargin = dp(14);
-        dot.setLayoutParams(dlp);
-        row.addView(dot);
-
-        LinearLayout col = new LinearLayout(this);
-        col.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(0,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        col.setLayoutParams(clp);
-
-        TextView n = new TextView(this);
-        n.setText(name);
-        n.setTextColor(Color.parseColor("#F0F0F5"));
-        n.setTextSize(16);
-        n.setTypeface(null, android.graphics.Typeface.BOLD);
-        col.addView(n);
-
-        TextView dv = new TextView(this);
-        dv.setText(desc);
-        dv.setTextColor(Color.parseColor("#A0A0B0"));
-        dv.setTextSize(13);
-        col.addView(dv);
-
-        row.addView(col);
-
-        TextView arrow = new TextView(this);
-        arrow.setText("→");
-        arrow.setTextColor(Color.parseColor("#5A5A6E"));
-        arrow.setTextSize(18);
-        row.addView(arrow);
-
-        return row;
+        box.addView(t);
+        box.addView(s2);
+        box.addView(btn);
+        o.addView(box);
+        return o;
     }
 
     private int dp(int v) {
-        return (int) (v * d);
+        return (int) (v * getResources().getDisplayMetrics().density);
+    }
+
+    @SuppressWarnings("deprecation")
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        return info != null && info.isConnected();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && webView != null && webView.canGoBack()) {
+            webView.goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) webView.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) webView.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            ViewGroup p = (ViewGroup) webView.getParent();
+            if (p != null) p.removeView(webView);
+            webView.stopLoading();
+            webView.removeAllViews();
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
     }
 }

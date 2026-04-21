@@ -1,10 +1,14 @@
 /* Ficha Eclipse — service worker */
-const CACHE='ficha-eclipse-v33';
+const CACHE='ficha-eclipse-v34';
 const ASSETS=[
   './',
   './index.html',
+  './biblioteca.html',
   './manifest.webmanifest',
   './icons/icon.svg',
+  './icons/icon-biblioteca.svg',
+  './icons/brand.svg',
+  './icons/brand-biblioteca.svg',
   './icons/icon-maskable.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',

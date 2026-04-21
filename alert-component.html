@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alert Component</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    letter-spacing:-0.15px;
+    background:#f5f5f7;
+    min-height:100vh;
+    padding:48px 24px;
+    display:flex;justify-content:center;
+  }
+  .alert-stack{display:flex;flex-direction:column;gap:20px;width:100%;max-width:560px}
+
+  /* ═══ BASE ═══ */
+  .alert{
+    position:relative;
+    padding:16px 18px;
+    border:1px solid #e8e8ec;
+    border-radius:12px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto auto;
+    column-gap:12px;
+    row-gap:2px;
+    box-shadow:0 1px 2px rgba(0,0,0,.02);
+  }
+  .alert-icon{
+    grid-column:1;grid-row:1;
+    width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;margin-top:0;
+  }
+  .alert-icon.tri{
+    border-radius:0;background:transparent;
+    width:22px;height:22px;
+  }
+  .alert-icon svg{width:22px;height:22px;display:block}
+  .alert-title{
+    grid-column:2;grid-row:1;
+    font-size:13px;line-height:18px;font-weight:500;
+    color:#404040;
+    align-self:center;
+  }
+  .alert-desc{
+    grid-column:2;grid-row:2;
+    font-size:12px;line-height:16px;font-weight:400;
+    color:#646465;
+    margin-top:4px;
+  }
+  .alert-actions{
+    grid-column:2;grid-row:3;
+    margin-top:14px;
+  }
+  .alert-btn{
+    font-family:inherit;letter-spacing:inherit;
+    font-size:13px;font-weight:500;line-height:1;
+    color:#fff;border:none;cursor:pointer;
+    padding:10px 18px;border-radius:8px;
+    transition:filter .15s ease,transform .05s ease;
+  }
+  .alert-btn:hover{filter:brightness(1.06)}
+  .alert-btn:active{transform:translateY(1px)}
+  .alert-btn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+  /* ═══ ERROR ═══ */
+  .alert.error{
+    background:linear-gradient(to right,#FFFFFF,#FFF0F1);
+    border-color:#fde2e4;
+  }
+  .alert.error .alert-btn{background:#ef4444}
+
+  /* ═══ INFO ═══ */
+  .alert.info{
+    background:linear-gradient(to right,#FFFFFF,#F5FBFF);
+    border-color:#e1eefc;
+  }
+  .alert.info .alert-btn{background:#3b82f6}
+
+  /* ═══ SUCCESS ═══ */
+  .alert.success{
+    background:linear-gradient(to right,#FFFFFF,#E5FFF0);
+    border-color:#d6f3e1;
+  }
+  .alert.success .alert-btn{background:#171717}
+
+  /* ═══ WARNING ═══ */
+  .alert.warning{
+    background:linear-gradient(to right,#FFFFFF,#FFF0E5);
+    border-color:#fce2cf;
+  }
+  .alert.warning .alert-btn{background:#171717}
+
+  @media(max-width:480px){
+    .alert{padding:14px 14px}
+    .alert-title{font-size:13px}
+  }
+</style>
+</head>
+<body>
+
+<div class="alert-stack">
+
+  <!-- ERROR -->
+  <div class="alert error" role="alert">
+    <span class="alert-icon tri" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 2.5L20.5 19H1.5L11 2.5Z" fill="#ef4444"/>
+        <path d="M11 8.5V12.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="11" cy="15.5" r="1" fill="#fff"/>
+      </svg>
+    </span>
+    <div class="alert-title">Error message</div>
+    <div class="alert-desc">Error message description</div>
+    <div class="alert-actions"><button class="alert-btn" type="button">Button</button></div>
+  </div>
+
+  <!-- INFO -->
+  <div class="alert info" role="status">
+    <span class="alert-icon" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#3b82f6"/>
+        <circle cx="11" cy="7" r="1.2" fill="#fff"/>
+        <path d="M11 10V16" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <div class="alert-title">Information message</div>
+    <div class="alert-desc">Information message description</div>
+    <div class="alert-actions"><button class="alert-btn" type="button">Button</button></div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="alert success" role="status">
+    <span class="alert-icon" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#22c55e"/>
+        <path d="M6.5 11.2L9.6 14.3L15.5 8.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <div class="alert-title">Success message</div>
+    <div class="alert-desc">Information message description</div>
+    <div class="alert-actions"><button class="alert-btn" type="button">Button</button></div>
+  </div>
+
+  <!-- WARNING -->
+  <div class="alert warning" role="alert">
+    <span class="alert-icon tri" aria-hidden="true">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11 2.5L20.5 19H1.5L11 2.5Z" fill="#f97316"/>
+        <path d="M11 8.5V12.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="11" cy="15.5" r="1" fill="#fff"/>
+      </svg>
+    </span>
+    <div class="alert-title">Warning message</div>
+    <div class="alert-desc">Information message description</div>
+    <div class="alert-actions"><button class="alert-btn" type="button">Button</button></div>
+  </div>
+
+</div>
+
+</body>
+</html>

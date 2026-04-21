@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" role="img" aria-label="Eclipse Biblioteca">
+  <defs>
+    <linearGradient id="bb-lime" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4ff52"/>
+      <stop offset="55%" stop-color="#c8f542"/>
+      <stop offset="100%" stop-color="#92c020"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(24 24)">
+    <rect width="112" height="112" rx="22" fill="#09090b"/>
+    <rect x="2" y="2" width="108" height="108" rx="20" fill="none" stroke="rgba(200,245,66,.22)" stroke-width="1.5"/>
+    <g opacity=".35">
+      <polygon points="62,22 34,66 48,66 42,96 78,54 62,54 70,22" fill="url(#bb-lime)"/>
+    </g>
+    <g transform="translate(56 60)" stroke="#c8f542" stroke-width="1.6" fill="#0c0c0e" stroke-linejoin="round">
+      <path d="M -32 -22 Q -32 -26 -28 -26 L -4 -26 Q 0 -26 0 -22 L 0 22 Q 0 24 -4 24 L -28 24 Q -32 24 -32 22 Z"/>
+      <path d="M 32 -22 Q 32 -26 28 -26 L 4 -26 Q 0 -26 0 -22 L 0 22 Q 0 24 4 24 L 28 24 Q 32 24 32 22 Z"/>
+      <line x1="-24" y1="-14" x2="-8" y2="-14" opacity=".7"/>
+      <line x1="-24" y1="-6" x2="-8" y2="-6" opacity=".5"/>
+      <line x1="8" y1="-14" x2="24" y2="-14" opacity=".7"/>
+      <line x1="8" y1="-6" x2="24" y2="-6" opacity=".5"/>
+    </g>
+  </g>
+  <g transform="translate(168 56)" font-family="Inter, system-ui, sans-serif">
+    <text x="0" y="40" font-size="52" font-weight="800" letter-spacing="4" fill="#f0f0f5">ECLIPSE</text>
+    <text x="4" y="72" font-size="14" font-weight="600" letter-spacing="8" fill="#c8f542">BIBLIOTECA · LORE</text>
+  </g>
+</svg>

@@ -97,6 +97,30 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 .topbar-search input::placeholder{color:var(--text-dim)}
 .topbar-search input:hover{border-color:var(--border-light)}
 .topbar-search input:focus{border-color:var(--lime-dim);box-shadow:0 0 0 3px rgba(200,245,66,.06)}
+.search-results{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:var(--bg-card);border:1px solid var(--border-light);border-radius:14px;
+  box-shadow:var(--shadow-lg);z-index:70;
+  max-height:min(60vh,500px);overflow-y:auto;
+  opacity:0;pointer-events:none;transform:translateY(-4px);
+  transition:opacity .18s,transform .18s;
+  padding:6px;
+}
+.search-results.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.search-result-group{padding:6px 4px 4px}
+.search-result-group-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;padding:0 10px 6px}
+.search-result{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background .12s}
+.search-result:hover,.search-result.focus{background:var(--bg-hover)}
+.search-result-ico{width:28px;height:28px;border-radius:7px;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-secondary)}
+.search-result-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.search-result.focus .search-result-ico,.search-result:hover .search-result-ico{color:var(--lime);border-color:var(--lime-dim)}
+.search-result-body{flex:1;min-width:0}
+.search-result-title{font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-sub{font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-kbd{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);padding:2px 6px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;flex-shrink:0}
+.search-empty{padding:28px 12px;text-align:center;color:var(--text-dim);font-size:12px}
+.search-empty strong{color:var(--text-secondary);display:block;margin-bottom:4px;font-size:13px}
+.search-highlight{color:var(--lime);font-weight:700}
 .topbar-actions{display:flex;gap:8px;margin-left:auto}
 .topbar-icon-btn{width:38px;height:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);transition:border-color .15s,background .15s}
 .topbar-icon-btn:hover{border-color:var(--border-light);background:var(--bg-hover)}
@@ -3829,7 +3853,11 @@ body.vg-empty-mode .vg-right::before{content:"Nenhum veículo selecionado";displ
 <div class="main-wrapper">
   <header class="topbar">
     <div class="topbar-welcome"><small>Bem-vindo,</small><h2>Aventureiro</h2></div>
-    <div class="topbar-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar algo.."></div>
+    <div class="topbar-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="global-search" placeholder="Buscar item, perícia, aba... (Ctrl+K)" autocomplete="off">
+      <div id="search-results" class="search-results"></div>
+    </div>
     <div class="topbar-actions">
       <div class="save-wrap">
         <button class="topbar-icon-btn" title="Salvar" onclick="toggleSaveMenu()"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
@@ -9328,6 +9356,193 @@ _safe(renderGridCfgOptions,'renderGridCfgOptions');
 _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
 window.addEventListener('resize',()=>_safe(()=>drawChart(false),'drawChartResize'));
+
+// ═══ GLOBAL SEARCH ═══
+(function(){
+  const input=document.getElementById('global-search');
+  const results=document.getElementById('search-results');
+  if(!input||!results)return;
+
+  const TABS=[
+    {t:'Dashboard',k:'dashboard',sub:'Visão geral + widgets',ico:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'},
+    {t:'Progresso',k:'progress',sub:'XP, níveis, estágios',ico:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+    {t:'Crédito',k:'credit',sub:'Moeda + transações',ico:'<circle cx="12" cy="12" r="10"/><path d="M15 8.5c-.7-.8-1.6-1.5-3-1.5-2.2 0-4 1.8-4 4s1.8 4 4 4c1.4 0 2.3-.7 3-1.5"/>'},
+    {t:'Perícias',k:'pericias',sub:'Teste com 1d20 + DT',ico:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'},
+    {t:'Feitiço',k:'feitico',sub:'Spells e habilidades',ico:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>'},
+    {t:'Animal',k:'pet',sub:'Pet companheiro',ico:'<circle cx="7" cy="11" r="2"/><circle cx="17" cy="11" r="2"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="6" r="2"/>'},
+    {t:'Veículos',k:'vehicles',sub:'Garagem + upgrades',ico:'<path d="M5 17V12l2-5a2 2 0 0 1 1.9-1.4h6.2A2 2 0 0 1 17 7l2 5v5"/><path d="M3 17h18"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/>'},
+    {t:'Biblioteca',k:'biblioteca',sub:'Lore + sistemas',ico:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'}
+  ];
+  const ACTIONS=[
+    {t:'Abrir IA assistente',sub:'Alt+I · perguntas e tópicos',fn:()=>window.openIaDrawer&&openIaDrawer(),ico:'<path d="M12 2a2 2 0 0 1 2 2v2h3a2 2 0 0 1 2 2v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V8a2 2 0 0 1 2-2h3V4a2 2 0 0 1 2-2z"/>'},
+    {t:'Alternar tema',sub:'Claro / escuro',fn:()=>window.toggleTheme&&toggleTheme(),ico:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>'},
+    {t:'Alternar som',sub:'Mute / unmute',fn:()=>window.toggleSound&&toggleSound(),ico:'<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>'},
+    {t:'Salvar ficha',sub:'Download JSON',fn:()=>window.toggleSaveMenu&&toggleSaveMenu(),ico:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/>'},
+    {t:'Adicionar crédito',sub:'Depositar',fn:()=>window.openCreditModal&&openCreditModal('add'),ico:'<circle cx="12" cy="12" r="10"/><polyline points="12 5 12 19"/><polyline points="5 12 12 19 19 12"/>'},
+    {t:'Retirar crédito',sub:'Saque',fn:()=>window.openCreditModal&&openCreditModal('sub'),ico:'<circle cx="12" cy="12" r="10"/><polyline points="12 19 12 5"/><polyline points="5 12 12 5 19 12"/>'},
+    {t:'Adicionar XP',sub:'Níveis e estágios',fn:()=>window.openAddXPModal&&openAddXPModal(),ico:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+  ];
+
+  let focusIdx=-1;let flatList=[];
+
+  function hl(text,q){
+    if(!q)return text;
+    const t=text||'';
+    const i=t.toLowerCase().indexOf(q.toLowerCase());
+    if(i<0)return t;
+    return t.slice(0,i)+'<span class="search-highlight">'+t.slice(i,i+q.length)+'</span>'+t.slice(i+q.length);
+  }
+
+  function buildIcon(path){return `<svg viewBox="0 0 24 24">${path}</svg>`}
+
+  function search(q){
+    q=q.trim();
+    flatList=[];
+    if(!q){
+      results.innerHTML=`<div class="search-empty"><strong>Digite para buscar</strong>abas, itens, perícias, ações…</div>`;
+      return;
+    }
+    const ql=q.toLowerCase();
+    const hits={tabs:[],actions:[],items:[],skills:[],pericias:[]};
+    TABS.forEach(x=>{if((x.t+' '+x.sub).toLowerCase().includes(ql))hits.tabs.push(x)});
+    ACTIONS.forEach(x=>{if((x.t+' '+x.sub).toLowerCase().includes(ql))hits.actions.push(x)});
+    try{
+      if(Array.isArray(inventory))inventory.forEach(it=>{
+        if(it.name.toLowerCase().includes(ql))hits.items.push({it});
+      });
+    }catch(_){}
+    try{
+      if(Array.isArray(skills))skills.forEach(s=>{
+        if((s.name||'').toLowerCase().includes(ql))hits.skills.push(s);
+      });
+    }catch(_){}
+    try{
+      if(typeof PERICIAS_DATA==='object'){
+        Object.entries(PERICIAS_DATA).forEach(([group,arr])=>{
+          arr.forEach(p=>{if((p.name||'').toLowerCase().includes(ql))hits.pericias.push({...p,group})});
+        });
+      }
+    }catch(_){}
+
+    const totalCount=hits.tabs.length+hits.actions.length+hits.items.length+hits.skills.length+hits.pericias.length;
+    if(totalCount===0){
+      results.innerHTML=`<div class="search-empty"><strong>Nada encontrado para "${q.replace(/</g,'&lt;')}"</strong>tenta outro termo</div>`;
+      return;
+    }
+
+    const parts=[];
+    function section(label,items,renderItem){
+      if(!items.length)return;
+      parts.push(`<div class="search-result-group"><div class="search-result-group-label">${label}</div>`);
+      items.slice(0,5).forEach(x=>{
+        const idx=flatList.length;
+        flatList.push(renderItem.fn);
+        parts.push(`<div class="search-result" data-idx="${idx}"><div class="search-result-ico">${buildIcon(renderItem.ico(x))}</div><div class="search-result-body"><div class="search-result-title">${hl(renderItem.title(x),q)}</div><div class="search-result-sub">${renderItem.sub(x)}</div></div>${renderItem.kbd?`<span class="search-result-kbd">${renderItem.kbd(x)}</span>`:''}</div>`);
+      });
+      parts.push(`</div>`);
+    }
+
+    section('Abas',hits.tabs,{
+      ico:x=>x.ico,title:x=>x.t,sub:x=>x.sub,kbd:_=>'↵',
+      fn:(x=>()=>{document.querySelector(`.sidebar-btn[data-tab="${x.k}"]`)?.click();closePanel()})
+    });
+    section('Ações',hits.actions,{
+      ico:x=>x.ico,title:x=>x.t,sub:x=>x.sub,kbd:_=>'↵',
+      fn:(x=>()=>{try{x.fn()}catch(_){}closePanel()})
+    });
+    // ACTIONS/TABS use closure capture; need to rebuild flatList properly
+    flatList=[];
+    parts.length=0;
+
+    function addSection(label,items,cfg){
+      if(!items.length)return;
+      parts.push(`<div class="search-result-group"><div class="search-result-group-label">${label}</div>`);
+      items.slice(0,5).forEach(x=>{
+        const idx=flatList.length;
+        flatList.push(cfg.fn(x));
+        parts.push(`<div class="search-result" data-idx="${idx}"><div class="search-result-ico">${buildIcon(cfg.ico(x))}</div><div class="search-result-body"><div class="search-result-title">${hl(cfg.title(x),q)}</div><div class="search-result-sub">${cfg.sub(x)}</div></div>${cfg.kbd?`<span class="search-result-kbd">${cfg.kbd(x)}</span>`:''}</div>`);
+      });
+      parts.push(`</div>`);
+    }
+    addSection('Abas',hits.tabs,{
+      ico:x=>x.ico,title:x=>x.t,sub:x=>x.sub,kbd:_=>'↵',
+      fn:x=>()=>{document.querySelector(`.sidebar-btn[data-tab="${x.k}"]`)?.click();closePanel()}
+    });
+    addSection('Ações',hits.actions,{
+      ico:x=>x.ico,title:x=>x.t,sub:x=>x.sub,kbd:_=>'↵',
+      fn:x=>()=>{try{x.fn()}catch(_){}closePanel()}
+    });
+    addSection('Itens do inventário',hits.items,{
+      ico:_=>'<path d="M20.91 8.84L8.56 2.23a1.93 1.93 0 0 0-1.81 0L3.1 4.13a2.12 2.12 0 0 0-.05 3.69l12.22 6.93a2 2 0 0 0 1.94 0L21 12.51a2.12 2.12 0 0 0-.09-3.67z"/><path d="M3.09 8.84v12.16L12 22V15.52"/>',
+      title:x=>x.it.name,sub:x=>`${x.it.cat} · ${x.it.rarity} · x${x.it.qty}`,
+      fn:x=>()=>{
+        document.querySelector('.sidebar-btn[data-tab="inventory"]')?.click();
+        setTimeout(()=>{if(typeof showDetail==='function')showDetail(x.it.id)},120);
+        closePanel();
+      }
+    });
+    addSection('Habilidades',hits.skills,{
+      ico:_=>'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0"/>',
+      title:x=>x.name,sub:x=>`${x.cost||0} de custo · ${x.desc?x.desc.slice(0,40):''}`,
+      fn:_=>()=>{document.querySelector('.sidebar-btn[data-tab="feitico"]')?.click();closePanel()}
+    });
+    addSection('Perícias',hits.pericias,{
+      ico:_=>'<path d="M12 2L15 8l6 1-4.5 4.5 1 6L12 17l-5.5 2.5 1-6L3 9l6-1z"/>',
+      title:x=>x.name,sub:x=>`Grupo ${x.group}`,
+      fn:x=>()=>{
+        document.querySelector('.sidebar-btn[data-tab="pericias"]')?.click();
+        setTimeout(()=>{if(typeof openPericiaModal==='function')openPericiaModal(x.id,x.group)},120);
+        closePanel();
+      }
+    });
+
+    results.innerHTML=parts.join('');
+    focusIdx=flatList.length?0:-1;
+    updateFocus();
+
+    results.querySelectorAll('.search-result').forEach(el=>{
+      el.addEventListener('click',()=>{
+        const i=parseInt(el.dataset.idx);
+        if(flatList[i])flatList[i]();
+      });
+      el.addEventListener('mouseenter',()=>{
+        focusIdx=parseInt(el.dataset.idx);updateFocus();
+      });
+    });
+  }
+
+  function updateFocus(){
+    results.querySelectorAll('.search-result').forEach(el=>{
+      el.classList.toggle('focus',parseInt(el.dataset.idx)===focusIdx);
+    });
+    const foc=results.querySelector('.search-result.focus');
+    if(foc)foc.scrollIntoView({block:'nearest'});
+  }
+
+  function openPanel(){results.classList.add('open')}
+  function closePanel(){results.classList.remove('open');input.blur()}
+
+  input.addEventListener('focus',()=>{openPanel();search(input.value)});
+  input.addEventListener('input',()=>{openPanel();search(input.value)});
+  input.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){e.preventDefault();focusIdx=Math.min(flatList.length-1,focusIdx+1);updateFocus()}
+    else if(e.key==='ArrowUp'){e.preventDefault();focusIdx=Math.max(0,focusIdx-1);updateFocus()}
+    else if(e.key==='Enter'){e.preventDefault();if(flatList[focusIdx])flatList[focusIdx]()}
+    else if(e.key==='Escape'){closePanel()}
+  });
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.topbar-search'))closePanel();
+  });
+
+  // Ctrl+K / Cmd+K
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&(e.key==='k'||e.key==='K')){
+      e.preventDefault();
+      input.focus();input.select();
+    }
+  });
+})();
 
 // ═══ DASHBOARD TOGGLES ═══
 // VER TUDO - navega para aba inventario com filtro

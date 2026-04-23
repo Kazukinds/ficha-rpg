@@ -1331,7 +1331,7 @@ input[type="number"]{-moz-appearance:textfield}
   animation-delay:calc(var(--i,0) * 40ms);
   will-change:transform;
 }
-.biblio-env:hover,.biblio-env.swipe-hover{z-index:20}
+.biblio-env:hover{z-index:20}
 @keyframes biblio-env-in{
   0%{opacity:0;transform:translateY(18px) scale(.96)}
   100%{opacity:1;transform:translateY(0) scale(1)}
@@ -1392,12 +1392,12 @@ input[type="number"]{-moz-appearance:textfield}
 }
 /* Hover — papel emerge da lateral mas FICA POR BAIXO da capa.
    Só a borda direita sobressai. Capa permanece em cima. */
-.biblio-env:hover .biblio-sleeve,.biblio-env.swipe-hover .biblio-sleeve{
+.biblio-env:hover .biblio-sleeve{
   transform:translateX(18%) translateY(-3%) rotate(3deg) scale(1);
   box-shadow:4px 10px 20px rgba(0,0,0,.18);
   z-index:2;
 }
-.biblio-env:hover .biblio-cover,.biblio-env.swipe-hover .biblio-cover{
+.biblio-env:hover .biblio-cover{
   transform:rotate(-1deg);
   box-shadow:0 16px 32px rgba(40,40,80,.28);
   z-index:5;
@@ -6689,23 +6689,6 @@ function renderBiblioGrid(){
   document.querySelectorAll('#biblio-filter-pills .inv-filter-pill').forEach(p=>{
     p.onclick=()=>{_biblioFilter=p.dataset.f;document.querySelectorAll('#biblio-filter-pills .inv-filter-pill').forEach(x=>x.classList.toggle('active',x===p));renderBiblioGrid()};
   });
-  _biblioBindSwipe(el);
-}
-function _biblioBindSwipe(grid){
-  if(grid._swipeBound)return;grid._swipeBound=true;
-  let last=null;
-  const clear=()=>{grid.querySelectorAll('.biblio-env.swipe-hover').forEach(e=>e.classList.remove('swipe-hover'));last=null};
-  const hit=(x,y)=>document.elementFromPoint(x,y)?.closest('.biblio-env');
-  grid.addEventListener('touchstart',e=>{
-    const t=e.touches[0];const env=hit(t.clientX,t.clientY);
-    if(env){clear();env.classList.add('swipe-hover');last=env}
-  },{passive:true});
-  grid.addEventListener('touchmove',e=>{
-    const t=e.touches[0];const env=hit(t.clientX,t.clientY);
-    if(env!==last){if(last)last.classList.remove('swipe-hover');if(env)env.classList.add('swipe-hover');last=env}
-  },{passive:true});
-  grid.addEventListener('touchend',()=>setTimeout(clear,350),{passive:true});
-  grid.addEventListener('touchcancel',clear,{passive:true});
 }
 let _biblioReaderIdx=-1,_biblioSubIdx=0,_BIBLIO_FULL=null,_biblioLoading=false;
 const BIBLIO_ENV_COLORS={violet:'#5b3acf',blue:'#3a47cf',green:'#2e9c5b',cyan:'#1d8bb0',orange:'#d97540',red:'#c0394a',purple:'#7340c4',lime:'#7aa83a',yellow:'#c79a2a',pink:'#c14e8d'};

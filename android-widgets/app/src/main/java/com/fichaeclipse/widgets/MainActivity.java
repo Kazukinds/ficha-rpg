@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    private static final String APP_URL = "https://kazukinds.github.io/ficha-rpg/";
+    private static final String APP_URL = "https://kazukinds.github.io/eclipse/";
     private WebView webView;
     private FrameLayout splash;
     private FrameLayout offline;

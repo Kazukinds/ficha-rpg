@@ -27,15 +27,12 @@ jobs:
       - name: Sync web assets → APK bundle
         run: bash Android/sync-assets.sh
 
-      - name: Ensure stable debug keystore
+      - name: Ensure stable keystores (debug + release)
         id: keystore
         working-directory: Android
         run: |
-          if [ -f debug.keystore ]; then
-            echo "Using committed keystore (stable signature)"
-            echo "seeded=0" >> "$GITHUB_OUTPUT"
-          else
-            echo "Keystore missing — generating + committing back"
+          seeded=0
+          if [ ! -f debug.keystore ]; then
             keytool -genkey -v \
               -keystore debug.keystore \
               -storepass android \
@@ -43,16 +40,27 @@ jobs:
               -keypass android \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
-            echo "seeded=1" >> "$GITHUB_OUTPUT"
+            seeded=1
           fi
+          if [ ! -f release.keystore ]; then
+            keytool -genkey -v \
+              -keystore release.keystore \
+              -storepass eclipse-release \
+              -alias eclipse-release \
+              -keypass eclipse-release \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Eclipse RPG,O=Kazuki Eclipse,L=Brasil,C=BR"
+            seeded=1
+          fi
+          echo "seeded=$seeded" >> "$GITHUB_OUTPUT"
 
-      - name: Commit seeded keystore
+      - name: Commit seeded keystores
         if: steps.keystore.outputs.seeded == '1' && github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f Android/debug.keystore
-          git commit -m "ci: seed stable debug keystore [skip ci]"
+          git add -f Android/debug.keystore Android/release.keystore
+          git commit -m "ci: seed stable keystores [skip ci]"
           git push
 
       - name: Gradle wrapper
@@ -61,14 +69,14 @@ jobs:
           gradle wrapper --gradle-version 8.5
           chmod +x gradlew
 
-      - name: Build debug APK
+      - name: Build release APK
         working-directory: Android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Stage APK
         run: |
           mkdir -p dist
-          cp Android/app/build/outputs/apk/debug/*.apk dist/Eclipse.apk
+          cp Android/app/build/outputs/apk/release/*.apk dist/Eclipse.apk
 
       - name: Extract versionName
         id: ver

@@ -10,8 +10,8 @@ android {
         applicationId "com.fichaeclipse.widgets"
         minSdk 24
         targetSdk 34
-        versionCode 12
-        versionName "3.9"
+        versionCode 20
+        versionName "4.0"
     }
 
     signingConfigs {
@@ -21,6 +21,12 @@ android {
             keyAlias "androiddebugkey"
             keyPassword "android"
         }
+        release {
+            storeFile file("${rootProject.rootDir}/release.keystore")
+            storePassword "eclipse-release"
+            keyAlias "eclipse-release"
+            keyPassword "eclipse-release"
+        }
     }
 
     buildTypes {
@@ -29,7 +35,7 @@ android {
         }
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -3392,10 +3392,11 @@ button:not(:disabled):active{transform:scale(.97)}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.15s!important;scroll-behavior:auto!important}
   .biblio-env{animation:none!important;opacity:1!important;transform:none!important}
 }
-/* Input touch — sem hover transform (evita repaint em scroll mobile) */
+/* Input touch — sem hover transform (evita repaint em scroll mobile).
+   .revealed (via touchstart JS) preserva a animação mesmo em touch. */
 @media(hover:none){
-  .biblio-env:hover .biblio-sleeve{transform:none}
-  .biblio-env:hover .biblio-cover{transform:none}
+  .biblio-env:hover:not(.revealed) .biblio-sleeve{transform:none}
+  .biblio-env:hover:not(.revealed) .biblio-cover{transform:none}
   .profile-avatar:hover,.status-card:hover .status-icon svg,.profile-char-figure:hover svg{transform:none!important;filter:none!important;animation:none!important;box-shadow:none!important}
 }
 /* Font-display swap já aplicado via Google Fonts. Imagens: lazy fallback */

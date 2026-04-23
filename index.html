@@ -3929,6 +3929,16 @@ img{content-visibility:auto}
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
+            <a class="profile-system-link" href="#" title="Escolher arquétipo de atributos (estilo Disco Elysium)" onclick="event.preventDefault();openArchetypePicker();">
+              <span class="profile-system-icon" aria-hidden="true" style="color:#c084fc;border-color:color-mix(in srgb,#c084fc 45%,var(--border))">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2 2M17.78 17.78l2 2M2 12h3M19 12h3M4.22 19.78l2-2M17.78 6.22l2-2"/></svg>
+              </span>
+              <span class="profile-system-info">
+                <span class="profile-system-name" style="color:#c084fc">Arquétipo de atributos</span>
+                <span class="profile-system-sub">Lógico · Instintivo · Vigoroso · Próprio</span>
+              </span>
+              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
             <a class="profile-system-link" id="profile-sound-link" href="#" title="Ativar/desativar som" onclick="event.preventDefault();toggleSound();const s=document.getElementById('profile-sound-sub');if(s)s.textContent=(localStorage.getItem('tiks-muted')==='1'?'Desativado':'Ativado');">
               <span class="profile-system-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -8505,6 +8515,161 @@ window.generateAutoSheet=function(level,opts){
   if(typeof toast==='function')toast(`Ficha gerada · ${profileData.name} · Nv ${level} · ${profileData.arquetipo}`,'success');
   try{window.sfx&&sfx.save&&sfx.save()}catch(_){}
 };
+
+// ═══ Arquétipo de Atributos — Disco Elysium style ═══
+const ARCHETYPE_PRESETS=[
+  {
+    key:'logico',name:'LÓGICO',color:'#60a5fa',
+    attrs:{Intelecto:5,Psique:1,Fisico:2,Motora:4},
+    desc:'Focado em raciocínio, análise e conhecimento. Resolve problemas com a mente, mas peca no emocional.',
+    ico:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'
+  },
+  {
+    key:'instintivo',name:'INSTINTIVO',color:'#c084fc',
+    attrs:{Intelecto:1,Psique:5,Fisico:4,Motora:2},
+    desc:'Guiado por intuição e sentimentos. Perceptivo e intenso, mas pouco racional.',
+    ico:'<path d="M9.5 2a5.5 5.5 0 0 0-4 9.5C7 13 8 14.5 8 16h8c0-1.5 1-3 2.5-4.5A5.5 5.5 0 0 0 14.5 2z"/><path d="M8 16v2a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2"/>'
+  },
+  {
+    key:'vigoroso',name:'VIGOROSO',color:'#f87171',
+    attrs:{Intelecto:1,Psique:2,Fisico:5,Motora:4},
+    desc:'Baseado em força e ação. Enfrenta tudo com o corpo, mas tem dificuldade em pensar e controlar emoções.',
+    ico:'<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>'
+  }
+];
+function _archetypePointCap(){
+  const lv=(typeof profileData==='object'&&profileData.level)?parseInt(profileData.level)||1:1;
+  return {maxPerAttr:lv>=10?6:5, totalPts:lv>=10?14:12, level:lv};
+}
+function _applyArchetypeAttrs(attrs){
+  if(typeof attributes==='undefined')return false;
+  attributes.forEach(a=>{
+    if(attrs[a.name]!==undefined){
+      a.val=attrs[a.name];
+      if(a.max<a.val)a.max=a.val;
+    }
+  });
+  try{if(typeof renderProfile==='function')renderProfile()}catch(_){}
+  try{if(typeof renderAttributes==='function')renderAttributes()}catch(_){}
+  try{if(typeof refreshAll==='function')refreshAll()}catch(_){}
+  try{if(typeof autosaveNow==='function')autosaveNow()}catch(_){}
+  return true;
+}
+window.openArchetypePicker=function(){
+  const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+  if(!title||!body)return;
+  title.textContent='Arquétipo de atributos';
+  const cap=_archetypePointCap();
+  const intro=`<div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px">
+    Sistema de 4 atributos começando em 0. Distribui <b style="color:var(--lime)">${cap.totalPts} pontos</b> · máx <b style="color:var(--lime)">${cap.maxPerAttr}</b> por atributo. ${cap.level>=10?`<span style="color:#fb923c">Nv ${cap.level} — bônus ativado</span>`:`No Nv 10 ganha +2 pts e máx sobe pra 6.`}
+  </div>`;
+  const cards=ARCHETYPE_PRESETS.map(p=>{
+    const rows=Object.entries(p.attrs).map(([k,v])=>{
+      const pct=(v/5)*100;
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);width:64px">${k}</span>
+        <span style="flex:1;height:6px;background:var(--bg-input);border-radius:3px;overflow:hidden;position:relative">
+          <span style="position:absolute;inset:0 ${100-pct}% 0 0;background:${p.color};border-radius:3px"></span>
+        </span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${p.color};width:18px;text-align:right">${v}</span>
+      </div>`;
+    }).join('');
+    return `<div class="archetype-card" data-key="${p.key}" style="padding:16px;background:linear-gradient(160deg,color-mix(in srgb,${p.color} 10%,var(--bg-card)),var(--bg-card));border:1px solid color-mix(in srgb,${p.color} 30%,var(--border));border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,${p.color} 15%,var(--bg-input));border:1px solid color-mix(in srgb,${p.color} 40%,transparent);display:flex;align-items:center;justify-content:center;color:${p.color};flex-shrink:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px">${p.ico}</svg>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;letter-spacing:2px;color:${p.color}">${p.name}</div>
+      </div>
+      <div>${rows}</div>
+      <div style="font-size:11.5px;line-height:1.5;color:var(--text-secondary)">${p.desc}</div>
+    </div>`;
+  }).join('');
+  const custom=`<div class="archetype-card" data-key="custom" style="padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--lime) 10%,var(--bg-card)),var(--bg-card));border:1px dashed color-mix(in srgb,var(--lime) 50%,var(--border));border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,var(--lime) 15%,var(--bg-input));border:1px solid color-mix(in srgb,var(--lime) 40%,transparent);display:flex;align-items:center;justify-content:center;color:var(--lime);flex-shrink:0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;letter-spacing:2px;color:var(--lime)">PRÓPRIO</div>
+    </div>
+    <div style="font-size:11.5px;line-height:1.5;color:var(--text-secondary)">Distribui livremente os <b>${cap.totalPts} pontos</b>. Crie seu personagem do zero — respeitando o limite de ${cap.maxPerAttr} por atributo.</div>
+  </div>`;
+  body.innerHTML=intro+
+    `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-height:60vh;overflow-y:auto">${cards}${custom}</div>
+    <div class="modal-btns" style="margin-top:14px"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  body.querySelectorAll('.archetype-card').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const k=c.dataset.key;
+      if(k==='custom'){_openCustomArchetype();return}
+      const preset=ARCHETYPE_PRESETS.find(p=>p.key===k);
+      if(!preset)return;
+      if(!confirm(`Aplicar arquétipo ${preset.name}?\n\nSobrescreve valores atuais dos atributos.`))return;
+      _applyArchetypeAttrs(preset.attrs);
+      if(typeof toast==='function')toast(`Arquétipo aplicado: ${preset.name}`,'success');
+      closeModal();
+    });
+  });
+};
+function _openCustomArchetype(){
+  const title=document.getElementById('modal-title'),body=document.getElementById('modal-body');
+  if(!title||!body)return;
+  title.textContent='Distribuir atributos';
+  const cap=_archetypePointCap();
+  const values={Intelecto:0,Psique:0,Fisico:0,Motora:0};
+  const colors={Intelecto:'#60a5fa',Psique:'#c084fc',Fisico:'#f87171',Motora:'#34d399'};
+  const rows=Object.keys(values).map(k=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
+      <div style="width:10px;height:36px;background:${colors[k]};border-radius:2px"></div>
+      <div style="flex:1">
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px">${k}</div>
+        <div style="height:6px;background:var(--bg-body);border-radius:3px;overflow:hidden;position:relative">
+          <span id="bar-${k}" style="display:block;height:100%;width:0%;background:${colors[k]};transition:width .18s"></span>
+        </div>
+      </div>
+      <button type="button" class="modal-btn secondary" style="padding:6px 12px;font-size:14px;min-width:36px" data-attr="${k}" data-delta="-1">−</button>
+      <div id="val-${k}" style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:${colors[k]};min-width:24px;text-align:center">0</div>
+      <button type="button" class="modal-btn secondary" style="padding:6px 12px;font-size:14px;min-width:36px" data-attr="${k}" data-delta="1">+</button>
+    </div>`).join('');
+  body.innerHTML=`
+    <div style="padding:12px 14px;background:linear-gradient(160deg,var(--bg-card),var(--bg-input));border:1px solid var(--border);border-radius:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)">Pontos restantes</div><div id="pts-remaining" style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;color:var(--lime)">${cap.totalPts}</div></div>
+      <div style="text-align:right"><div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)">Máx por atributo</div><div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--text-secondary)">${cap.maxPerAttr}</div></div>
+    </div>
+    ${rows}
+    <div class="modal-btns" style="margin-top:14px;gap:8px"><button class="modal-btn secondary" onclick="openArchetypePicker()">Voltar</button><button class="modal-btn primary" id="arch-apply" disabled>Aplicar</button></div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  function render(){
+    const used=Object.values(values).reduce((a,b)=>a+b,0);
+    const rem=cap.totalPts-used;
+    document.getElementById('pts-remaining').textContent=rem;
+    document.getElementById('pts-remaining').style.color=rem<0?'var(--red)':(rem===0?'var(--lime)':'var(--lime)');
+    Object.keys(values).forEach(k=>{
+      const v=values[k];
+      const el=document.getElementById('val-'+k);if(el)el.textContent=v;
+      const bar=document.getElementById('bar-'+k);if(bar)bar.style.width=(v/cap.maxPerAttr*100)+'%';
+    });
+    const apply=document.getElementById('arch-apply');
+    if(apply)apply.disabled=(rem!==0);
+  }
+  body.querySelectorAll('button[data-attr]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const k=btn.dataset.attr,d=parseInt(btn.dataset.delta);
+      const used=Object.values(values).reduce((a,b)=>a+b,0);
+      const next=values[k]+d;
+      if(next<0||next>cap.maxPerAttr)return;
+      if(d>0&&used>=cap.totalPts)return;
+      values[k]=next;render();
+    });
+  });
+  document.getElementById('arch-apply').addEventListener('click',()=>{
+    if(!confirm('Aplicar distribuição própria?\n\nSobrescreve valores atuais.'))return;
+    _applyArchetypeAttrs(values);
+    if(typeof toast==='function')toast('Arquétipo próprio aplicado','success');
+    closeModal();
+  });
+  render();
+}
 
 window.openSheetGeneratorModal=function(){
   const overlay=document.getElementById('modal-overlay');

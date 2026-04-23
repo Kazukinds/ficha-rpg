@@ -58,3 +58,5 @@ build-app/android/app/release/
 build-app/resources/
 *.keystore
 *.jks
+# Exceção: keystore debug estável pra APK Eclipse (assinatura fixa → OTA update funciona)
+!Android/debug.keystore

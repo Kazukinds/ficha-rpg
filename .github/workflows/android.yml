@@ -27,16 +27,33 @@ jobs:
       - name: Sync web assets → APK bundle
         run: bash Android/sync-assets.sh
 
-      - name: Generate debug keystore
+      - name: Ensure stable debug keystore
+        id: keystore
         working-directory: Android
         run: |
-          keytool -genkey -v \
-            -keystore debug.keystore \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
+          if [ -f debug.keystore ]; then
+            echo "Using committed keystore (stable signature)"
+            echo "seeded=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "Keystore missing — generating + committing back"
+            keytool -genkey -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+            echo "seeded=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit seeded keystore
+        if: steps.keystore.outputs.seeded == '1' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f Android/debug.keystore
+          git commit -m "ci: seed stable debug keystore [skip ci]"
+          git push
 
       - name: Gradle wrapper
         working-directory: Android

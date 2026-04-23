@@ -3,9 +3,14 @@ package com.fichaeclipse.widgets;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.ConnectivityManager;
@@ -20,6 +25,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
+import androidx.core.content.FileProvider;
+import java.io.File;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -94,6 +102,9 @@ public class MainActivity extends Activity {
 
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true);
+
+        // JS ↔ Java bridge (OTA update + versão nativa)
+        wv.addJavascriptInterface(new UpdateBridge(), "EclipseNative");
 
         wv.setWebViewClient(new WebViewClient() {
             @Override
@@ -316,5 +327,106 @@ public class MainActivity extends Activity {
             webView = null;
         }
         super.onDestroy();
+    }
+
+    // ═══ JS ↔ Java Bridge — OTA update Github releases ═══
+    public class UpdateBridge {
+        @JavascriptInterface
+        public String appVersion() {
+            try {
+                PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+                return pi.versionName + "|" + pi.versionCode;
+            } catch (Exception e) {
+                return "0|0";
+            }
+        }
+
+        @JavascriptInterface
+        public void downloadAndInstall(String apkUrl) {
+            runOnUiThread(() -> _doDownload(apkUrl));
+        }
+    }
+
+    private void _doDownload(String url) {
+        try {
+            Uri uri = Uri.parse(url);
+            String fname = "Eclipse-update.apk";
+            File outDir = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "");
+            if (!outDir.exists()) outDir.mkdirs();
+            final File outFile = new File(outDir, fname);
+            if (outFile.exists()) outFile.delete();
+
+            DownloadManager.Request req = new DownloadManager.Request(uri);
+            req.setTitle("Eclipse — atualização");
+            req.setDescription("Baixando nova versão");
+            req.setMimeType("application/vnd.android.package-archive");
+            req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            req.setDestinationUri(Uri.fromFile(outFile));
+
+            final DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            if (dm == null) return;
+            final long id = dm.enqueue(req);
+
+            // Progress polling → envia pro JS
+            new Thread(() -> {
+                while (true) {
+                    DownloadManager.Query q = new DownloadManager.Query().setFilterById(id);
+                    Cursor c = dm.query(q);
+                    if (c != null && c.moveToFirst()) {
+                        int statusIdx = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                        int totalIdx = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+                        int soFarIdx = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                        int status = statusIdx >= 0 ? c.getInt(statusIdx) : -1;
+                        long total = totalIdx >= 0 ? c.getLong(totalIdx) : 0;
+                        long soFar = soFarIdx >= 0 ? c.getLong(soFarIdx) : 0;
+                        final int pct = total > 0 ? (int) (soFar * 100 / total) : 0;
+                        runOnUiThread(() -> {
+                            if (webView != null)
+                                webView.evaluateJavascript("window.__otaProgress&&window.__otaProgress(" + pct + ")", null);
+                        });
+                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            c.close();
+                            runOnUiThread(() -> _installApk(outFile));
+                            return;
+                        }
+                        if (status == DownloadManager.STATUS_FAILED) {
+                            c.close();
+                            runOnUiThread(() -> {
+                                if (webView != null)
+                                    webView.evaluateJavascript("window.__otaError&&window.__otaError('download falhou')", null);
+                            });
+                            return;
+                        }
+                    }
+                    if (c != null) c.close();
+                    try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+                }
+            }).start();
+        } catch (Exception e) {
+            if (webView != null)
+                webView.evaluateJavascript("window.__otaError&&window.__otaError('" + e.getMessage().replace("'", "") + "')", null);
+        }
+    }
+
+    private void _installApk(File apk) {
+        try {
+            Uri contentUri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                contentUri = FileProvider.getUriForFile(this,
+                        "com.fichaeclipse.widgets.fileprovider", apk);
+            } else {
+                contentUri = Uri.fromFile(apk);
+            }
+            Intent install = new Intent(Intent.ACTION_VIEW);
+            install.setDataAndType(contentUri, "application/vnd.android.package-archive");
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(install);
+            if (webView != null)
+                webView.evaluateJavascript("window.__otaReady&&window.__otaReady()", null);
+        } catch (Exception e) {
+            if (webView != null)
+                webView.evaluateJavascript("window.__otaError&&window.__otaError('install falhou')", null);
+        }
     }
 }

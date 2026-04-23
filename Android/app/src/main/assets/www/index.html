@@ -3320,6 +3320,31 @@ button:not(:disabled):active{transform:scale(.97)}
 [data-theme="light"] .inv-card:hover{border-color:#18181c;box-shadow:0 6px 16px rgba(0,0,0,.06)}
 [data-theme="light"] .inv-filter-pill.active{background:#18181c;border-color:#18181c;color:#ffffff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 
+/* ═══ OTA UPDATE MODAL ═══ */
+.ota-modal{position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(8,8,14,.62);opacity:0;pointer-events:none;transition:opacity .25s}
+.ota-modal.show{opacity:1;pointer-events:auto}
+.ota-card{width:100%;max-width:380px;background:linear-gradient(160deg,#1d1d2a,#13131c);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px;color:#fff;box-shadow:0 24px 60px rgba(0,0,0,.55);transform:translateY(20px) scale(.94);opacity:0;transition:transform .35s cubic-bezier(.34,1.3,.64,1),opacity .25s;text-align:center}
+.ota-modal.show .ota-card{transform:translateY(0) scale(1);opacity:1}
+[data-theme="light"] .ota-card{background:#fff;color:#1a1825;border-color:rgba(0,0,0,.08)}
+.ota-icon{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--lime-bg);border:1px solid var(--lime-dim);display:flex;align-items:center;justify-content:center;color:var(--lime)}
+.ota-icon svg{width:26px;height:26px;animation:ota-spin 3s linear infinite}
+.ota-modal.downloading .ota-icon svg{animation:ota-spin .8s linear infinite}
+@keyframes ota-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.ota-title{font-size:17px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+.ota-desc{font-size:12.5px;line-height:1.55;color:rgba(255,255,255,.72);margin-bottom:16px}
+[data-theme="light"] .ota-desc{color:rgba(26,24,37,.72)}
+.ota-progress{height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-bottom:8px;display:none}
+.ota-modal.downloading .ota-progress{display:block}
+.ota-progress-fill{height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));width:0%;transition:width .2s;box-shadow:0 0 8px color-mix(in srgb,var(--lime) 50%,transparent)}
+.ota-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.65);margin-bottom:14px;display:none;letter-spacing:.14em}
+.ota-modal.downloading .ota-pct{display:block}
+.ota-modal.downloading .ota-actions{display:none}
+.ota-actions{display:flex;gap:8px}
+.ota-btn{flex:1;padding:11px 14px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:filter .2s,background .2s,border-color .2s,transform .15s}
+.ota-btn-no{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.8)}
+.ota-btn-yes{background:var(--lime);color:#09090b;box-shadow:0 4px 14px color-mix(in srgb,var(--lime) 40%,transparent)}
+.ota-btn-yes:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
 /* ═══ PERFORMANCE TUNING — PC/celular fraco ═══ */
 /* Render hints em tabs inativas — GPU economiza paint/layout off-screen */
 .tab-content:not(.active){content-visibility:auto;contain-intrinsic-size:1px 800px}
@@ -3896,6 +3921,16 @@ img{content-visibility:auto}
               <span class="profile-system-info">
                 <span class="profile-system-name">Som</span>
                 <span class="profile-system-sub" id="profile-sound-sub">Ativado</span>
+              </span>
+              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+            <a class="profile-system-link" id="profile-ota-link" href="#" title="Atualizar app via GitHub" onclick="event.preventDefault();otaCheckAndInstall(true);">
+              <span class="profile-system-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
+              </span>
+              <span class="profile-system-info">
+                <span class="profile-system-name">Atualizar app</span>
+                <span class="profile-system-sub" id="profile-ota-sub">Verificar nova versão</span>
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
@@ -9277,6 +9312,131 @@ if(_origAutosaveFs){
     return r;
   };
 }
+
+// ═══ OTA UPDATE (GitHub Releases) ═══
+const OTA_REPO='Kazukinds/eclipse';
+function _hasNative(){return !!(window.EclipseNative&&EclipseNative.appVersion)}
+function _nativeVersion(){
+  if(!_hasNative())return null;
+  const [name,code]=EclipseNative.appVersion().split('|');
+  return {name,code:parseInt(code)||0};
+}
+async function _fetchLatestRelease(){
+  try{
+    const r=await fetch(`https://api.github.com/repos/${OTA_REPO}/releases/latest`,{cache:'no-store'});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch(e){console.warn('fetch release fail',e);return null}
+}
+function _parseVersionCode(tag){
+  // Tag format: v3.1 ou 3.1 → versionCode = major*1000+minor*10
+  const m=String(tag||'').replace(/^v/,'').match(/(\d+)(?:\.(\d+))?/);
+  if(!m)return 0;
+  return parseInt(m[1])*1000+parseInt(m[2]||'0')*10;
+}
+function _findApkAsset(release){
+  const assets=(release&&release.assets)||[];
+  return assets.find(a=>/\.apk$/i.test(a.name))||null;
+}
+window.otaCheckAndInstall=async function(manual){
+  const sub=document.getElementById('profile-ota-sub');
+  if(!_hasNative()){
+    if(manual&&typeof toast==='function')toast('OTA disponível só no app Android','info');
+    if(sub)sub.textContent='Só no app Android';
+    return;
+  }
+  if(sub)sub.textContent='Verificando...';
+  const cur=_nativeVersion();
+  const rel=await _fetchLatestRelease();
+  if(!rel){if(sub)sub.textContent='Atual: '+cur.name+' (github offline)';return}
+  const latestCode=_parseVersionCode(rel.tag_name);
+  const apk=_findApkAsset(rel);
+  if(!apk){if(sub)sub.textContent='Release sem APK';return}
+  if(latestCode<=cur.code){
+    if(sub)sub.textContent='Atualizado · '+cur.name;
+    if(manual&&typeof toast==='function')toast('Você já está na última versão','success');
+    return;
+  }
+  if(sub)sub.textContent='Nova versão '+rel.tag_name+' disponível';
+  _otaShowPrompt(rel,apk);
+};
+function _otaShowPrompt(rel,apk){
+  let pop=document.getElementById('ota-modal');
+  if(!pop){
+    pop=document.createElement('div');pop.id='ota-modal';pop.className='ota-modal';
+    pop.innerHTML=`<div class="ota-card">
+      <div class="ota-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg></div>
+      <div class="ota-title"></div>
+      <div class="ota-desc"></div>
+      <div class="ota-progress"><div class="ota-progress-fill"></div></div>
+      <div class="ota-pct">0%</div>
+      <div class="ota-actions">
+        <button class="ota-btn ota-btn-no" type="button">Depois</button>
+        <button class="ota-btn ota-btn-yes" type="button">Atualizar agora</button>
+      </div>
+    </div>`;
+    document.body.appendChild(pop);
+  }
+  pop.querySelector('.ota-title').textContent='Nova versão '+rel.tag_name;
+  pop.querySelector('.ota-desc').textContent=(rel.name||rel.body||'Download + instalação automática.').slice(0,260);
+  pop.classList.remove('downloading');
+  pop.querySelector('.ota-progress-fill').style.width='0%';
+  pop.querySelector('.ota-pct').textContent='0%';
+  pop.classList.add('show');
+  const no=pop.querySelector('.ota-btn-no'),yes=pop.querySelector('.ota-btn-yes');
+  no.onclick=()=>pop.classList.remove('show');
+  yes.onclick=()=>{
+    pop.classList.add('downloading');
+    window.__otaProgress=pct=>{
+      pop.querySelector('.ota-progress-fill').style.width=pct+'%';
+      pop.querySelector('.ota-pct').textContent=pct+'%';
+    };
+    window.__otaError=msg=>{
+      pop.classList.remove('downloading');
+      if(typeof toast==='function')toast('Falha: '+msg,'error');
+    };
+    window.__otaReady=()=>{
+      pop.classList.remove('show');
+      if(typeof toast==='function')toast('Abrindo instalador...','info');
+    };
+    try{EclipseNative.downloadAndInstall(apk.browser_download_url)}catch(e){window.__otaError(e.message)}
+  };
+}
+// Auto-check ao iniciar (silencioso)
+setTimeout(()=>{if(_hasNative())otaCheckAndInstall(false)},4000);
+
+// ═══ ROTATION — preserva scroll + tab ativa ═══
+(function(){
+  const KEY='ficha-eclipse-ui-state';
+  function saveState(){
+    try{
+      const activeTab=document.querySelector('.sidebar-btn.active')?.dataset.tab||'';
+      const tabEl=document.querySelector('.tab-content.active');
+      const scrollY=tabEl?tabEl.scrollTop:window.scrollY;
+      sessionStorage.setItem(KEY,JSON.stringify({activeTab,scrollY,ts:Date.now()}));
+    }catch(_){}
+  }
+  function restoreState(){
+    try{
+      const raw=sessionStorage.getItem(KEY);if(!raw)return;
+      const st=JSON.parse(raw);
+      if(!st||(Date.now()-st.ts)>600000)return; // 10min TTL
+      if(st.activeTab){
+        const btn=document.querySelector(`.sidebar-btn[data-tab="${st.activeTab}"]`);
+        if(btn&&!btn.classList.contains('active'))btn.click();
+      }
+      requestAnimationFrame(()=>{
+        const tabEl=document.querySelector('.tab-content.active');
+        if(tabEl)tabEl.scrollTop=st.scrollY||0;
+        else window.scrollTo(0,st.scrollY||0);
+      });
+    }catch(_){}
+  }
+  window.addEventListener('orientationchange',()=>{saveState();setTimeout(restoreState,200)});
+  window.addEventListener('resize',()=>{clearTimeout(window._resizeTmr);window._resizeTmr=setTimeout(saveState,300)});
+  window.addEventListener('beforeunload',saveState);
+  window.addEventListener('load',()=>setTimeout(restoreState,400));
+})();
 
 </script>
 

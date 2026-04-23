@@ -53,6 +53,13 @@ jobs:
           mkdir -p dist
           cp Android/app/build/outputs/apk/debug/*.apk dist/Eclipse.apk
 
+      - name: Extract versionName
+        id: ver
+        run: |
+          VER=$(grep -oP 'versionName\s*"\K[^"]+' Android/app/build.gradle)
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: $VER"
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -61,14 +68,14 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-      - name: Publish rolling "latest" release
+      - name: Publish versioned release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: latest
-          name: Eclipse — latest
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Eclipse v${{ steps.ver.outputs.version }}
           body: |
-            APK mais recente buildado a partir de `main`.
+            APK v${{ steps.ver.outputs.version }} buildado a partir de `main`.
 
             **Download:** `Eclipse.apk` abaixo.
 

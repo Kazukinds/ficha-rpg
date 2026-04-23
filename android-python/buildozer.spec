@@ -8,7 +8,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,html,js,svg,json,webmanifest
 source.include_patterns = assets/*,assets/**/*
 
-version = 3.1
+version = 3.2
 
 requirements = python3,kivy,pyjnius,android
 

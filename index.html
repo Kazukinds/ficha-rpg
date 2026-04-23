@@ -48,6 +48,14 @@
   --radius:14px;--radius-sm:10px;--radius-xs:6px;
   --shadow-sm:0 1px 2px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.25);--shadow-lg:0 12px 40px rgba(0,0,0,.4);
   --transition-fast:.15s ease;--transition-base:.2s ease;--transition-smooth:.3s cubic-bezier(.4,0,.2,1);
+  /* Motion tokens — inspirados em transitions.dev / origin-ui */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-out-expo:cubic-bezier(.16,1,.3,1);
+  --ease-in-out-quint:cubic-bezier(.83,0,.17,1);
+  --ease-out-soft:cubic-bezier(.22,.61,.36,1);
+  --ease-bounce:cubic-bezier(.68,-.55,.265,1.55);
+  --ease-tactile:cubic-bezier(.2,.9,.2,1);
+  --dur-xs:120ms;--dur-sm:180ms;--dur-md:260ms;--dur-lg:420ms;--dur-xl:620ms;
   --rarity-common:#6b7280;--rarity-uncommon:#34d399;--rarity-rare:#60a5fa;--rarity-epic:#a78bfa;--rarity-legendary:#fbbf24;
   /* Golden ratio tokens (φ=1.618) — escala harmônica 6/10/16/26/42/68/110 */
   --phi:1.618;--phi-inv:.618;
@@ -77,6 +85,57 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 *{scrollbar-width:none;-ms-overflow-style:none}
 ::-webkit-scrollbar{width:0!important;height:0!important;display:none!important;background:transparent}
 ::-webkit-scrollbar-track,::-webkit-scrollbar-thumb,::-webkit-scrollbar-corner{display:none!important;background:transparent}
+
+/* ═══ MOTION LIBRARY ═══ (transitions.dev / origin-ui inspired) */
+@keyframes anim-pop-in{0%{opacity:0;transform:scale(.85)}60%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes anim-slide-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes anim-slide-down{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes anim-slide-left{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+@keyframes anim-scale-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+@keyframes anim-blur-in{from{opacity:0;filter:blur(8px);transform:scale(.98)}to{opacity:1;filter:blur(0);transform:scale(1)}}
+@keyframes anim-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes anim-pulse-flash{0%{background-color:transparent}30%{background-color:color-mix(in srgb,var(--lime) 30%,transparent)}100%{background-color:transparent}}
+@keyframes anim-number-pop{0%{transform:scale(1)}30%{transform:scale(1.22)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes anim-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+@keyframes anim-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+@keyframes anim-slide-in-right{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes anim-slide-out-left{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-20px)}}
+@keyframes anim-ripple{from{opacity:.6;transform:scale(0)}to{opacity:0;transform:scale(2.4)}}
+
+/* Helpers aplicáveis */
+.anim-pop{animation:anim-pop-in var(--dur-md) var(--ease-spring) both}
+.anim-slide-up{animation:anim-slide-up var(--dur-md) var(--ease-out-expo) both}
+.anim-slide-down{animation:anim-slide-down var(--dur-md) var(--ease-out-expo) both}
+.anim-scale-in{animation:anim-scale-in var(--dur-md) var(--ease-out-soft) both}
+.anim-blur-in{animation:anim-blur-in var(--dur-lg) var(--ease-out-expo) both}
+.anim-fade{animation:anim-fade-in var(--dur-md) linear both}
+.anim-flash{animation:anim-pulse-flash 700ms var(--ease-out-expo) both}
+.anim-number-pop{animation:anim-number-pop 420ms var(--ease-spring) both;display:inline-block}
+.anim-shake{animation:anim-shake 360ms var(--ease-tactile) both}
+.anim-wiggle{animation:anim-wiggle 400ms var(--ease-spring) both}
+
+/* Stagger — usar style="--i:0" em filhos ou aplicar .stagger-auto no pai */
+.stagger-children>*{animation:anim-slide-up var(--dur-md) var(--ease-out-expo) both;animation-delay:calc(var(--i,0) * 40ms + 40ms)}
+.stagger-auto>*:nth-child(1){--i:0}.stagger-auto>*:nth-child(2){--i:1}.stagger-auto>*:nth-child(3){--i:2}.stagger-auto>*:nth-child(4){--i:3}.stagger-auto>*:nth-child(5){--i:4}.stagger-auto>*:nth-child(6){--i:5}.stagger-auto>*:nth-child(7){--i:6}.stagger-auto>*:nth-child(8){--i:7}.stagger-auto>*:nth-child(9){--i:8}.stagger-auto>*:nth-child(10){--i:9}
+.stagger-auto>*{animation:anim-slide-up var(--dur-md) var(--ease-out-expo) both;animation-delay:calc(var(--i,0) * 45ms + 60ms)}
+
+/* Feedback tátil — todos os botões pressionam */
+button,.modal-btn,.card-action-btn,.sidebar-btn,.credit-pill,.xp-gear,.modal-btn,.toggle-pill{transition:transform var(--dur-xs) var(--ease-tactile),background-color var(--dur-sm) ease,border-color var(--dur-sm) ease,color var(--dur-sm) ease,box-shadow var(--dur-sm) ease}
+button:active:not(:disabled),.card-action-btn:active,.modal-btn:active,.credit-pill:active,.xp-gear:active,.toggle-pill:active{transform:scale(.96)}
+
+/* View Transitions API — navegação entre abas/páginas */
+@supports (view-transition-name:none){
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s;animation-timing-function:cubic-bezier(.22,.61,.36,1)}
+  ::view-transition-old(root){animation-name:anim-fade-in;animation-direction:reverse}
+  ::view-transition-new(root){animation-name:anim-fade-in}
+}
+
+/* Bar fills com overshoot spring */
+.attr-stat-fill,.status-fill,.xp-fill,.arch-pick-rfill{transition:width 620ms var(--ease-spring)!important}
+
+/* Ripple tátil */
+.ripple-host{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.3;transform:scale(0);animation:anim-ripple 620ms var(--ease-out-expo) forwards;mix-blend-mode:overlay}
 
 /* ═══ SIDEBAR ═══ */
 .sidebar{width:72px;min-height:100vh;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:flex-start;padding:16px 14px;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:width .45s cubic-bezier(.2,.8,.2,1),border-radius .45s,box-shadow .45s;overflow:hidden}
@@ -996,13 +1055,13 @@ input[type="number"]{-moz-appearance:textfield}
 .add-skill-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
 /* ═══ MODAL ═══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:28px;width:440px;max-width:90vw;max-height:90vh;overflow-y:auto;overflow-x:hidden;transform:translateY(16px) scale(.98);transition:transform var(--transition-smooth);box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,.03);overscroll-behavior:contain}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);display:flex;align-items:center;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity var(--dur-md) var(--ease-out-expo),backdrop-filter var(--dur-md) ease}
+.modal-overlay.open{opacity:1;pointer-events:all;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius);padding:28px;width:440px;max-width:90vw;max-height:90vh;overflow-y:auto;overflow-x:hidden;transform:translateY(16px) scale(.94);filter:blur(6px);transition:transform var(--dur-lg) var(--ease-spring),filter var(--dur-md) var(--ease-out-expo);box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,.03);overscroll-behavior:contain}
 .modal::-webkit-scrollbar{width:8px}
 .modal::-webkit-scrollbar-track{background:transparent}
 .modal::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
-.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);filter:blur(0)}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .modal-title{font-size:16px;font-weight:700}
 .modal-close{width:32px;height:32px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .2s}
@@ -1318,16 +1377,10 @@ input[type="number"]{-moz-appearance:textfield}
 .stt-fab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 @media(min-width:641px){.stt-fab{bottom:28px;right:28px}}
 
-/* ═══ BIBLIOTECA TAB ═══ */
-.biblio-section-head{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap;
-}
-.biblio-section-titles{display:flex;flex-direction:column;gap:2px;min-width:0}
-.biblio-section-titles .profile-section-title{margin:0;padding:0;border:none}
-.biblio-pills{flex-wrap:wrap;justify-content:flex-end;gap:6px}
+/* ═══ BIBLIOTECA TAB — preto & branco ═══ */
+.biblio-shelf{display:flex;flex-direction:column;gap:14px;padding:4px 0}
+.biblio-pills{display:flex;flex-wrap:wrap;gap:6px;padding:4px 2px}
 @media(max-width:640px){
-  .biblio-section-head{gap:10px}
   .biblio-pills{width:100%;justify-content:flex-start}
 }
 .biblio-ch-body{padding:8px 0;font-size:13.5px;line-height:1.65;color:var(--text-secondary)}
@@ -1335,14 +1388,16 @@ input[type="number"]{-moz-appearance:textfield}
 .biblio-ch-body ul{margin:0 0 10px 18px;padding:0}
 .biblio-ch-body li{margin-bottom:4px}
 
-/* Envelope cards — cover azul + sleeve branca */
+/* Envelope cards — capa preta + sleeve branca (leve cinza) */
 .biblio-grid{
   display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
   gap:36px 28px;padding:28px 16px;
-  background:#f3eee5;border-radius:14px;
+  background:#16161a;border-radius:16px;
+  border:1px solid #26262c;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 4px 18px rgba(0,0,0,.25);
+  position:relative;
 }
-[data-theme="light"] .biblio-grid{background:#f3eee5}
-[data-theme]:not([data-theme="light"]) .biblio-grid{background:#1a1825}
+[data-theme="light"] .biblio-grid{background:#f5f5f6;border-color:#e4e4e7;box-shadow:inset 0 1px 0 #fafafa,0 4px 18px rgba(0,0,0,.08)}
 .biblio-env{
   position:relative;aspect-ratio:0.82/1;cursor:pointer;
   --env-c:#3a47cf;
@@ -1352,6 +1407,15 @@ input[type="number"]{-moz-appearance:textfield}
   animation-delay:calc(var(--i,0) * 40ms);
   will-change:transform;
 }
+/* Sombra elíptica abaixo do livro — só na biblioteca */
+.biblio-env::after{
+  content:"";position:absolute;left:8%;right:8%;bottom:-14px;height:18px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.55) 0%,rgba(0,0,0,.28) 40%,transparent 75%);
+  filter:blur(6px);opacity:.75;z-index:0;pointer-events:none;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .4s,filter .4s;
+}
+[data-theme="light"] .biblio-env::after{background:radial-gradient(ellipse at center,rgba(0,0,0,.35) 0%,rgba(0,0,0,.18) 40%,transparent 75%);opacity:.6}
+.biblio-env:hover::after,.biblio-env.revealed::after{transform:translateY(4px) scaleX(1.08);opacity:.9;filter:blur(8px)}
 .biblio-env:hover{z-index:20}
 @keyframes biblio-env-in{
   0%{opacity:0;transform:translateY(18px) scale(.96)}
@@ -1372,10 +1436,10 @@ input[type="number"]{-moz-appearance:textfield}
 .biblio-env[data-c="yellow"]{--env-c:#c79a2a}
 .biblio-env[data-c="pink"]{--env-c:#c14e8d}
 .biblio-sleeve{
-  position:absolute;inset:0;background:#fff;border-radius:14px;
+  position:absolute;inset:0;background:#fafafa;border-radius:14px;
   display:flex;align-items:flex-start;justify-content:flex-end;
   padding:14px 12px;
-  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  box-shadow:0 6px 18px rgba(0,0,0,.08),inset 0 0 0 1px #ececee;
   transform:translateX(0) translateY(0) rotate(0) scale(.94);
   transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .4s;
   z-index:1;transform-origin:left center;
@@ -1384,7 +1448,7 @@ input[type="number"]{-moz-appearance:textfield}
 .biblio-sleeve-side{
   writing-mode:vertical-rl;
   font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;
-  color:#1a1a2a;font-weight:700;text-transform:uppercase;
+  color:#2a2a2e;font-weight:700;text-transform:uppercase;
   padding:6px 2px;
 }
 .biblio-cover{
@@ -1642,6 +1706,65 @@ input[type="number"]{-moz-appearance:textfield}
 .biblio-reader-book.flipping .book-page-fly{
   animation:book-page-turn .55s cubic-bezier(.4,0,.2,1);
 }
+/* Swap livro: sai por um lado, entra pelo outro com capa fechando/abrindo */
+.biblio-reader-book.book-swap-out{
+  transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .35s ease!important;
+}
+.biblio-reader-book.book-swap-out.to-left{transform:translateX(-140%) rotate(-14deg) scale(.86)!important;opacity:0}
+.biblio-reader-book.book-swap-out.to-right{transform:translateX(140%) rotate(14deg) scale(.86)!important;opacity:0}
+.biblio-reader-book.book-swap-in{
+  transition:none!important;
+}
+.biblio-reader-book.book-swap-in.from-left{transform:translateX(-140%) rotate(-14deg) scale(.86);opacity:0}
+.biblio-reader-book.book-swap-in.from-right{transform:translateX(140%) rotate(14deg) scale(.86);opacity:0}
+/* Enquanto trocando, capa volta fechada */
+.biblio-reader.book-swapping .book-cover-3d{transform:rotateY(0) rotate(0) translateX(0)!important;transition:transform .5s cubic-bezier(.4,0,.2,1)!important}
+.biblio-reader.book-swapping .book-page-fly{opacity:0!important;transform:translateZ(0) translateX(0) rotate(0) scale(.92)!important;transition:all .4s ease!important}
+
+/* Botão fechar flutuante — sempre visível */
+.biblio-reader-close-floating{
+  position:fixed;top:max(20px,env(safe-area-inset-top,20px));right:max(20px,env(safe-area-inset-right,20px));
+  width:44px;height:44px;border-radius:50%;z-index:9500;
+  background:rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.9);
+  display:none;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  transition:transform .2s var(--ease-tactile),background .25s,border-color .25s,color .25s;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+.biblio-reader-close-floating svg{width:20px;height:20px}
+.biblio-reader-close-floating:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);color:#fff;transform:rotate(90deg) scale(1.06)}
+.biblio-reader-close-floating:active{transform:scale(.9)}
+.biblio-reader.show.stage-1 .biblio-reader-close-floating{display:flex;animation:anim-scale-in .3s var(--ease-out-expo) both;animation-delay:.1s}
+.biblio-reader.stage-2 .biblio-reader-close-floating{display:none}
+[data-theme="light"] .biblio-reader-close-floating{background:rgba(26,24,37,.1);border-color:rgba(26,24,37,.2);color:#1a1825}
+[data-theme="light"] .biblio-reader-close-floating:hover{background:rgba(26,24,37,.18);color:#000}
+
+/* Livro caindo com vento sutil */
+.biblio-reader-book.book-falling{
+  animation:book-fall-wind 880ms cubic-bezier(.35,.0,.65,1) forwards;
+  pointer-events:none;
+}
+.biblio-reader.closing .book-cover-3d{
+  transform:rotateY(0) rotate(0) translateX(0)!important;
+  transition:transform .35s cubic-bezier(.4,0,.2,1)!important;
+}
+.biblio-reader.closing .book-page-fly{
+  opacity:0!important;
+  transform:translateZ(0) translateX(0) rotate(0) scale(.92)!important;
+  transition:all .3s ease!important;
+}
+@keyframes book-fall-wind{
+  0%{transform:translateY(0) translateX(0) rotate(0) scale(1);opacity:1;filter:blur(0)}
+  15%{transform:translateY(-8px) translateX(-4px) rotate(-1.5deg) scale(1);opacity:1}
+  28%{transform:translateY(-4px) translateX(5px) rotate(1.8deg) scale(1);opacity:1}
+  42%{transform:translateY(6px) translateX(-3px) rotate(-2.4deg) scale(.99);opacity:1}
+  60%{transform:translateY(60px) translateX(6px) rotate(6deg) scale(.96);opacity:.95;filter:blur(.4px)}
+  80%{transform:translateY(180px) translateX(-4px) rotate(-4deg) scale(.9);opacity:.6;filter:blur(1.2px)}
+  100%{transform:translateY(100vh) translateX(0) rotate(8deg) scale(.78);opacity:0;filter:blur(2.5px)}
+}
+/* Stage também desvanece enquanto livro cai */
+.biblio-reader.closing{background:rgba(0,0,0,0)!important;backdrop-filter:blur(0)!important;-webkit-backdrop-filter:blur(0)!important;transition:background .7s ease,backdrop-filter .7s ease!important}
+.biblio-reader.closing .biblio-reader-panel{opacity:0;transform:translateY(10px);transition:opacity .25s,transform .25s}
 .biblio-reader-book.subflip .book-page-fly{
   animation:book-page-detach 1s cubic-bezier(.4,0,.2,1);
 }
@@ -2236,6 +2359,161 @@ input[type="number"]{-moz-appearance:textfield}
   white-space:nowrap;
 }
 [data-theme="light"] .biblio-chart-label{color:rgba(26,24,37,.7)}
+
+/* Chart divergente para modificadores ± */
+.biblio-modchart{margin:18px 0;padding:14px 16px;background:color-mix(in srgb,var(--env-c,#3a47cf) 8%,transparent);border:1px solid color-mix(in srgb,var(--env-c,#3a47cf) 22%,transparent);border-radius:12px}
+.biblio-modchart .biblio-chart-title{margin-bottom:10px}
+.biblio-modchart-row{display:grid;grid-template-columns:140px 1fr 42px;align-items:center;gap:12px;padding:4px 0;font-size:12.5px}
+.biblio-modchart-lbl{color:rgba(255,255,255,.85);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-theme="light"] .biblio-modchart-lbl{color:rgba(26,24,37,.85)}
+.biblio-modchart-track{position:relative;height:8px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+[data-theme="light"] .biblio-modchart-track{background:rgba(26,24,37,.06)}
+.biblio-modchart-axis{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(255,255,255,.2);z-index:2}
+[data-theme="light"] .biblio-modchart-axis{background:rgba(26,24,37,.25)}
+.biblio-modchart-fill{position:absolute;top:0;bottom:0;border-radius:4px;transform-origin:left center;animation:biblio-chart-grow .55s cubic-bezier(.2,.8,.2,1) forwards;transform:scaleX(0)}
+.biblio-modchart-fill.pos{background:linear-gradient(90deg,color-mix(in srgb,var(--env-c,#3a47cf) 55%,transparent),var(--env-c,#3a47cf))}
+.biblio-modchart-fill.neg{background:linear-gradient(270deg,color-mix(in srgb,var(--red) 55%,transparent),var(--red));transform-origin:right center}
+.biblio-modchart-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:800;text-align:right}
+.biblio-modchart-val.pos{color:var(--env-c,#3a47cf)}
+.biblio-modchart-val.neg{color:var(--red)}
+.biblio-modchart-details{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.12)}
+[data-theme="light"] .biblio-modchart-details{border-top-color:rgba(26,24,37,.14)}
+.biblio-modchart-details summary{cursor:pointer;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.12em;text-transform:uppercase;font-weight:600;user-select:none}
+[data-theme="light"] .biblio-modchart-details summary{color:rgba(26,24,37,.6)}
+.biblio-modchart-list{margin-top:8px;display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:1.5;color:rgba(255,255,255,.75)}
+[data-theme="light"] .biblio-modchart-list{color:rgba(26,24,37,.8)}
+@media(max-width:520px){
+  .biblio-modchart-row{grid-template-columns:100px 1fr 38px;gap:8px;font-size:11.5px}
+}
+
+/* Pills inline — dados, DT, modificadores */
+.biblio-dice-pill,.biblio-dt-pill,.biblio-mod-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:1px 7px;margin:0 1px;border-radius:6px;
+  font-family:'JetBrains Mono',monospace;font-size:.92em;font-weight:700;letter-spacing:.02em;
+  vertical-align:baseline;line-height:1.3;
+  transition:transform .15s ease,background .15s;
+}
+.biblio-dice-pill .bp-ico svg{width:11px;height:11px;vertical-align:-1px}
+.biblio-dice-pill{background:color-mix(in srgb,var(--env-c,#3a47cf) 14%,transparent);color:var(--env-c,#3a47cf);border:1px solid color-mix(in srgb,var(--env-c,#3a47cf) 30%,transparent)}
+.biblio-dice-pill:hover{background:color-mix(in srgb,var(--env-c,#3a47cf) 24%,transparent);transform:translateY(-1px)}
+.biblio-dt-pill{background:color-mix(in srgb,var(--yellow) 13%,transparent);color:var(--yellow);border:1px solid color-mix(in srgb,var(--yellow) 32%,transparent)}
+.biblio-mod-pill{background:rgba(255,255,255,.05);color:var(--lime);border:1px solid color-mix(in srgb,var(--lime) 28%,transparent)}
+.biblio-mod-pill.neg{color:var(--red);border-color:color-mix(in srgb,var(--red) 28%,transparent)}
+[data-theme="light"] .biblio-mod-pill{background:rgba(26,24,37,.04)}
+
+/* Keywords highlight — cores por categoria */
+.hl-lore{color:#c084fc;font-weight:600;text-shadow:0 0 14px color-mix(in srgb,#c084fc 28%,transparent)}
+.hl-mech{color:var(--env-c,#60a5fa);font-weight:600}
+.hl-action{color:var(--lime);font-weight:600}
+[data-theme="light"] .hl-lore{color:#7c3aed;text-shadow:none}
+[data-theme="light"] .hl-mech{color:#2563eb}
+[data-theme="light"] .hl-action{color:#15803d}
+
+/* <strong> mais vibrante no reader */
+.biblio-page-slide strong{
+  color:var(--env-c,#fff);font-weight:700;
+  background:linear-gradient(180deg,transparent 60%,color-mix(in srgb,var(--env-c,#3a47cf) 18%,transparent) 60%);
+  padding:0 2px;border-radius:3px;
+}
+[data-theme="light"] .biblio-page-slide strong{background:linear-gradient(180deg,transparent 60%,color-mix(in srgb,var(--env-c,#3a47cf) 22%,transparent) 60%)}
+
+/* ═══ INSIGHT PANEL — widgets preenchendo espaço vazio ═══ */
+.biblio-insight{
+  margin:22px 0 6px;padding:16px;border-radius:14px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c,#3a47cf) 6%,transparent) 0%,transparent 100%);
+  border:1px solid color-mix(in srgb,var(--c,#3a47cf) 16%,rgba(255,255,255,.06));
+  display:flex;flex-direction:column;gap:14px;
+  animation:anim-slide-up var(--dur-lg) var(--ease-out-expo) both;animation-delay:.1s;
+}
+[data-theme="light"] .biblio-insight{border-color:color-mix(in srgb,var(--c,#3a47cf) 20%,rgba(26,24,37,.08))}
+.ip-sec-label{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:700;margin-bottom:6px}
+[data-theme="light"] .ip-sec-label{color:rgba(26,24,37,.5)}
+
+/* Progress */
+.ip-progress{display:flex;flex-direction:column;gap:8px}
+.ip-prog-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ip-prog-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--c,#3a47cf);font-weight:800}
+.ip-prog-meta{font-size:10.5px;color:rgba(255,255,255,.5);font-weight:500}
+[data-theme="light"] .ip-prog-meta{color:rgba(26,24,37,.55)}
+.ip-prog-bars{display:flex;flex-direction:column;gap:6px}
+.ip-prog-row{display:grid;grid-template-columns:68px 1fr 56px;align-items:center;gap:10px;font-size:11px}
+.ip-prog-k{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600}
+[data-theme="light"] .ip-prog-k{color:rgba(26,24,37,.55)}
+.ip-prog-bar{display:block;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;position:relative}
+[data-theme="light"] .ip-prog-bar{background:rgba(26,24,37,.06)}
+.ip-prog-bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,color-mix(in srgb,var(--c,#3a47cf) 60%,transparent),var(--c,#3a47cf));border-radius:3px;animation:ipProgFill .9s var(--ease-out-expo) both;animation-delay:.2s}
+@keyframes ipProgFill{from{width:0!important}}
+.ip-prog-v{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.75);text-align:right;font-weight:700}
+[data-theme="light"] .ip-prog-v{color:rgba(26,24,37,.8)}
+
+/* Quote */
+.ip-quote{
+  position:relative;padding:14px 16px 14px 44px;border-radius:10px;
+  background:color-mix(in srgb,var(--c,#3a47cf) 8%,transparent);
+  border-left:3px solid var(--c,#3a47cf);
+  font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.82);font-style:italic;
+}
+[data-theme="light"] .ip-quote{color:rgba(26,24,37,.85);background:color-mix(in srgb,var(--c,#3a47cf) 10%,transparent)}
+.ip-quote p{margin:0}
+.ip-quote-mark{position:absolute;left:12px;top:10px;width:22px;height:22px;color:color-mix(in srgb,var(--c,#3a47cf) 65%,transparent);opacity:.7}
+
+/* Tags */
+.ip-tags-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.ip-tag{
+  display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.75);font-size:10.5px;font-weight:600;letter-spacing:.4px;
+  text-transform:lowercase;
+  transition:transform .18s,background .18s,border-color .18s;
+}
+.ip-tag:hover{background:color-mix(in srgb,var(--c,#3a47cf) 14%,transparent);border-color:color-mix(in srgb,var(--c,#3a47cf) 40%,transparent);color:#fff;transform:translateY(-1px)}
+[data-theme="light"] .ip-tag{background:rgba(26,24,37,.04);border-color:rgba(26,24,37,.1);color:rgba(26,24,37,.75)}
+
+/* Row com next-card + related */
+.ip-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.ip-row{grid-template-columns:1fr}}
+.ip-next-card{
+  display:flex;flex-direction:column;gap:4px;padding:12px 14px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--c,#3a47cf) 12%,transparent),transparent);
+  border:1px solid color-mix(in srgb,var(--c,#3a47cf) 25%,rgba(255,255,255,.08));
+  border-radius:10px;cursor:pointer;text-align:left;color:var(--text,#fff);
+  font-family:inherit;position:relative;
+  transition:transform .18s var(--ease-tactile),border-color .2s,box-shadow .2s;
+}
+.ip-next-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--c,#3a47cf) 55%,transparent);box-shadow:0 8px 20px color-mix(in srgb,var(--c,#3a47cf) 18%,transparent)}
+.ip-next-label{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:color-mix(in srgb,var(--c,#3a47cf) 85%,#fff);font-weight:700}
+.ip-next-title{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#fff;margin-top:2px}
+[data-theme="light"] .ip-next-title{color:#1a1825}
+.ip-next-preview{font-size:11px;line-height:1.4;color:rgba(255,255,255,.6);display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px}
+[data-theme="light"] .ip-next-preview{color:rgba(26,24,37,.65)}
+.ip-next-arrow{position:absolute;right:12px;top:14px;color:var(--c,#3a47cf);opacity:.7;transition:transform .2s,opacity .2s}
+.ip-next-arrow svg{width:14px;height:14px}
+.ip-next-card:hover .ip-next-arrow{opacity:1;transform:translateX(3px)}
+
+/* Related */
+.ip-related-list{display:flex;flex-direction:column;gap:6px}
+.ip-related-card{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;cursor:pointer;color:var(--text,#fff);
+  font-family:inherit;text-align:left;
+  transition:transform .15s var(--ease-tactile),border-color .2s,background .2s;
+}
+[data-theme="light"] .ip-related-card{background:rgba(26,24,37,.03);border-color:rgba(26,24,37,.08)}
+.ip-related-card:hover{transform:translateX(2px);border-color:color-mix(in srgb,var(--rc,#3a47cf) 45%,transparent);background:color-mix(in srgb,var(--rc,#3a47cf) 8%,transparent)}
+.ip-related-ico{
+  width:24px;height:24px;flex-shrink:0;border-radius:6px;
+  background:color-mix(in srgb,var(--rc,#3a47cf) 20%,transparent);
+  color:var(--rc,#3a47cf);
+  display:flex;align-items:center;justify-content:center;
+}
+.ip-related-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ip-related-text{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.ip-related-t{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-theme="light"] .ip-related-t{color:#1a1825}
+.ip-related-s{font-size:10px;color:rgba(255,255,255,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-theme="light"] .ip-related-s{color:rgba(26,24,37,.6)}
 
 @media(max-width:780px){
   .biblio-reader{padding:20px 16px}
@@ -3005,8 +3283,17 @@ textarea{line-height:1.5}
 
 /* ═══ INTERFACE POLISH v2 ═══ */
 /* Tab content fade-in */
-.tab-content.active{animation:tab-slide-in .35s cubic-bezier(.2,.8,.2,1)}
-@keyframes tab-slide-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.tab-content.active{animation:tab-slide-in var(--dur-lg) var(--ease-out-expo)}
+@keyframes tab-slide-in{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(4px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+/* Stagger dos cards dentro da aba ativa */
+.tab-content.active .card,.tab-content.active .dash-grid>*,.tab-content.active .xp-card{animation:anim-slide-up var(--dur-lg) var(--ease-out-expo) both}
+.tab-content.active .dash-grid>*:nth-child(1){animation-delay:40ms}
+.tab-content.active .dash-grid>*:nth-child(2){animation-delay:90ms}
+.tab-content.active .dash-grid>*:nth-child(3){animation-delay:140ms}
+.tab-content.active .dash-grid>*:nth-child(4){animation-delay:190ms}
+.tab-content.active .dash-grid>*:nth-child(5){animation-delay:240ms}
+.tab-content.active .dash-grid>*:nth-child(6){animation-delay:290ms}
+.tab-content.active .dash-grid>*:nth-child(n+7){animation-delay:340ms}
 
 /* Tab headers — header consistente para novas interfaces */
 .tab-header{display:flex;align-items:center;gap:16px;padding:20px 24px;margin-bottom:16px;background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-card-inner) 100%);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.15);position:relative;overflow:hidden}
@@ -3646,7 +3933,7 @@ button:not(:disabled):active{transform:scale(.97)}
 /* Tabs inativas — display:none já zera render. Ativas: isola paint do restante */
 .tab-content.active{contain:layout style}
 /* Lazy-render de seções off-screen — ganho grande em scroll longo */
-.profile-section,.biblio-env,.stat-block,.card{content-visibility:auto;contain-intrinsic-size:1px 280px}
+.profile-section,.stat-block,.card{content-visibility:auto;contain-intrinsic-size:1px 280px}
 /* Barra topo isolada pra não re-paint com scroll conteúdo */
 .topbar{contain:layout style}
 /* Otimizações mobile agressivas — reduz paint/composite em devices fracos */
@@ -3688,7 +3975,7 @@ button:not(:disabled):active{transform:scale(.97)}
 /* Input touch — sem hover transform (evita repaint em scroll mobile).
    .revealed (via touchstart JS) preserva a animação mesmo em touch. */
 @media(hover:none){
-  .biblio-env:hover:not(.revealed) .biblio-sleeve{transform:none}
+  .biblio-env:hover:not(.revealed) .biblio-sleeve{transform:translateX(0) translateY(0) rotate(0) scale(.94)}
   .biblio-env:hover:not(.revealed) .biblio-cover{transform:none}
   .profile-avatar:hover,.status-card:hover .status-icon svg,.profile-char-figure:hover svg{transform:none!important;filter:none!important;animation:none!important;box-shadow:none!important}
 }
@@ -3894,24 +4181,13 @@ img{content-visibility:auto}
 
     <!-- ═══ BIBLIOTECA (nativa — sem iframe) ═══ -->
     <section class="tab-content" id="tab-biblioteca">
-      <div class="tab-header">
-        <div class="tab-header-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-        <div class="tab-header-info"><h1>Biblioteca</h1><p>Lore · sistemas · caminhos · arquétipos · poderes</p></div>
-        <span class="tab-header-badge">Ficha</span>
-      </div>
-      <div class="profile-section biblio-section">
-        <div class="biblio-section-head">
-          <div class="biblio-section-titles">
-            <div class="profile-section-title">Seções</div>
-            <div class="ficha-subtitle">Toque um card pra ler</div>
-          </div>
-          <div class="inv-filter-pills biblio-pills" id="biblio-filter-pills">
-            <button class="inv-filter-pill active" data-f="all">Todas</button>
-            <button class="inv-filter-pill" data-f="mec">Mecânica</button>
-            <button class="inv-filter-pill" data-f="pers">Personagem</button>
-            <button class="inv-filter-pill" data-f="cam">Caminhos</button>
-            <button class="inv-filter-pill" data-f="mun">Mundo</button>
-          </div>
+      <div class="biblio-shelf">
+        <div class="inv-filter-pills biblio-pills" id="biblio-filter-pills">
+          <button class="inv-filter-pill active" data-f="all">Todas</button>
+          <button class="inv-filter-pill" data-f="mec">Mecânica</button>
+          <button class="inv-filter-pill" data-f="pers">Personagem</button>
+          <button class="inv-filter-pill" data-f="cam">Caminhos</button>
+          <button class="inv-filter-pill" data-f="mun">Mundo</button>
         </div>
         <div class="biblio-grid" id="biblio-grid"></div>
       </div>
@@ -4146,6 +4422,7 @@ img{content-visibility:auto}
 
 <!-- ═══ BIBLIOTECA READER (livro 3D + page flip) ═══ -->
 <div class="biblio-reader" id="biblio-reader" onclick="biblioReaderBackdrop(event)">
+  <button type="button" class="biblio-reader-close-floating" onclick="event.stopPropagation();closeBiblioReader()" aria-label="Fechar leitor" title="Fechar (ESC)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   <div class="biblio-reader-stage" onclick="event.stopPropagation()">
     <div class="biblio-reader-book" id="biblio-reader-book" onclick="biblioReaderAdvance()">
       <div class="book-3d">
@@ -4387,7 +4664,62 @@ let groupMembers=[];
 let nextMemberId=1;
 
 // ═══ NAV ═══
-document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListener('click',()=>{profileOpen=false;previousTab=null;document.querySelectorAll('.sidebar-btn').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));b.classList.add('active');const tabEl=document.getElementById('tab-'+b.dataset.tab);if(tabEl)tabEl.classList.add('active');const t=b.dataset.tab;if(t==='dashboard'){renderSummary();renderXP();setTimeout(()=>drawChart(false),60)}else if(t==='feiticos'){try{renderFeitTab()}catch(_){}}else if(t==='biblioteca'){try{renderBiblioGrid()}catch(_){}}else if(t==='inventory'){try{renderInvTab()}catch(_){}}})});
+document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListener('click',()=>{
+  const doSwitch=()=>{
+    profileOpen=false;previousTab=null;
+    document.querySelectorAll('.sidebar-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const tabEl=document.getElementById('tab-'+b.dataset.tab);if(tabEl)tabEl.classList.add('active');
+    const t=b.dataset.tab;
+    if(t==='dashboard'){renderSummary();renderXP();setTimeout(()=>drawChart(false),60)}
+    else if(t==='feiticos'){try{renderFeitTab()}catch(_){}}
+    else if(t==='biblioteca'){try{renderBiblioGrid()}catch(_){}}
+    else if(t==='inventory'){try{renderInvTab()}catch(_){}}
+  };
+  if(document.startViewTransition&&!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    try{document.startViewTransition(doSwitch)}catch(_){doSwitch()}
+  }else{doSwitch()}
+})});
+
+// ═══ MOTION RUNTIME ═══ (ripple + number pop + stagger init)
+(function initMotion(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  // Ripple em qualquer botão relevante
+  const RIPPLE_SEL='.modal-btn,.credit-pill,.card-action-btn,.sidebar-btn,.xp-gear,.arch-pick-card,.arch-confirm-btn,.attr-arch-btn,.attr-gear-item,.toggle-pill,.filter-pill';
+  document.addEventListener('pointerdown',e=>{
+    const host=e.target.closest(RIPPLE_SEL);if(!host)return;
+    const r=host.getBoundingClientRect();
+    const size=Math.max(r.width,r.height)*1.6;
+    const rip=document.createElement('span');
+    rip.className='ripple';
+    rip.style.width=rip.style.height=size+'px';
+    rip.style.left=(e.clientX-r.left-size/2)+'px';
+    rip.style.top=(e.clientY-r.top-size/2)+'px';
+    if(getComputedStyle(host).position==='static')host.style.position='relative';
+    host.classList.add('ripple-host');
+    host.appendChild(rip);
+    setTimeout(()=>rip.remove(),650);
+  });
+  // Number pop em .attr-stat-val / .status-val / .xp-level-num quando texto muda
+  const NUM_SEL='.attr-stat-val,.status-val,.xp-numbers,#xp-level-num,#credit-total,#stage-num,.attr-stat-used';
+  const prevText=new WeakMap();
+  const popTick=()=>{
+    document.querySelectorAll(NUM_SEL).forEach(el=>{
+      const cur=el.textContent;
+      const old=prevText.get(el);
+      if(old!==undefined&&old!==cur){
+        el.classList.remove('anim-number-pop');
+        void el.offsetWidth;
+        el.classList.add('anim-number-pop');
+        setTimeout(()=>el.classList.remove('anim-number-pop'),450);
+      }
+      prevText.set(el,cur);
+    });
+  };
+  const mo=new MutationObserver(()=>{clearTimeout(window._popT);window._popT=setTimeout(popTick,10)});
+  mo.observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
 
 // Stubs no-op — sistemas feitiço/pet/veículo/implante removidos
 window.switchToTab=function(){};
@@ -7147,6 +7479,9 @@ function _biblioRenderAllSlides(){
   body.querySelectorAll('.biblio-page-slide').forEach(_biblioInjectDifficultyScale);
   body.querySelectorAll('.biblio-page-slide').forEach(_biblioEnhanceSkills);
   body.querySelectorAll('.biblio-page-slide').forEach(_biblioEnhanceRollLists);
+  body.querySelectorAll('.biblio-page-slide').forEach(_biblioEnhanceModList);
+  body.querySelectorAll('.biblio-page-slide').forEach(_biblioEnhanceTextInline);
+  body.querySelectorAll('.biblio-page-slide').forEach(_biblioAddInsightPanel);
   // Bind data-gen buttons embutidos no conteúdo da biblioteca
   body.querySelectorAll('[data-gen]').forEach(btn=>{
     btn.addEventListener('click',e=>{e.preventDefault();genRoll(btn.dataset.gen)});
@@ -7483,6 +7818,184 @@ function _biblioTable2Chart(table){
   wrap.innerHTML=html;
   table.replaceWith(wrap.firstElementChild);
 }
+// Detecta grupos de <p><strong>Label:</strong> ... ±N ... </p> consecutivos
+// e converte em bar chart divergente (modificadores +/-)
+function _biblioEnhanceModList(slide){
+  const paras=Array.from(slide.querySelectorAll('p'));
+  let group=[];const groups=[];
+  const flush=()=>{if(group.length>=3)groups.push(group);group=[]};
+  for(const p of paras){
+    const strong=p.querySelector('strong');
+    if(!strong){flush();continue}
+    // Ignora se tem muita coisa aninhada (listas, outros elementos)
+    if(p.querySelectorAll('ul,ol,table,details').length){flush();continue}
+    const txt=p.textContent;
+    // Pega primeiro número com sinal explícito ou sem sinal após "dificuldade"
+    const m=txt.match(/(?:Dificuldade|DT)\s*([+−-]?\s*\d+)/i)||txt.match(/([+−-]\s*\d+)/);
+    if(!m){flush();continue}
+    const numStr=m[1].replace('−','-').replace(/\s+/g,'');
+    const num=parseInt(numStr,10);
+    if(isNaN(num)){flush();continue}
+    const label=strong.textContent.replace(/:$/,'').trim();
+    const rest=txt.replace(strong.textContent,'').replace(/^[:\s]+/,'').trim();
+    group.push({p,label,num,rest});
+  }
+  flush();
+  if(!groups.length)return;
+  for(const g of groups){
+    const nums=g.map(x=>x.num);
+    const range=Math.max(Math.abs(Math.min(...nums,0)),Math.abs(Math.max(...nums,0)),1);
+    const html=`<div class="biblio-modchart">
+      <div class="biblio-chart-title">Modificadores</div>
+      ${g.map(x=>{
+        const pct=Math.abs(x.num)/range*50;
+        const side=x.num>=0?'left:50%':'right:50%';
+        const pos=x.num>=0?'pos':'neg';
+        return `<div class="biblio-modchart-row" title="${x.rest.replace(/"/g,'&quot;')}">
+          <div class="biblio-modchart-lbl">${x.label}</div>
+          <div class="biblio-modchart-track"><div class="biblio-modchart-axis"></div><div class="biblio-modchart-fill ${pos}" style="${side};width:${pct}%"></div></div>
+          <div class="biblio-modchart-val ${pos}">${x.num>0?'+':''}${x.num}</div>
+        </div>`;
+      }).join('')}
+      <details class="biblio-modchart-details"><summary>Detalhes</summary>
+        <div class="biblio-modchart-list">
+        ${g.map(x=>`<div><b>${x.label}${x.num>0?' +':' '}${x.num}</b> — ${x.rest||'—'}</div>`).join('')}
+        </div>
+      </details>
+    </div>`;
+    g[0].p.insertAdjacentHTML('beforebegin',html);
+    g.forEach(x=>x.p.remove());
+  }
+}
+
+// Painel de insights — preenche espaço vazio com widgets úteis
+// Widgets: progress, quote, tags, next preview, related chapters
+function _biblioAddInsightPanel(slide){
+  if(slide.querySelector('.biblio-insight'))return;
+  const ch=BIBLIO_DATA[_biblioReaderIdx];if(!ch)return;
+  const pages=_biblioGetSubPages(ch);
+  const curSub=_biblioSubIdx;
+  const color=BIBLIO_ENV_COLORS[ch.c]||'#3a47cf';
+  // Calc progress chapter + page
+  const chapPct=((_biblioReaderIdx+1)/BIBLIO_DATA.length)*100;
+  const pagePct=((curSub+1)/pages.length)*100;
+  // Reading time — aprox 250wpm
+  const words=slide.textContent.trim().split(/\s+/).length;
+  const mins=Math.max(1,Math.round(words/250));
+  // Quote — pega frase mais longa entre 60 e 180 chars
+  const sentences=slide.textContent.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(s=>s.length>=60&&s.length<=180);
+  const quote=sentences.sort((a,b)=>b.length-a.length)[0]||'';
+  // Tags — pega palavras-chave destacadas (hl-*) no slide
+  const tagSet=new Set();
+  slide.querySelectorAll('.hl-lore,.hl-mech,.hl-action').forEach(el=>{
+    const t=el.textContent.trim().toLowerCase();
+    if(t.length>2&&t.length<24)tagSet.add(t);
+  });
+  const tags=[...tagSet].slice(0,8);
+  // Próxima subpágina
+  const nextPage=pages[curSub+1];
+  // Capítulos relacionados (mesma categoria)
+  const related=BIBLIO_DATA.filter(x=>x.cat===ch.cat&&x.id!==ch.id).slice(0,3);
+  // Monta HTML — renderiza só widgets que têm conteúdo
+  let html='<div class="biblio-insight" style="--c:'+color+'">';
+  // Row 1: Progress
+  html+=`<div class="ip-progress">
+    <div class="ip-prog-head"><span class="ip-prog-label">Progresso</span><span class="ip-prog-meta">${mins} min · ${words} palavras</span></div>
+    <div class="ip-prog-bars">
+      <div class="ip-prog-row"><span class="ip-prog-k">Página</span><span class="ip-prog-bar"><span style="width:${pagePct}%"></span></span><span class="ip-prog-v">${curSub+1}/${pages.length}</span></div>
+      <div class="ip-prog-row"><span class="ip-prog-k">Capítulo</span><span class="ip-prog-bar"><span style="width:${chapPct}%"></span></span><span class="ip-prog-v">${_biblioReaderIdx+1}/${BIBLIO_DATA.length}</span></div>
+    </div>
+  </div>`;
+  // Row 2: Quote (se tem)
+  if(quote){
+    html+=`<div class="ip-quote"><svg viewBox="0 0 24 24" fill="currentColor" class="ip-quote-mark"><path d="M7.17 17C5.95 17 5 16.05 5 14.83V11c0-3.87 2.13-6 6-6v3c-1.93 0-3 1.07-3 3h3v6H7.17zm8 0C13.95 17 13 16.05 13 14.83V11c0-3.87 2.13-6 6-6v3c-1.93 0-3 1.07-3 3h3v6h-3.83z"/></svg><p>${quote}</p></div>`;
+  }
+  // Row 3: Tags (se tem)
+  if(tags.length){
+    html+=`<div class="ip-tags"><div class="ip-sec-label">Termos-chave</div><div class="ip-tags-wrap">${tags.map(t=>`<span class="ip-tag">${t}</span>`).join('')}</div></div>`;
+  }
+  // Row 4: Próxima página preview + relacionados
+  const hasNext=nextPage&&curSub<pages.length-1;
+  if(hasNext||related.length){
+    html+='<div class="ip-row">';
+    if(hasNext){
+      const preview=(nextPage.html||'').replace(/<[^>]+>/g,'').trim().slice(0,90);
+      html+=`<button class="ip-next-card" type="button" onclick="biblioSubNav(1)"><div class="ip-next-label">A seguir</div><div class="ip-next-title">${nextPage.title||'Próxima página'}</div><div class="ip-next-preview">${preview}…</div><div class="ip-next-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>`;
+    }
+    if(related.length){
+      html+=`<div class="ip-related"><div class="ip-sec-label">Relacionados</div><div class="ip-related-list">${related.map(r=>{
+        const rc=BIBLIO_ENV_COLORS[r.c]||'#3a47cf';
+        return `<button class="ip-related-card" type="button" data-rid="${r.id}" style="--rc:${rc}"><span class="ip-related-ico">${_biblioIcoWrap(r.ico,{sw:'2',w:'16',h:'16'})}</span><span class="ip-related-text"><span class="ip-related-t">${r.title}</span><span class="ip-related-s">${r.sub}</span></span></button>`;
+      }).join('')}</div></div>`;
+    }
+    html+='</div>';
+  }
+  html+='</div>';
+  slide.insertAdjacentHTML('beforeend',html);
+  // Bind relacionados
+  slide.querySelectorAll('.ip-related-card').forEach(btn=>{
+    btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const id=btn.dataset.rid;const idx=BIBLIO_DATA.findIndex(x=>x.id===id);if(idx>=0){_biblioFlipAnim(()=>{_biblioReaderIdx=idx;_biblioSubIdx=0;_biblioApplyChapter(BIBLIO_DATA[idx])})}});
+  });
+}
+
+// Enriquece o texto inline: dice, modificadores, DT, drop cap, separadores
+function _biblioEnhanceTextInline(slide){
+  if(slide.dataset.textEnhanced)return;
+  slide.dataset.textEnhanced='1';
+  // Substitui tokens inline nos parágrafos (fora de code/strong/em já estilizados)
+  const walker=document.createTreeWalker(slide,NodeFilter.SHOW_TEXT,{
+    acceptNode(n){
+      const p=n.parentElement;
+      if(!p)return NodeFilter.FILTER_REJECT;
+      if(p.closest('code,pre,h1,h2,h3,h4,.biblio-dice-pill,.biblio-dt-pill,.biblio-mod-pill,.hl-lore,.hl-mech,.hl-action,.biblio-modchart,.biblio-chart'))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets=[];let cur;while((cur=walker.nextNode()))targets.push(cur);
+  // Palavras-chave por categoria (regex sensível a acento, word boundary aproximada)
+  const HL={
+    lore:['Obscuro','Outro Lado','Ruptura','Eclipse','Arcano','Arcana','Arcanistas?','Místicos?','linhagens?','arquétipos?','Vanguarda','Operante','Feiticeiros?','Aberração','Guerreiros?','Aventureiros?','Vigorosos?','Lógicos?','Instintivos?','Próprios?','Ameaças?','Bestas?','Sombra','Silêncio'],
+    mech:['ficha','perícias?','habilidades?','testes?','dificuldade','resistência','atributos?','Esforço','Foco','Vitalidade','Determinação','Neural','Córtex','Físico','Psique','Motora','Intelecto','Crédito','estágios?','níveis?','HP','XP','feitiços?','círculos?','interlúdios?','proficiências?','condições?','níveis?','iniciativa','cenas?','turnos?','rodadas?'],
+    action:['rolar','atacar','resistir','mover','defender','recuperar','curar','causar','ativar','invocar','canalizar']
+  };
+  const buildRe=(arr)=>new RegExp('(^|[\\s>(,.;:!?])(' + arr.join('|') + ')(?=[\\s.,;:!?)]|$)','gi');
+  const PATTERNS=[
+    // Dados: 2d6, 1d20, d100
+    {re:/\b(\d*d\d+(?:[+-]\d+)?)\b/gi,cls:'biblio-dice-pill',ico:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="16" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="16" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/></svg>'},
+    // DT 15, DT +3
+    {re:/\b(DT\s*[+-]?\s*\d+)\b/g,cls:'biblio-dt-pill'},
+    // +3, -2 isolados (espaço antes, não colados em letra)
+    {re:/(^|[\s>(])([+−-]\d+)(?=[\s.,;!?)]|$)/g,cls:'biblio-mod-pill',group:2,prefix:1,signed:true},
+    // Keywords
+    {re:buildRe(HL.lore),cls:'hl-lore',group:2,prefix:1},
+    {re:buildRe(HL.mech),cls:'hl-mech',group:2,prefix:1},
+    {re:buildRe(HL.action),cls:'hl-action',group:2,prefix:1}
+  ];
+  for(const n of targets){
+    let html=n.nodeValue;
+    let changed=false;
+    for(const pat of PATTERNS){
+      const icoPart=pat.ico?`<span class="bp-ico">${pat.ico}</span>`:'';
+      html=html.replace(pat.re,(...args)=>{
+        changed=true;
+        if(pat.group){
+          const v=args[pat.group];
+          const neg=pat.signed&&/^[−-]/.test(v);
+          return args[pat.prefix]+`<span class="${pat.cls}${neg?' neg':''}">${icoPart}${v}</span>`;
+        }
+        return `<span class="${pat.cls}">${icoPart}${args[1]}</span>`;
+      });
+    }
+    if(changed){
+      const frag=document.createElement('span');
+      frag.innerHTML=html;
+      const parent=n.parentNode;
+      while(frag.firstChild)parent.insertBefore(frag.firstChild,n);
+      parent.removeChild(n);
+    }
+  }
+}
+
 function _biblioUpdateSlide(){
   const ch=BIBLIO_DATA[_biblioReaderIdx];if(!ch)return;
   const pages=_biblioGetSubPages(ch);
@@ -7717,23 +8230,35 @@ window.biblioReaderRandom=function(){
 window.biblioReaderNav=function(dir){
   const next=_biblioReaderIdx+dir;
   if(next<0||next>=BIBLIO_DATA.length)return;
-  // Mudança de capítulo: anima livro + slide horizontal de saída
+  // Sequência: fecha livro atual → troca capítulo → abre livro novo
+  const r=document.getElementById('biblio-reader');
   const body=document.getElementById('br-panel-body');
+  const stage=document.querySelector('.biblio-reader-stage');
   const head=document.getElementById('br-panel-title').parentElement;
   const book=document.getElementById('biblio-reader-book');
-  body.style.opacity='0';body.style.transform=`translateX(${dir<0?40:-40}px)`;
-  head.classList.add('flip-out');book.classList.add('flipping');
+  if(!r||!body||!book)return;
+  // 1) FECHA: painel desliza pra fora, livro fecha capa e voa pro lado
+  body.classList.add('flip-out');head.classList.add('flip-out');
+  book.classList.add('book-swap-out',dir>0?'to-left':'to-right');
+  r.classList.remove('stage-2');r.classList.add('stage-1','book-swapping');
   setTimeout(()=>{
+    // 2) TROCA conteúdo enquanto livro está "fechado fora da tela"
     _biblioReaderIdx=next;_biblioSubIdx=0;
     _biblioApplyChapter(BIBLIO_DATA[next]);
-    body.style.transform=`translateX(${dir<0?-40:40}px)`;
+    // Entra pelo lado oposto, ainda fechado
+    book.classList.remove('book-swap-out','to-left','to-right');
+    book.classList.add('book-swap-in',dir>0?'from-right':'from-left');
     requestAnimationFrame(()=>{
-      body.style.transition='transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s';
-      body.style.opacity='1';body.style.transform='translateX(0)';
-      head.classList.remove('flip-out');head.classList.add('flip-in');
-      setTimeout(()=>{book.classList.remove('flipping');head.classList.remove('flip-in');body.style.transition=''},480);
+      setTimeout(()=>{
+        // 3) ABRE: livro posiciona e stage-2 reabre capa/página
+        book.classList.remove('book-swap-in','from-left','from-right');
+        r.classList.remove('stage-1','book-swapping');r.classList.add('stage-2');
+        body.classList.remove('flip-out');head.classList.remove('flip-out');
+        body.classList.add('flip-in');head.classList.add('flip-in');
+        setTimeout(()=>{body.classList.remove('flip-in');head.classList.remove('flip-in')},550);
+      },60);
     });
-  },280);
+  },560);
 };
 function _biblioSubAnim(applyFn){
   const book=document.getElementById('biblio-reader-book');
@@ -7787,9 +8312,25 @@ window.biblioReaderBackdrop=function(e){
 };
 window.closeBiblioReader=function(){
   const r=document.getElementById('biblio-reader');
-  r.classList.remove('show','stage-1','stage-2');
-  document.body.style.overflow='';
-  _biblioReaderCh=null;
+  if(!r)return;
+  const book=document.getElementById('biblio-reader-book');
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches||!book){
+    r.classList.remove('show','stage-1','stage-2','closing');
+    document.body.style.overflow='';
+    _biblioReaderCh=null;
+    return;
+  }
+  // Anima livro caindo com vento sutil antes de fechar
+  r.classList.add('closing');
+  r.classList.remove('stage-2');r.classList.add('stage-1');
+  book.classList.remove('book-swap-in','book-swap-out','to-left','to-right','from-left','from-right');
+  book.classList.add('book-falling');
+  setTimeout(()=>{
+    r.classList.remove('show','stage-1','stage-2','closing');
+    book.classList.remove('book-falling');
+    document.body.style.overflow='';
+    _biblioReaderCh=null;
+  },900);
 };
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('biblio-reader')?.classList.contains('show'))closeBiblioReader()});
 document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{try{renderBiblioGrid();renderFeitTab()}catch(_){}},50)});

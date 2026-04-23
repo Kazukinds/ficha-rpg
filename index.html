@@ -238,6 +238,17 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 .save-warning{display:flex;gap:10px;padding:10px 12px;background:color-mix(in srgb,var(--yellow) 8%,var(--bg-input));border:1px solid color-mix(in srgb,var(--yellow) 30%,var(--border));border-left:3px solid var(--yellow);border-radius:var(--radius-xs);font-size:11px;color:var(--text-secondary);line-height:1.5}
 .save-warning strong{color:var(--yellow);font-weight:700}
 .save-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+@media(max-width:640px){
+  .notif-dropdown,.save-dropdown{
+    position:fixed;
+    top:calc(64px + env(safe-area-inset-top,0px));
+    left:12px;right:12px;
+    width:auto;max-width:none;min-width:0;
+    max-height:calc(100vh - 96px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+    overflow-y:auto;
+  }
+  .notif-list{max-height:calc(100vh - 220px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+}
 .save-opt{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:var(--radius-xs);color:var(--text-secondary);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--transition-fast)}
 .save-opt:hover{background:var(--bg-hover);color:var(--text-primary)}
 .save-opt svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}

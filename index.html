@@ -9257,10 +9257,10 @@ window.openFolderManager=async function(){
   }
 })();
 // Hook autosave → grava snapshot na pasta também
-const _origAutosave=typeof autosaveNow==='function'?autosaveNow:null;
-if(_origAutosave){
+const _origAutosaveFs=typeof autosaveNow==='function'?autosaveNow:null;
+if(_origAutosaveFs){
   window.autosaveNow=function(){
-    const r=_origAutosave.apply(this,arguments);
+    const r=_origAutosaveFs.apply(this,arguments);
     if(_isAndroid()){
       try{_writeFichaToFolder(_getFolderName())}catch(_){}
     }

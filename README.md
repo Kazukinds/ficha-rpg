@@ -5,8 +5,8 @@
 **🌐 Live:** [kazukinds.github.io/eclipse](https://kazukinds.github.io/eclipse/)
 
 [![Abrir PWA](https://img.shields.io/badge/abrir-PWA-22D3EE?style=for-the-badge)](https://kazukinds.github.io/eclipse/)
-[![Baixar APK](https://img.shields.io/badge/baixar-APK%20Android-C8F542?style=for-the-badge&logo=android&logoColor=black)](https://github.com/Kazukinds/eclipse/releases/latest/download/FichaEclipse-widgets.apk)
-[![Build](https://github.com/Kazukinds/eclipse/actions/workflows/android-widgets.yml/badge.svg)](https://github.com/Kazukinds/eclipse/actions/workflows/android-widgets.yml)
+[![Baixar APK](https://img.shields.io/badge/baixar-APK%20Android-C8F542?style=for-the-badge&logo=android&logoColor=black)](https://github.com/Kazukinds/eclipse/releases/latest/download/Eclipse.apk)
+[![Build](https://github.com/Kazukinds/eclipse/actions/workflows/android.yml/badge.svg)](https://github.com/Kazukinds/eclipse/actions/workflows/android.yml)
 
 ![Stack](https://img.shields.io/badge/stack-HTML%20%7C%20CSS%20%7C%20JS-lightgrey)
 ![Deps](https://img.shields.io/badge/dependencies-zero-brightgreen)
@@ -20,7 +20,7 @@
 | Plataforma | Link | Como instalar |
 |---|---|---|
 | 🌐 **Web / PWA** | [kazukinds.github.io/eclipse](https://kazukinds.github.io/eclipse/) | Abre no navegador → *Instalar app* |
-| 🤖 **Android (APK)** | [FichaEclipse-widgets.apk](https://github.com/Kazukinds/eclipse/releases/latest/download/FichaEclipse-widgets.apk) | Habilita *Fontes desconhecidas* → instala |
+| 🤖 **Android (APK)** | [Eclipse.apk](https://github.com/Kazukinds/eclipse/releases/latest/download/Eclipse.apk) | Habilita *Fontes desconhecidas* → instala |
 | 📦 **Todas as releases** | [releases](https://github.com/Kazukinds/eclipse/releases) | Versões anteriores + changelog |
 
 ---

@@ -1,9 +1,9 @@
-name: Build Android Widgets APK
+name: Build Eclipse APK
 
 on:
   push:
     branches: [main]
-    paths: ['android-widgets/**', '.github/workflows/android-widgets.yml']
+    paths: ['Android/**', '.github/workflows/android.yml', 'index.html', 'biblioteca.html', 'manifest.webmanifest', 'sw.js', 'icons/**']
   workflow_dispatch:
 
 permissions:
@@ -24,8 +24,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Sync web assets → APK bundle
+        run: bash Android/sync-assets.sh
+
       - name: Generate debug keystore
-        working-directory: android-widgets
+        working-directory: Android
         run: |
           keytool -genkey -v \
             -keystore debug.keystore \
@@ -36,25 +39,25 @@ jobs:
             -dname "CN=Android Debug,O=Android,C=US"
 
       - name: Gradle wrapper
-        working-directory: android-widgets
+        working-directory: Android
         run: |
           gradle wrapper --gradle-version 8.5
           chmod +x gradlew
 
       - name: Build debug APK
-        working-directory: android-widgets
+        working-directory: Android
         run: ./gradlew assembleDebug --no-daemon
 
-      - name: Rename APK
+      - name: Stage APK
         run: |
           mkdir -p dist
-          cp android-widgets/app/build/outputs/apk/debug/*.apk dist/FichaEclipse-widgets.apk
+          cp Android/app/build/outputs/apk/debug/*.apk dist/Eclipse.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FichaEclipseWidgets-debug
-          path: dist/FichaEclipse-widgets.apk
+          name: Eclipse-debug
+          path: dist/Eclipse.apk
           if-no-files-found: error
           retention-days: 90
 
@@ -63,14 +66,14 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Ficha Eclipse — Widgets (latest)
+          name: Eclipse — latest
           body: |
             APK mais recente buildado a partir de `main`.
 
-            **Download:** `FichaEclipse-widgets.apk` abaixo.
+            **Download:** `Eclipse.apk` abaixo.
 
             Commit: `${{ github.sha }}`
-          files: dist/FichaEclipse-widgets.apk
+          files: dist/Eclipse.apk
           prerelease: false
           make_latest: true
 
@@ -78,4 +81,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/FichaEclipse-widgets.apk
+          files: dist/Eclipse.apk

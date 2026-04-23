@@ -1,5 +1,5 @@
 /* Ficha Eclipse — service worker */
-const VERSION = 'v62';
+const VERSION = 'v63';
 const CACHE = 'ficha-eclipse-' + VERSION;
 const ASSETS = [
   './',

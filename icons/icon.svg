@@ -1,22 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#18181b"/>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#1f1f2c"/>
+      <stop offset="55%" stop-color="#0f0f18"/>
       <stop offset="100%" stop-color="#09090b"/>
-    </linearGradient>
-    <radialGradient id="ringG" cx="40%" cy="50%" r="60%">
-      <stop offset="0%" stop-color="#d4ff52"/>
-      <stop offset="100%" stop-color="#92c020"/>
     </radialGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="10" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+    <radialGradient id="glow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#c8f542" stop-opacity=".28"/>
+      <stop offset="70%" stop-color="#c8f542" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c8f542" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#c8f542" stop-opacity=".08"/>
+    </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <rect x="8" y="8" width="496" height="496" rx="92" fill="none" stroke="rgba(200,245,66,.2)" stroke-width="2"/>
-  <!-- Eclipse ring -->
-  <circle cx="220" cy="256" r="170" fill="none" stroke="url(#ringG)" stroke-width="22" filter="url(#glow)"/>
-  <!-- Sparkle 4-point star -->
-  <path d="M400 152c12 70 22 80 92 92-70 12-80 22-92 92-12-70-22-80-92-92 70-12 80-22 92-92z" fill="#c8f542" filter="url(#glow)"/>
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#glow)"/>
+  <rect x="6" y="6" width="500" height="500" rx="108" ry="108" fill="none" stroke="url(#edge)" stroke-width="2"/>
+  <image href="logo-eclipse.svg" x="56" y="76" width="400" height="360" style="filter:drop-shadow(0 0 22px rgba(200,245,66,.55))"/>
 </svg>

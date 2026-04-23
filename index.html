@@ -842,7 +842,7 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .profile-field label{display:block;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px}
 .profile-field-val{font-size:14px;color:var(--text-primary);padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);width:100%;min-height:40px;box-sizing:border-box;display:flex;align-items:center}
-.profile-field input,.profile-field select{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-primary);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.profile-field input,.profile-field select{width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-primary);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
 .profile-field input:focus,.profile-field select:focus{border-color:var(--lime-dim)}
 .profile-field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a5a6e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 .profile-field select option{background:var(--bg-card);color:var(--text-primary)}
@@ -942,7 +942,7 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .cselect-dropdown::-webkit-scrollbar-track{background:transparent}
 .cselect-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .form-group textarea{resize:vertical;min-height:80px}
-input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 input[type="number"]{-moz-appearance:textfield}
 .form-group input[type="date"]{color-scheme:dark light}
 .form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-dim)}
@@ -1402,7 +1402,7 @@ input[type="number"]{-moz-appearance:textfield}
   width:26px;height:26px;display:flex;align-items:center;justify-content:center;
   color:#fff;opacity:.96;
 }
-.biblio-cover-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.biblio-cover-icon svg{width:22px!important;height:22px!important;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:block}
 .biblio-cover-bottom{display:flex;flex-direction:column;gap:3px}
 .biblio-cover-title{
   font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
@@ -1523,7 +1523,7 @@ input[type="number"]{-moz-appearance:textfield}
 }
 .book-cover-top{display:flex;align-items:flex-start;justify-content:space-between}
 .book-cover-icon{width:28px;height:28px;color:#fff;opacity:.95}
-.book-cover-icon svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.book-cover-icon svg{width:24px!important;height:24px!important;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 .book-cover-bottom{display:flex;flex-direction:column;gap:4px}
 .book-cover-title{
   font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
@@ -2712,7 +2712,7 @@ input[type="number"]{-moz-appearance:textfield}
 .skill-cost-stepper button{width:34px;height:34px;min-width:34px;border-radius:var(--radius-xs);background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-size:18px;font-weight:700;cursor:pointer;padding:0;transition:all .15s;font-family:inherit;line-height:1}
 .skill-cost-stepper button:hover{color:var(--lime);border-color:var(--lime-dim);background:var(--lime-bg)}
 .skill-cost-stepper input{flex:1;background:transparent!important;border:none!important;outline:none;box-shadow:none!important;text-align:center;font-family:'JetBrains Mono',monospace!important;font-size:18px!important;font-weight:700!important;color:var(--text-primary)!important;-moz-appearance:textfield;padding:0!important;min-width:0;height:34px}
-.skill-cost-stepper input::-webkit-outer-spin-button,.skill-cost-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.skill-cost-stepper input::-webkit-outer-spin-button,.skill-cost-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 
 /* Pills de status (com ícone) — Córtex fica de fora */
 .skill-cost-pills{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;padding:4px 0}
@@ -2771,7 +2771,7 @@ input[type="number"]{-moz-appearance:textfield}
 .credit-amount-sign{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;min-width:16px;text-align:center}
 .credit-amount-sym{font-size:15px;font-weight:600;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
 .credit-amount-wrap input{flex:1;padding:14px 4px!important;background:transparent!important;border:none!important;outline:none;box-shadow:none!important;font-family:'JetBrains Mono',monospace!important;font-size:22px!important;font-weight:700!important;color:var(--text-primary)!important;-moz-appearance:textfield;min-width:0}
-.credit-amount-wrap input::-webkit-outer-spin-button,.credit-amount-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.credit-amount-wrap input::-webkit-outer-spin-button,.credit-amount-wrap input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 
 .credit-presets{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .credit-preset{flex:1;min-width:60px;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-secondary);cursor:pointer;transition:all .15s}
@@ -3128,7 +3128,7 @@ button:not(:disabled):active{transform:scale(.97)}
 .mini-block-label{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);line-height:1.2}
 .mini-block-input{background:transparent;border:none;color:var(--text-primary);font-family:inherit;font-size:14px;font-weight:600;outline:none;padding:0;width:100%;letter-spacing:.01em}
 .mini-block-input.mono{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;letter-spacing:-.02em}
-.mini-block-input.mono[type="number"]::-webkit-outer-spin-button,.mini-block-input.mono[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.mini-block-input.mono[type="number"]::-webkit-outer-spin-button,.mini-block-input.mono[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}
 .mini-block-input.mono[type="number"]{-moz-appearance:textfield;appearance:textfield}
 .mini-block-input::placeholder{color:var(--text-dim);opacity:.5}
 .mini-block-accent{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-c,var(--lime));opacity:0;transition:opacity .18s}
@@ -3174,6 +3174,93 @@ button:not(:disabled):active{transform:scale(.97)}
 .attr-d6-btn:active{transform:rotate(360deg) scale(.95);transition:transform .45s}
 .attr-d6-btn svg{width:14px;height:14px}
 .attr-legend-item{display:flex;align-items:center;gap:8px}
+
+/* Atributos — barras estilo arquétipo (substitui donut antigo) */
+.attr-stat-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;margin-bottom:10px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--lime) 6%,var(--bg-card)),var(--bg-input));
+  border:1px solid var(--border);border-radius:10px;cursor:pointer;
+  transition:border-color .2s,background .2s;
+}
+.attr-stat-head:hover{border-color:color-mix(in srgb,var(--lime) 45%,var(--border))}
+.attr-stat-head-l{display:flex;align-items:baseline;gap:4px}
+.attr-stat-used{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;color:var(--lime);line-height:1}
+.attr-stat-sep{font-size:14px;color:var(--text-dim)}
+.attr-stat-total{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--text-secondary)}
+.attr-stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-left:6px}
+.attr-stat-head-l{cursor:pointer}
+.attr-stat-head-r{font-size:11px;color:var(--text-dim);letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.attr-stat-head-r b{color:var(--text-secondary);font-weight:700}
+.attr-stat-max{white-space:nowrap}
+.attr-unlock-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--yellow) 14%,transparent);color:var(--yellow);font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:1px solid color-mix(in srgb,var(--yellow) 35%,transparent)}
+.attr-gear-btn{
+  width:26px;height:26px;border-radius:6px;padding:0;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);
+  transition:all .2s;
+}
+.attr-gear-btn svg{width:14px;height:14px}
+.attr-gear-btn:hover{color:var(--text-secondary);border-color:var(--text-dim);transform:rotate(40deg)}
+.attr-gear-btn.on{color:var(--yellow);border-color:color-mix(in srgb,var(--yellow) 50%,var(--border));background:color-mix(in srgb,var(--yellow) 10%,var(--bg-input))}
+.attr-gear-btn.on:hover{transform:rotate(90deg)}
+.attr-over-cap .attr-stat-val{text-shadow:0 0 12px currentColor}
+.attr-over-cap .attr-stat-fill{box-shadow:0 0 8px currentColor}
+
+/* Popup de limite */
+.attr-limit-popup{
+  position:absolute;z-index:10000;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+  padding:14px;box-shadow:0 18px 40px rgba(0,0,0,.55);
+  font-family:inherit;color:var(--text);
+  animation:alpIn .16s ease-out;
+}
+@keyframes alpIn{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.alp-title{font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--text);margin-bottom:6px}
+.alp-desc{font-size:11.5px;line-height:1.5;color:var(--text-dim);margin-bottom:12px}
+.alp-desc b{color:var(--text-secondary)}
+.alp-toggle{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg-input);user-select:none}
+.alp-toggle input{display:none}
+.alp-toggle-box{
+  flex-shrink:0;width:20px;height:20px;border-radius:6px;
+  border:1.5px solid var(--border);background:var(--bg-body);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.alp-toggle-box svg{width:14px;height:14px;color:#09090b;opacity:0;transform:scale(.6);transition:opacity .15s,transform .15s}
+.alp-toggle input:checked ~ .alp-toggle-box{background:var(--yellow);border-color:var(--yellow)}
+.alp-toggle input:checked ~ .alp-toggle-box svg{opacity:1;transform:scale(1)}
+.alp-toggle-text{display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:1.4}
+.alp-toggle-text b{color:var(--text);font-weight:700}
+.alp-toggle-text span{color:var(--text-dim);font-size:11px}
+.alp-warn{
+  margin-top:10px;padding:8px 10px;border-radius:8px;
+  background:color-mix(in srgb,var(--yellow) 10%,transparent);
+  border:1px solid color-mix(in srgb,var(--yellow) 30%,transparent);
+  color:var(--yellow);font-size:11px;line-height:1.45;
+  display:flex;gap:6px;align-items:flex-start;
+}
+.alp-warn svg{width:14px;height:14px;flex-shrink:0;margin-top:1px}
+.alp-warn.hidden{display:none}
+.alp-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.alp-actions .modal-btn{padding:6px 14px;font-size:12px}
+.attr-stat-list{display:flex;flex-direction:column;gap:8px}
+.attr-stat-row{
+  display:grid;grid-template-columns:78px 1fr 26px 26px;align-items:center;gap:10px;
+  padding:8px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;
+  transition:border-color .18s,transform .18s;
+}
+.attr-stat-row:hover{border-color:color-mix(in srgb,var(--text-secondary) 25%,var(--border))}
+.attr-stat-name{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-dim);font-weight:600}
+.attr-stat-bar{display:block;height:6px;background:var(--bg-body);border-radius:3px;overflow:hidden;position:relative}
+.attr-stat-fill{display:block;height:100%;width:0;border-radius:3px;transition:width .35s cubic-bezier(.4,.8,.3,1)}
+.attr-stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;text-align:right}
+.attr-stat-row .attr-d6-btn{margin-left:0;width:26px;height:26px}
+@media(max-width:640px){
+  .attr-stat-row{grid-template-columns:62px 1fr 22px 26px;gap:8px;padding:7px 8px}
+  .attr-stat-name{font-size:9px;letter-spacing:1.2px}
+  .attr-stat-val{font-size:14px}
+  .attr-stat-used{font-size:20px}
+}
 
 /* Botão circular gerar ficha */
 .profile-char-figure{
@@ -3375,6 +3462,21 @@ button:not(:disabled):active{transform:scale(.97)}
 /* Grids isolados — paint contido */
 .inv-grid,.status-grid,.stat-grid{contain:layout paint}
 .biblio-grid{contain:layout}
+/* Tabs inativas — display:none já zera render. Ativas: isola paint do restante */
+.tab-content.active{contain:layout style}
+/* Lazy-render de seções off-screen — ganho grande em scroll longo */
+.profile-section,.biblio-env,.stat-block,.card{content-visibility:auto;contain-intrinsic-size:1px 280px}
+/* Barra topo isolada pra não re-paint com scroll conteúdo */
+.topbar{contain:layout style}
+/* Otimizações mobile agressivas — reduz paint/composite em devices fracos */
+@media(max-width:900px){
+  /* Box-shadow simplificado em mobile — mantém hierarquia visual mas barato */
+  .card,.status-card,.stat-block,.profile-section,.dash-grid>*{box-shadow:0 2px 6px rgba(0,0,0,.2)!important}
+  /* Sem sombra em hover mobile (touch não tem hover real) */
+  .card:hover,.status-card:hover,.stat-block:hover{box-shadow:0 2px 6px rgba(0,0,0,.2)!important}
+  /* Desliga transitions em props custosas */
+  .sidebar-btn,.card-action-btn{transition:background .15s,color .15s}
+}
 /* Reduzir blurs em telas pequenas (maior custo em mobile GPU) */
 @media(max-width:900px){
   .topbar,[data-theme] .topbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--bg-body)!important}
@@ -4094,6 +4196,8 @@ let attributes=[
   {name:'Neural',val:0,max:0,color:'var(--cyan)'},
   {name:'Cortex',val:0,max:0,color:'#f472b6'},
 ];
+let _attrUnlocked=(()=>{try{return localStorage.getItem('eclipse_attr_unlocked')==='1'}catch(_){return false}})();
+function _setAttrUnlocked(v){_attrUnlocked=!!v;try{localStorage.setItem('eclipse_attr_unlocked',_attrUnlocked?'1':'0')}catch(_){ }}
 
 let achievements=[];
 let nextAchId=1;
@@ -5057,22 +5161,74 @@ function useSkill(id){const s=skills.find(x=>x.id===id);if(!s||!s.cost)return;to
 
 // ═══ ATTRIBUTES ═══
 function renderAttrs(){
-  const circ=2*Math.PI*46;
-  const attrs=attributes.filter(a=>a.name!=='Neural'&&a.name!=='Cortex');
-  const total=attrs.reduce((s,a)=>s+a.val,0)||1;
-  let offset=0;
-  const circles=attrs.map(a=>{
-    if(a.val===0)return '';
-    const dash=a.val/total*circ;
-    const c=`<circle data-slice="${a.name}" data-label="${a.name}" data-val="${a.val}" data-color="${a.color}" cx="60" cy="60" r="46" fill="none" stroke="${a.color}" stroke-width="14" stroke-dasharray="${dash.toFixed(1)} ${(circ-dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 60 60)"/>`;
-    offset+=dash;return c;
+  const ORDER=['Intelecto','Psique','Fisico','Motora'];
+  const COLORS={Intelecto:'#60a5fa',Psique:'#c084fc',Fisico:'#f87171',Motora:'#34d399'};
+  const attrsAll=attributes.filter(a=>a.name!=='Neural'&&a.name!=='Cortex');
+  const ordered=ORDER.map(n=>attrsAll.find(a=>a.name===n)).filter(Boolean);
+  const cap=(typeof _archetypePointCap==='function')?_archetypePointCap():{maxPerAttr:5,totalPts:12,level:1};
+  const used=ordered.reduce((s,a)=>s+(a.val||0),0);
+  const highest=ordered.reduce((m,a)=>Math.max(m,a.val||0),0);
+  const unlocked=_attrUnlocked;
+  const barDenom=unlocked?Math.max(cap.maxPerAttr,highest,10):cap.maxPerAttr;
+  const rows=ordered.map(a=>{
+    const color=COLORS[a.name]||a.color;
+    const pct=Math.min(100,((a.val||0)/barDenom)*100);
+    const overCap=(a.val||0)>cap.maxPerAttr;
+    return `<div class="attr-stat-row${overCap?' attr-over-cap':''}">
+      <span class="attr-stat-name">${a.name}</span>
+      <span class="attr-stat-bar"><span class="attr-stat-fill" style="width:${pct}%;background:${color}"></span></span>
+      <span class="attr-stat-val" style="color:${color}">${a.val||0}</span>
+      <button class="attr-d6-btn" type="button" onclick="event.stopPropagation();rollAttrD6('${a.name}',${a.val||0})" title="Rolar 1d6 + ${a.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/></svg></button>
+    </div>`;
   }).join('');
-  const legend=attrs.map(a=>`<div class="attr-legend-item"><div class="attr-legend-bar" style="background:${a.color}"></div>${a.name}<span style="color:${a.color}">${a.val}</span><button class="attr-d6-btn" type="button" onclick="event.stopPropagation();rollAttrD6('${a.name}',${a.val})" title="Rolar 1d6 + ${a.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/></svg></button></div>`).join('');
-  const html=`<div class="attr-donut-wrap" onclick="openModal('attribute')"><svg class="donut-svg attr-donut-svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="var(--bg-input)" stroke-width="14"/>${circles}</svg><div class="donut-tooltip"></div></div><div class="attr-legend">${legend}</div>`;
-  const el=document.getElementById('attr-list');if(el){el.innerHTML=html;attachDonutHover(el);}
-  const dashEl=document.getElementById('dash-attr-list');if(dashEl){dashEl.innerHTML=html;attachDonutHover(dashEl);}
+  const gearSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+  const maxLabel=unlocked?'<span class="attr-unlock-badge">∞ livre</span>':`máx <b>${cap.maxPerAttr}</b>${cap.level>=10?' · Nv '+cap.level:''}`;
+  const html=`<div class="attr-stat-head">
+      <div class="attr-stat-head-l" onclick="openModal('attribute')" title="Editar atributos"><span class="attr-stat-used">${used}</span><span class="attr-stat-sep">/</span><span class="attr-stat-total">${unlocked?'∞':cap.totalPts}</span><span class="attr-stat-label">pontos</span></div>
+      <div class="attr-stat-head-r">
+        <span class="attr-stat-max">${maxLabel}</span>
+        <button class="attr-gear-btn${unlocked?' on':''}" type="button" onclick="event.stopPropagation();openAttrLimitPopup(this)" title="Limite de atributos">${gearSvg}</button>
+      </div>
+    </div>
+    <div class="attr-stat-list">${rows}</div>`;
+  const el=document.getElementById('attr-list');if(el){el.innerHTML=html}
+  const dashEl=document.getElementById('dash-attr-list');if(dashEl){dashEl.innerHTML=html}
   renderPericias();
 }
+
+window.openAttrLimitPopup=function(anchor){
+  document.querySelectorAll('.attr-limit-popup').forEach(p=>p.remove());
+  const cap=(typeof _archetypePointCap==='function')?_archetypePointCap():{maxPerAttr:5,totalPts:12,level:1};
+  const pop=document.createElement('div');
+  pop.className='attr-limit-popup';
+  pop.innerHTML=`
+    <div class="alp-title">Limite de atributos</div>
+    <div class="alp-desc">Sistema padrão usa <b>${cap.totalPts} pts</b> · máx <b>${cap.maxPerAttr}</b> por atributo (Nv 10 sobe pra 6).</div>
+    <label class="alp-toggle">
+      <input type="checkbox" id="alp-unlock" ${_attrUnlocked?'checked':''}>
+      <span class="alp-toggle-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="alp-toggle-text"><b>Liberar limite</b><span>Permite valores acima de ${cap.maxPerAttr} — casos especiais (NPC, boss, build homebrew).</span></span>
+    </label>
+    <div class="alp-warn${_attrUnlocked?'':' hidden'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Ponto-livre quebra balanceamento. Usa pra testes ou fichas especiais.</div>
+    <div class="alp-actions"><button class="modal-btn secondary" type="button" onclick="this.closest('.attr-limit-popup').remove()">Fechar</button></div>
+  `;
+  document.body.appendChild(pop);
+  const r=anchor.getBoundingClientRect();
+  const popW=280;
+  let left=r.right-popW;if(left<8)left=8;if(left+popW>window.innerWidth-8)left=window.innerWidth-popW-8;
+  pop.style.left=left+'px';
+  pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  pop.style.width=popW+'px';
+  const chk=pop.querySelector('#alp-unlock'),warn=pop.querySelector('.alp-warn');
+  chk.addEventListener('change',()=>{
+    _setAttrUnlocked(chk.checked);
+    warn.classList.toggle('hidden',!chk.checked);
+    renderAttrs();
+    if(typeof toast==='function')toast(chk.checked?'Limite liberado (casos especiais)':'Limite padrão restaurado');
+  });
+  const closer=(e)=>{if(!pop.contains(e.target)&&e.target!==anchor){pop.remove();document.removeEventListener('mousedown',closer);document.removeEventListener('touchstart',closer)}};
+  setTimeout(()=>{document.addEventListener('mousedown',closer);document.addEventListener('touchstart',closer)},10);
+};
 
 // ═══ PERICIAS SYSTEM ═══
 const RANK_LEVELS=['destreinado','treinado','perito','mestre'];
@@ -6563,7 +6719,7 @@ const BIBLIO_DATA=[
   {id:'obs',cat:'cam',title:'Obscure',sub:'Sombra & aflição',c:'purple',ico:'<circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/>',body:'<p>Caminho umbra. Manipula sombra, dano psíquico e teletransporte curto. Escala <b>CAR + DES</b>.</p><h4>Traços por Nível</h4><ul><li><b>Nv 1</b> — Caminhar nas Sombras (teletransporte 9m entre 2 áreas escuras)</li><li><b>Nv 2</b> — Toque Marciante (1d8 psíquico extra em ataque desarmado)</li><li><b>Nv 3</b> — Manto da Penumbra (vantagem em Furtividade em luz fraca/escuro)</li><li><b>Nv 5</b> — Aflição (alvo deve teste SAB ou ganha desvantagem por 1 min)</li><li><b>Nv 7</b> — Forma de Sombra (10 min: incorpóreo, 1× descanso longo)</li><li><b>Nv 9</b> — Eco — duplo de sombra ataca junto (1×/turno)</li><li><b>Nv 11</b> — Resistência completa a necrótico/psíquico</li><li><b>Nv 14</b> — Visão da Verdade — vê através de invisibilidade 18m</li><li><b>Nv 20</b> — Capstone: Coroa de Sombras — todos inimigos em 9m têm desvantagem em vc</li></ul>'},
   {id:'asc',cat:'cam',title:'Ascendido',sub:'Iluminação divina',c:'yellow',ico:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.22 4.22l2 2M17.78 17.78l2 2M2 12h3M19 12h3"/>',body:'<p>Ex-humano iluminado por entidade superior. Cura, proteção e dano radiante. Escala <b>SAB + CAR</b>.</p><h4>Traços por Nível</h4><ul><li><b>Nv 1</b> — Toque que Cura (mod SAB × nv HP por descanso longo, distribuído)</li><li><b>Nv 2</b> — Aura Sagrada (aliados em 3m: +1 testes resistidos)</li><li><b>Nv 3</b> — Domínio (Vida, Luz, Justiça, Tempestade)</li><li><b>Nv 5</b> — Repreensão Divina — quando atacado: 2d6 radiante no atacante</li><li><b>Nv 7</b> — Imune a medo + doença</li><li><b>Nv 9</b> — Ressuscitar (1× por semana: revive aliado morto há &lt; 1 min)</li><li><b>Nv 11</b> — Aura ampliada (9m, +2 testes resistidos)</li><li><b>Nv 14</b> — Visão de almas (vê alinhamento e estado vital)</li><li><b>Nv 20</b> — Capstone: Avatar — 1 min: dano radiante dobrado, voa, regenera 30 HP/turno</li></ul>'},
   {id:'abr',cat:'cam',title:'Aberração',sub:'Mutação caótica',c:'pink',ico:'<path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/>',body:'<p>Corpo instável, poderes em fluxo. Recebe traços aleatórios por sessão. Escala <b>CON + atributo aleatório</b>.</p><h4>Tabela de Mutação</h4><p>Toda manhã, role d20 na tabela. Resultado vale por 24h.</p><ul><li>1-3 — Pele Quitinosa (+2 CA)</li><li>4-6 — Tentáculo extra (+1 ataque/turno)</li><li>7-9 — Olho Suplementar (+5 Percepção)</li><li>10-12 — Pulmões Aprimorados (não precisa respirar)</li><li>13-15 — Glândula Veneno (1d6 ácido em ataques desarmados)</li><li>16-18 — Membros Elásticos (+3m alcance)</li><li>19-20 — Forma Plástica (escapa de qualquer agarrão automaticamente)</li></ul><h4>Outros Traços</h4><ul><li><b>Nv 1</b> — Anatomia Imprevisível (resistência aleatória diária)</li><li><b>Nv 5</b> — Mutação Voluntária (escolhe 1 da tabela 1× por descanso longo)</li><li><b>Nv 11</b> — Hospedeiro (consome corpo morto para roubar 1 traço por 24h)</li><li><b>Nv 20</b> — Capstone: Forma Verdadeira — escolhe 3 mutações simultaneamente</li></ul>'},
-  {id:'mon',cat:'mun',title:'Montarias',sub:'Companheiros de viagem',c:'green',ico:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M 350.0 431.5 L 288.0 430.5 L 284.5 426.0 L 284.5 332.0 L 261.0 327.5 L 220.0 324.5 L 175.0 324.5 L 161.0 340.5 L 139.5 353.0 L 131.5 370.0 L 124.5 424.0 L 120.0 430.5 L 99.0 431.5 L 93.5 428.0 L 91.0 389.5 L 85.5 428.0 L 80.0 431.5 L 56.0 430.5 L 52.5 426.0 L 52.5 317.0 L 51.0 315.5 L 48.5 318.0 L 29.0 341.5 L 23.0 341.5 L 18.5 337.0 L 12.5 309.0 L 12.5 299.0 L 15.5 293.0 L 28.5 285.0 L 28.5 192.0 L 35.5 176.0 L 46.0 166.5 L 65.0 160.5 L 74.0 152.5 L 92.0 145.5 L 170.0 151.5 L 323.0 151.5 L 349.5 130.0 L 343.5 120.0 L 340.5 107.0 L 340.5 101.0 L 344.0 95.5 L 358.0 93.5 L 379.0 100.5 L 395.0 76.5 L 401.0 75.5 L 405.0 77.5 L 413.5 87.0 L 409.5 106.0 L 424.0 110.5 L 463.0 144.5 L 486.0 154.5 L 493.5 162.0 L 495.5 172.0 L 489.5 185.0 L 465.0 205.5 L 434.0 199.5 L 423.0 202.5 L 415.5 210.0 L 397.5 257.0 L 378.5 295.0 L 369.5 327.0 L 355.5 352.0 L 355.5 427.0 L 350.0 431.5 Z M 315.5 415.0 L 316.5 348.0 L 334.5 313.0 L 342.5 279.0 L 347.0 275.5 L 355.5 278.0 L 357.5 285.0 L 353.5 302.0 L 355.0 303.5 L 362.5 295.0 L 376.5 269.0 L 398.5 212.0 L 406.5 198.0 L 417.0 188.5 L 428.0 184.5 L 446.0 184.5 L 463.0 188.5 L 481.5 170.0 L 455.0 156.5 L 432.0 134.5 L 418.0 124.5 L 409.0 121.5 L 399.0 121.5 L 397.5 130.0 L 389.0 134.5 L 383.5 131.0 L 379.5 122.0 L 371.0 113.5 L 362.0 109.5 L 358.5 111.0 L 359.5 115.0 L 364.5 123.0 L 377.5 135.0 L 377.5 143.0 L 374.0 146.5 L 367.0 146.5 L 360.0 141.5 L 341.0 159.5 L 329.0 166.5 L 175.0 167.5 L 102.0 160.5 L 82.0 165.5 L 73.5 175.0 L 67.5 193.0 L 67.5 414.0 L 76.5 414.0 L 84.5 350.0 L 110.5 315.0 L 121.5 293.0 L 126.0 289.5 L 131.0 289.5 L 136.5 296.0 L 132.5 307.0 L 134.0 309.5 L 232.0 309.5 L 287.0 315.5 L 292.5 314.0 L 292.5 300.0 L 294.5 296.0 L 299.0 293.5 L 305.0 294.5 L 308.5 300.0 L 308.5 414.0 L 315.5 415.0 Z M 51.5 294.0 L 52.5 195.0 L 54.5 189.0 L 53.0 186.5 L 47.5 192.0 L 43.5 203.0 L 43.5 286.0 L 51.5 294.0 Z M 339.5 415.0 L 340.5 347.0 L 351.5 328.0 L 350.0 326.5 L 343.5 330.0 L 331.5 353.0 L 331.5 414.0 L 339.5 415.0 Z M 127.5 339.0 L 140.0 336.5 L 155.5 327.0 L 119.0 325.5 L 109.5 338.0 L 127.5 339.0 Z M 109.5 413.0 L 116.5 365.0 L 121.5 357.0 L 120.0 354.5 L 107.5 356.0 L 107.5 412.0 L 109.5 413.0 Z M 410.0 153.5 L 406.0 153.5 L 402.5 150.0 L 403.5 144.0 L 407.0 141.5 L 413.5 145.0 L 413.5 150.0 L 410.0 153.5 Z M 31.5 316.0 L 38.5 307.0 L 35.0 301.5 L 30.0 301.5 L 27.5 304.0 L 28.5 312.0 L 31.5 316.0 Z" fill="currentColor" fill-rule="evenodd"/></svg>',body:'<p>Montarias dão deslocamento extra, transporte de carga e às vezes ataque próprio.</p><h4>Tipos</h4><ul><li><b>Animal terrestre</b> — cavalo, lobo gigante, lagarto-corrida</li><li><b>Construto</b> — mech leve, cyber-cão, drone-cavalo</li><li><b>Bio-mech</b> — híbrido orgânico-mecânico (regenera mas precisa combustível raro)</li><li><b>Voadora</b> — grifo, hover-disco, asa-aberta</li></ul><h4>Atributos</h4><ul><li><b>HP</b> — 4× nível do dono base</li><li><b>Velocidade</b> — 12-20m</li><li><b>Carga</b> — capacidade adicional 200-800kg</li><li><b>Lealdade</b> — testes Animal Handling pra obedecer</li></ul><h4>Combate</h4><p>Compartilha turno com dono. Pode atacar uma vez se treinada. Se HP chega 0 fora de combate, pode ser recuperada com cuidado veterinário.</p><h4>Vínculo</h4><p>Após 1 mês: ganha +2 CA enquanto pilotada. Após 1 ano: comunicação telepática limitada.</p>'},
+  {id:'mon',cat:'mun',title:'Montarias',sub:'Companheiros de viagem',c:'green',ico:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M17.8 15.1a10 10 0 0 0 .9-7.1h.3c1.7 0 3-1.3 3-3V3h-3c-1.3 0-2.4.8-2.8 1.9a10 10 0 0 0-8.4 0C7.4 3.8 6.3 3 5 3H2v2c0 1.7 1.3 3 3 3h.3a10 10 0 0 0 .9 7.1M9 9.5v.5m6-.5v.5"/><path d="M15 22a4 4 0 1 0-3-6.6A4 4 0 1 0 9 22Zm-6-4h.01M15 18h.01"/></g></svg>',body:'<p>Montarias dão deslocamento extra, transporte de carga e às vezes ataque próprio.</p><h4>Tipos</h4><ul><li><b>Animal terrestre</b> — cavalo, lobo gigante, lagarto-corrida</li><li><b>Construto</b> — mech leve, cyber-cão, drone-cavalo</li><li><b>Bio-mech</b> — híbrido orgânico-mecânico (regenera mas precisa combustível raro)</li><li><b>Voadora</b> — grifo, hover-disco, asa-aberta</li></ul><h4>Atributos</h4><ul><li><b>HP</b> — 4× nível do dono base</li><li><b>Velocidade</b> — 12-20m</li><li><b>Carga</b> — capacidade adicional 200-800kg</li><li><b>Lealdade</b> — testes Animal Handling pra obedecer</li></ul><h4>Combate</h4><p>Compartilha turno com dono. Pode atacar uma vez se treinada. Se HP chega 0 fora de combate, pode ser recuperada com cuidado veterinário.</p><h4>Vínculo</h4><p>Após 1 mês: ganha +2 CA enquanto pilotada. Após 1 ano: comunicação telepática limitada.</p>'},
   {id:'aer',cat:'mun',title:'Aeronaves',sub:'Combate aéreo',c:'blue',ico:'<path d="M22 16l-8-5V3l-1-1-1 1v8L4 16v2l8-2v6l-2 1v1l3-1 3 1v-1l-2-1v-6l8 2z"/>',body:'<h4>Categorias</h4><ul><li><b>Caça</b> — manobrável, frágil, dogfight</li><li><b>Bombardeiro</b> — pesado, lento, devastador</li><li><b>Cruzador</b> — médio, multipropósito</li><li><b>Civil</b> — transporte, sem armamento</li><li><b>Mech-aéreo</b> — anti-grav humanoide</li></ul><h4>Combate Aéreo</h4><p>Manobras táticas: barril, queda controlada, tail-chase, immelmann. Cada uma é teste Pilotagem (DES) DT 12-18.</p><h4>Altitude</h4><ul><li>Solo — 0m, vulnerável a tudo</li><li>Baixa — 0-100m, alvejável por arma comum</li><li>Média — 100-1000m, requer arma anti-aérea</li><li>Alta — 1km+, requer míssil ou caça interceptador</li></ul><h4>Reentrada Forçada</h4><p>Casco 0: rola d20. 1-5 explosão (todos dentro: 8d6 fogo). 6-15 queda controlada. 16-20 pouso de emergência.</p>'},
   {id:'mal',cat:'mun',title:'Maldições',sub:'Afetações permanentes',c:'red',ico:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r="1" fill="currentColor"/>',body:'<p>Condições narrativas e mecânicas que retornam em arcos específicos. Não removidas por descanso normal.</p><h4>Tipos</h4><ul><li><b>Sangue Maldito</b> — toda lua cheia: -2 todos atributos, sede insaciável</li><li><b>Marca do Vazio</b> — sonhos com entidade, INT teste DT 14 ou ação aleatória 1×/dia</li><li><b>Carne Quebrada</b> — HP máx reduzido em 1d6 por noite, restaura com ritual</li><li><b>Voz dos Mortos</b> — escuta sussurros constantes, desvantagem em sono normal</li><li><b>Olho Aberto</b> — vê coisas invisíveis, mas elas o veem também</li><li><b>Tempo Furtado</b> — envelhece 1d4 anos por mês ativo</li></ul><h4>Remoção</h4><p>Cada maldição tem ritual único: combinação de ingredientes raros, locais de poder e geralmente uma escolha pesada (sacrifício, esquecimento, transformação).</p><h4>Embraçar</h4><p>Personagem pode aceitar a maldição como parte de si: ganha 1 traço único poderoso mas a maldição se intensifica.</p>'},
   {id:'int',cat:'mec',title:'Interlúdios',sub:'Cenas de descanso',c:'cyan',ico:'<path d="M3 12h2l2-7 4 14 2-7h8"/>',body:'<p>Mecânica entre aventuras. Permite progresso narrativo e mecânico fora de combate.</p><h4>Atividades</h4><ul><li><b>Crafting</b> — fabricar item (Mecânica/Arcanismo, dias × DT)</li><li><b>Pesquisa</b> — descobrir info (Investigação, biblioteca)</li><li><b>Treinamento</b> — aprender perícia/idioma (10 dias + tutor)</li><li><b>Recuperação</b> — curar aflição/maldição leve</li><li><b>Relacionamentos</b> — fortalecer NPC (rolagem CAR semanal)</li><li><b>Patrimônio</b> — comprar/manter base, negócio, frota</li><li><b>Influência</b> — construir reputação em facção</li></ul><h4>Tempo</h4><p>1 interlúdio = 1 semana ou 1 mês conforme escala. Múltiplas atividades em paralelo se houver tempo.</p><h4>Eventos Aleatórios</h4><p>A cada interlúdio: rola d20 em tabela de eventos. Pode ser oportunidade, complicação, ou novo gancho.</p>'},
@@ -6582,9 +6738,11 @@ function _biblioIcoWrap(ico,opts){
   if(typeof ico!=='string')return '';
   const t=ico.trim();
   if(t.startsWith('<svg')){
-    // Full svg — adapta pra theme color + tamanho opcional
-    let s=t.replace(/fill="#[0-9a-fA-F]{3,8}"/g,'fill="currentColor"');
-    if(opts.w&&opts.h)s=s.replace(/<svg([^>]*?)\swidth="[^"]*"\sheight="[^"]*"/i,`<svg$1`).replace(/<svg/i,`<svg width="${opts.w}" height="${opts.h}"`);
+    // Full svg — adapta pra theme color, remove width/height inline pra CSS controlar
+    let s=t.replace(/fill="#[0-9a-fA-F]{3,8}"/g,'fill="currentColor"')
+          .replace(/\swidth="[^"]*"/i,'')
+          .replace(/\sheight="[^"]*"/i,'');
+    if(opts.w&&opts.h)s=s.replace(/<svg/i,`<svg width="${opts.w}" height="${opts.h}"`);
     return s;
   }
   const sw=opts.sw||'2.2';
@@ -7116,6 +7274,7 @@ function _biblioApplyChapter(ch){
   book.style.setProperty('--env-c',color);
   reader.style.setProperty('--env-c',color);
   document.getElementById('br-icon').innerHTML=_biblioIcoWrap(ch.ico,{sw:'2'});
+  const brCover=document.getElementById('br-cover');if(brCover)brCover.setAttribute('data-bid',ch.id);
   document.getElementById('br-title').textContent=ch.title.toUpperCase();
   document.getElementById('br-sub').textContent=ch.sub;
   document.getElementById('br-line-icon').innerHTML=_biblioIcoWrap(ch.ico,{sw:'2',w:'22',h:'22'});
@@ -7872,8 +8031,8 @@ window.addEventListener('load',()=>{
   if(restored&&typeof toast==='function')setTimeout(()=>toast('Ficha restaurada automaticamente'),2400);
 });
 
-// Salva periodicamente enquanto o app está aberto
-setInterval(()=>{autosaveNow()},8000);
+// Salva periodicamente enquanto o app está aberto (pula se aba não visível)
+setInterval(()=>{if(document.visibilityState==='visible')autosaveNow()},15000);
 
 // Salva quando o app vai pra background / o usuário minimiza
 document.addEventListener('visibilitychange',()=>{
@@ -8121,7 +8280,11 @@ function updateDeviceOrientation(){
   if(typeof drawInterludioChart==='function')setTimeout(()=>{try{drawInterludioChart()}catch(_){}},120);
 }
 updateDeviceOrientation();
-window.addEventListener('resize',updateDeviceOrientation);
+let _resizeOrientationTmr=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(_resizeOrientationTmr);
+  _resizeOrientationTmr=setTimeout(updateDeviceOrientation,150);
+},{passive:true});
 window.addEventListener('orientationchange',()=>{
   setTimeout(updateDeviceOrientation,100);
   setTimeout(updateDeviceOrientation,400);
@@ -8143,7 +8306,11 @@ _safe(renderPericias,'renderPericias');
 _safe(renderGridCfgOptions,'renderGridCfgOptions');
 _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
-window.addEventListener('resize',()=>_safe(()=>drawChart(false),'drawChartResize'));
+let _chartResizeTmr=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(_chartResizeTmr);
+  _chartResizeTmr=setTimeout(()=>_safe(()=>drawChart(false),'drawChartResize'),200);
+},{passive:true});
 
 
 // ═══ ADVENTURER PICKERS (Linhagem/Passado/Arquétipo/Caminho) ═══

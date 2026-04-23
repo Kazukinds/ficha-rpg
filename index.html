@@ -3192,20 +3192,202 @@ button:not(:disabled):active{transform:scale(.97)}
 .attr-stat-head-l{cursor:pointer}
 .attr-stat-head-r{font-size:11px;color:var(--text-dim);letter-spacing:.5px;display:flex;align-items:center;gap:8px}
 .attr-stat-head-r b{color:var(--text-secondary);font-weight:700}
-.attr-stat-max{white-space:nowrap}
-.attr-unlock-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--yellow) 14%,transparent);color:var(--yellow);font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:1px solid color-mix(in srgb,var(--yellow) 35%,transparent)}
-.attr-gear-btn{
-  width:26px;height:26px;border-radius:6px;padding:0;cursor:pointer;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);
-  transition:all .2s;
+.attr-stat-max{white-space:nowrap;cursor:default;user-select:none;-webkit-user-select:none}
+.attr-stat-max [data-attr-secret]{padding:4px 6px;border-radius:6px;transition:background .15s}
+.attr-stat-max [data-attr-secret]:active{background:color-mix(in srgb,var(--yellow) 14%,transparent)}
+.attr-unlock-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:linear-gradient(135deg,color-mix(in srgb,var(--yellow) 22%,transparent),color-mix(in srgb,#fb923c 14%,transparent));color:var(--yellow);font-weight:800;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid color-mix(in srgb,var(--yellow) 45%,transparent);box-shadow:0 2px 10px color-mix(in srgb,var(--yellow) 18%,transparent);animation:unlockPulse 2.5s ease-in-out infinite}
+@keyframes unlockPulse{0%,100%{box-shadow:0 2px 10px color-mix(in srgb,var(--yellow) 18%,transparent)}50%{box-shadow:0 2px 16px color-mix(in srgb,var(--yellow) 40%,transparent)}}
+.attr-over-cap .attr-stat-val{text-shadow:0 0 14px currentColor;animation:overCapGlow 1.6s ease-in-out infinite}
+@keyframes overCapGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+
+/* Popup da engrenagem (ATRIBUTOS) */
+.attr-gear-menu{
+  position:absolute;z-index:10040;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:12px;
+  padding:8px;box-shadow:0 18px 40px rgba(0,0,0,.55);
+  display:flex;flex-direction:column;gap:6px;
+  opacity:0;transform:translateY(-4px) scale(.97);
+  transition:opacity .16s ease-out,transform .16s ease-out;
+  pointer-events:none;
 }
-.attr-gear-btn svg{width:14px;height:14px}
-.attr-gear-btn:hover{color:var(--text-secondary);border-color:var(--text-dim);transform:rotate(40deg)}
-.attr-gear-btn.on{color:var(--yellow);border-color:color-mix(in srgb,var(--yellow) 50%,var(--border));background:color-mix(in srgb,var(--yellow) 10%,var(--bg-input))}
-.attr-gear-btn.on:hover{transform:rotate(90deg)}
-.attr-over-cap .attr-stat-val{text-shadow:0 0 12px currentColor}
-.attr-over-cap .attr-stat-fill{box-shadow:0 0 8px currentColor}
+.attr-gear-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.attr-gear-menu .attr-arch-btn{margin-bottom:0}
+.attr-gear-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:8px;cursor:pointer;
+  background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);
+  font-family:inherit;font-size:12.5px;font-weight:600;text-align:left;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.attr-gear-item svg{width:16px;height:16px;flex-shrink:0;color:var(--text-dim)}
+.attr-gear-item:hover{background:var(--bg-body);border-color:var(--text-dim);color:var(--text)}
+.attr-gear-item:hover svg{color:var(--lime)}
+
+/* Botão Arquétipo */
+.attr-arch-btn{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:12px 14px;margin-bottom:12px;cursor:pointer;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--arch-color,var(--lime)) 14%,var(--bg-card)),color-mix(in srgb,var(--arch-color,var(--lime)) 4%,var(--bg-input)));
+  border:1px solid color-mix(in srgb,var(--arch-color,var(--lime)) 35%,var(--border));
+  border-radius:12px;color:var(--text);font-family:inherit;text-align:left;
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+  position:relative;overflow:hidden;
+}
+.attr-arch-btn::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--arch-color,var(--lime)) 22%,transparent),transparent 55%);
+  pointer-events:none;opacity:.7;
+}
+.attr-arch-btn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--arch-color,var(--lime)) 60%,var(--border));box-shadow:0 6px 20px color-mix(in srgb,var(--arch-color,var(--lime)) 22%,transparent)}
+.attr-arch-btn:active{transform:scale(.99)}
+.attr-arch-ico{
+  width:42px;height:42px;border-radius:11px;flex-shrink:0;
+  background:color-mix(in srgb,var(--arch-color,var(--lime)) 18%,var(--bg-input));
+  border:1px solid color-mix(in srgb,var(--arch-color,var(--lime)) 50%,transparent);
+  display:flex;align-items:center;justify-content:center;color:var(--arch-color,var(--lime));
+  position:relative;z-index:1;
+}
+.attr-arch-ico svg{width:22px;height:22px}
+.attr-arch-text{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;position:relative;z-index:1}
+.attr-arch-label{font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+.attr-arch-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;letter-spacing:1px;color:var(--arch-color,var(--text));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attr-arch-btn:not(.has-arch) .attr-arch-val{color:var(--text-dim);font-weight:600;letter-spacing:.5px}
+.attr-arch-chev{color:var(--text-dim);flex-shrink:0;transition:transform .2s,color .2s;position:relative;z-index:1}
+.attr-arch-chev svg{width:18px;height:18px}
+.attr-arch-btn:hover .attr-arch-chev{color:var(--arch-color,var(--lime));transform:translateX(3px)}
+
+/* Modal Arquétipo Picker — compacto 2x2 com fundo animado */
+.arch-pick-intro{
+  padding:10px 12px;margin-bottom:10px;border-radius:10px;
+  background:linear-gradient(135deg,var(--bg-input),color-mix(in srgb,var(--lime) 4%,var(--bg-card)));
+  border:1px solid var(--border);
+}
+.arch-pick-intro-row{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.arch-pick-stat{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0}
+.arch-pick-stat-n{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--lime);line-height:1}
+.arch-pick-stat-l{font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);font-weight:600}
+.arch-pick-divider{width:1px;height:22px;background:var(--border)}
+.arch-pick-desc{font-size:11px;line-height:1.4;color:var(--text-secondary);text-align:center}
+.arch-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:2px;margin:-2px}
+.arch-pick-card{
+  display:flex;flex-direction:column;gap:8px;
+  padding:12px;border-radius:12px;cursor:pointer;text-align:left;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 12%,var(--bg-card)) 0%,var(--bg-card) 100%);
+  border:1px solid color-mix(in srgb,var(--c) 32%,var(--border));
+  color:var(--text);font-family:inherit;
+  transition:transform .2s cubic-bezier(.3,.8,.3,1),border-color .2s,box-shadow .2s;
+  position:relative;overflow:hidden;isolation:isolate;
+}
+/* Glow orbital animado — conic rotating */
+.arch-pick-card::before{
+  content:"";position:absolute;inset:-50%;z-index:-1;
+  background:conic-gradient(from 0deg,transparent 0%,color-mix(in srgb,var(--c) 28%,transparent) 18%,transparent 40%,transparent 60%,color-mix(in srgb,var(--c) 18%,transparent) 78%,transparent 100%);
+  animation:archSpin 8s linear infinite;opacity:.55;pointer-events:none;
+}
+/* Máscara interna pra deixar só a borda com glow */
+.arch-pick-card::after{
+  content:"";position:absolute;inset:1px;z-index:-1;border-radius:11px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,var(--bg-card)) 0%,var(--bg-card) 70%);
+  pointer-events:none;
+}
+@keyframes archSpin{to{transform:rotate(360deg)}}
+.arch-pick-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--c) 70%,var(--border));box-shadow:0 8px 22px color-mix(in srgb,var(--c) 28%,transparent)}
+.arch-pick-card:hover::before{opacity:.85;animation-duration:4s}
+.arch-pick-card:active{transform:scale(.98)}
+.arch-pick-custom{border-style:dashed}
+.arch-pick-head{display:flex;align-items:center;gap:8px}
+.arch-pick-ico{
+  width:34px;height:34px;flex-shrink:0;border-radius:9px;
+  background:color-mix(in srgb,var(--c) 20%,var(--bg-input));
+  border:1px solid color-mix(in srgb,var(--c) 48%,transparent);
+  display:flex;align-items:center;justify-content:center;color:var(--c);
+}
+.arch-pick-ico svg{width:18px;height:18px}
+.arch-pick-name{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;letter-spacing:1.8px;color:var(--c)}
+.arch-pick-rows{display:flex;flex-direction:column;gap:3px}
+.arch-pick-row{display:grid;grid-template-columns:52px 1fr 18px;align-items:center;gap:6px}
+.arch-pick-rname{font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);font-weight:600}
+.arch-pick-rbar{display:block;height:5px;background:var(--bg-input);border-radius:3px;overflow:hidden;position:relative}
+.arch-pick-rfill{display:block;height:100%;width:0;border-radius:3px;animation:archBarFill .6s cubic-bezier(.3,.9,.3,1) forwards}
+@keyframes archBarFill{from{width:0!important}}
+.arch-pick-rval{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;text-align:right}
+.arch-pick-descc{font-size:10.5px;line-height:1.4;color:var(--text-secondary);display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.arch-pick-descc b{color:var(--text)}
+.arch-pick-cta{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 10px;margin-top:auto;
+  background:color-mix(in srgb,var(--c) 12%,var(--bg-input));
+  border:1px solid color-mix(in srgb,var(--c) 28%,transparent);
+  border-radius:7px;color:var(--c);
+  font-size:9.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;
+  transition:background .2s,gap .2s;
+}
+.arch-pick-cta svg{width:12px;height:12px;transition:transform .2s}
+.arch-pick-card:hover .arch-pick-cta{background:color-mix(in srgb,var(--c) 22%,var(--bg-input))}
+.arch-pick-card:hover .arch-pick-cta svg{transform:translateX(3px)}
+@media(max-width:480px){
+  .arch-pick-grid{gap:8px}
+  .arch-pick-card{padding:10px;gap:7px}
+  .arch-pick-ico{width:30px;height:30px;border-radius:8px}
+  .arch-pick-ico svg{width:16px;height:16px}
+  .arch-pick-name{font-size:11px;letter-spacing:1.4px}
+  .arch-pick-row{grid-template-columns:46px 1fr 16px}
+  .arch-pick-rname{font-size:8px}
+  .arch-pick-rval{font-size:11px}
+  .arch-pick-descc{font-size:10px}
+  .arch-pick-cta{padding:5px 8px;font-size:9px}
+  .arch-pick-intro-row{flex-wrap:wrap;justify-content:space-around}
+  .arch-pick-divider{display:none}
+  .arch-pick-stat{min-width:70px}
+}
+
+/* Confirm customizado (substitui alert do browser) */
+.arch-confirm-overlay{
+  position:fixed;inset:0;z-index:10050;
+  background:rgba(0,0,0,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;transition:opacity .18s;
+}
+.arch-confirm-overlay.open{opacity:1}
+.arch-confirm-box{
+  width:100%;max-width:360px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,var(--bg-card)) 0%,var(--bg-card) 100%);
+  border:1px solid color-mix(in srgb,var(--c) 40%,var(--border));
+  border-radius:16px;padding:20px 18px 16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px color-mix(in srgb,var(--c) 20%,transparent);
+  text-align:center;position:relative;overflow:hidden;
+  transform:translateY(8px) scale(.96);transition:transform .22s cubic-bezier(.3,.9,.3,1);
+}
+.arch-confirm-overlay.open .arch-confirm-box{transform:translateY(0) scale(1)}
+.arch-confirm-box::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% -20%,color-mix(in srgb,var(--c) 28%,transparent),transparent 60%);
+}
+.arch-confirm-box>*{position:relative}
+.arch-confirm-ico{
+  width:44px;height:44px;margin:0 auto 10px;border-radius:12px;
+  background:color-mix(in srgb,var(--c) 18%,var(--bg-input));
+  border:1px solid color-mix(in srgb,var(--c) 45%,transparent);
+  display:flex;align-items:center;justify-content:center;color:var(--c);
+}
+.arch-confirm-ico svg{width:22px;height:22px}
+.arch-confirm-title{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;letter-spacing:1.6px;color:var(--c);margin-bottom:6px}
+.arch-confirm-msg{font-size:12px;line-height:1.5;color:var(--text-secondary);margin-bottom:16px}
+.arch-confirm-btns{display:flex;gap:8px}
+.arch-confirm-btn{
+  flex:1;padding:10px 14px;border-radius:10px;cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.6px;
+  transition:transform .15s,background .2s,border-color .2s;
+}
+.arch-confirm-btn:active{transform:scale(.97)}
+.arch-confirm-btn.secondary{background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary)}
+.arch-confirm-btn.secondary:hover{border-color:var(--text-dim);color:var(--text)}
+.arch-confirm-btn.primary{
+  background:color-mix(in srgb,var(--c) 22%,var(--bg-input));
+  border:1px solid color-mix(in srgb,var(--c) 55%,transparent);
+  color:var(--c);text-transform:uppercase;letter-spacing:1.4px;
+}
+.arch-confirm-btn.primary:hover{background:color-mix(in srgb,var(--c) 35%,var(--bg-input));border-color:var(--c)}
 
 /* Popup de limite */
 .attr-limit-popup{
@@ -3245,7 +3427,7 @@ button:not(:disabled):active{transform:scale(.97)}
 .alp-actions .modal-btn{padding:6px 14px;font-size:12px}
 .attr-stat-list{display:flex;flex-direction:column;gap:8px}
 .attr-stat-row{
-  display:grid;grid-template-columns:78px 1fr 26px 26px;align-items:center;gap:10px;
+  display:grid;grid-template-columns:78px 1fr 28px;align-items:center;gap:10px;
   padding:8px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;
   transition:border-color .18s,transform .18s;
 }
@@ -3254,9 +3436,8 @@ button:not(:disabled):active{transform:scale(.97)}
 .attr-stat-bar{display:block;height:6px;background:var(--bg-body);border-radius:3px;overflow:hidden;position:relative}
 .attr-stat-fill{display:block;height:100%;width:0;border-radius:3px;transition:width .35s cubic-bezier(.4,.8,.3,1)}
 .attr-stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;text-align:right}
-.attr-stat-row .attr-d6-btn{margin-left:0;width:26px;height:26px}
 @media(max-width:640px){
-  .attr-stat-row{grid-template-columns:62px 1fr 22px 26px;gap:8px;padding:7px 8px}
+  .attr-stat-row{grid-template-columns:62px 1fr 24px;gap:8px;padding:7px 8px}
   .attr-stat-name{font-size:9px;letter-spacing:1.2px}
   .attr-stat-val{font-size:14px}
   .attr-stat-used{font-size:20px}
@@ -3608,7 +3789,7 @@ img{content-visibility:auto}
         </div>
         <!-- ATRIBUTOS -->
         <div class="card">
-          <div class="card-header"><div class="card-title">Atributos</div><div class="card-actions"><div class="card-action-btn" onclick="openModal('attribute')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg></div></div></div>
+          <div class="card-header"><div class="card-title">Atributos</div><div class="card-actions"><div class="card-action-btn" onclick="openAttrGearMenu(this)" title="Opções de atributos"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/></svg></div></div></div>
           <div class="attr-list" id="dash-attr-list"></div>
         </div>
       </div>
@@ -5170,30 +5351,89 @@ function renderAttrs(){
   const highest=ordered.reduce((m,a)=>Math.max(m,a.val||0),0);
   const unlocked=_attrUnlocked;
   const barDenom=unlocked?Math.max(cap.maxPerAttr,highest,10):cap.maxPerAttr;
+  const curArch=(typeof profileData!=='undefined'&&profileData&&profileData.arquetipoAttr)?profileData.arquetipoAttr:null;
+  const archLabel=curArch||'Escolher arquétipo';
+  const archColor=curArch==='LÓGICO'?'#60a5fa':curArch==='INSTINTIVO'?'#c084fc':curArch==='VIGOROSO'?'#f87171':curArch==='PRÓPRIO'?'#bef264':'var(--lime)';
   const rows=ordered.map(a=>{
     const color=COLORS[a.name]||a.color;
     const pct=Math.min(100,((a.val||0)/barDenom)*100);
     const overCap=(a.val||0)>cap.maxPerAttr;
     return `<div class="attr-stat-row${overCap?' attr-over-cap':''}">
       <span class="attr-stat-name">${a.name}</span>
-      <span class="attr-stat-bar"><span class="attr-stat-fill" style="width:${pct}%;background:${color}"></span></span>
+      <span class="attr-stat-bar"><span class="attr-stat-fill" style="width:${pct}%;background:${color};box-shadow:0 0 12px ${color}55"></span></span>
       <span class="attr-stat-val" style="color:${color}">${a.val||0}</span>
-      <button class="attr-d6-btn" type="button" onclick="event.stopPropagation();rollAttrD6('${a.name}',${a.val||0})" title="Rolar 1d6 + ${a.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="9" cy="12" r="1.2" fill="currentColor"/><circle cx="15" cy="12" r="1.2" fill="currentColor"/></svg></button>
     </div>`;
   }).join('');
-  const gearSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
-  const maxLabel=unlocked?'<span class="attr-unlock-badge">∞ livre</span>':`máx <b>${cap.maxPerAttr}</b>${cap.level>=10?' · Nv '+cap.level:''}`;
+  const maxLabel=unlocked?'<span class="attr-unlock-badge" data-attr-secret="1">∞ LIVRE</span>':`<span data-attr-secret="1">máx <b>${cap.maxPerAttr}</b>${cap.level>=10?' · Nv '+cap.level:''}</span>`;
   const html=`<div class="attr-stat-head">
       <div class="attr-stat-head-l" onclick="openModal('attribute')" title="Editar atributos"><span class="attr-stat-used">${used}</span><span class="attr-stat-sep">/</span><span class="attr-stat-total">${unlocked?'∞':cap.totalPts}</span><span class="attr-stat-label">pontos</span></div>
-      <div class="attr-stat-head-r">
-        <span class="attr-stat-max">${maxLabel}</span>
-        <button class="attr-gear-btn${unlocked?' on':''}" type="button" onclick="event.stopPropagation();openAttrLimitPopup(this)" title="Limite de atributos">${gearSvg}</button>
-      </div>
+      <div class="attr-stat-head-r"><span class="attr-stat-max">${maxLabel}</span></div>
     </div>
     <div class="attr-stat-list">${rows}</div>`;
-  const el=document.getElementById('attr-list');if(el){el.innerHTML=html}
-  const dashEl=document.getElementById('dash-attr-list');if(dashEl){dashEl.innerHTML=html}
+  const el=document.getElementById('attr-list');if(el){el.innerHTML=html;_wireAttrSecret(el)}
+  const dashEl=document.getElementById('dash-attr-list');if(dashEl){dashEl.innerHTML=html;_wireAttrSecret(dashEl)}
   renderPericias();
+}
+
+// Menu popup da engrenagem (ATRIBUTOS)
+window.openAttrGearMenu=function(anchor){
+  document.querySelectorAll('.attr-gear-menu').forEach(p=>p.remove());
+  const curArch=(typeof profileData!=='undefined'&&profileData&&profileData.arquetipoAttr)?profileData.arquetipoAttr:null;
+  const archLabel=curArch||'Escolher arquétipo';
+  const archColor=curArch==='LÓGICO'?'#60a5fa':curArch==='INSTINTIVO'?'#c084fc':curArch==='VIGOROSO'?'#f87171':curArch==='PRÓPRIO'?'#bef264':'var(--lime)';
+  const pop=document.createElement('div');
+  pop.className='attr-gear-menu';
+  pop.innerHTML=`
+    <button type="button" class="attr-arch-btn${curArch?' has-arch':''}" data-act="arch" style="--arch-color:${archColor}">
+      <span class="attr-arch-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 9 8.5 12 2"/></svg></span>
+      <span class="attr-arch-text"><span class="attr-arch-label">Arquétipo</span><span class="attr-arch-val">${archLabel}</span></span>
+      <span class="attr-arch-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+    </button>
+    <button type="button" class="attr-gear-item" data-act="edit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      <span>Ajustar valores</span>
+    </button>`;
+  document.body.appendChild(pop);
+  const r=anchor.getBoundingClientRect();
+  const popW=260;
+  let left=r.right-popW+window.scrollX;if(left<8)left=8;if(left+popW>window.innerWidth-8)left=window.innerWidth-popW-8;
+  pop.style.left=left+'px';
+  pop.style.top=(r.bottom+window.scrollY+6)+'px';
+  pop.style.width=popW+'px';
+  requestAnimationFrame(()=>pop.classList.add('open'));
+  pop.addEventListener('click',e=>{
+    const b=e.target.closest('[data-act]');if(!b)return;
+    const act=b.dataset.act;
+    close();
+    if(act==='arch')openArchetypePicker();
+    else if(act==='edit')openModal('attribute');
+  });
+  const close=()=>{pop.classList.remove('open');setTimeout(()=>pop.remove(),160);document.removeEventListener('mousedown',outside);document.removeEventListener('touchstart',outside)};
+  const outside=(e)=>{if(!pop.contains(e.target)&&e.target!==anchor&&!anchor.contains(e.target))close()};
+  setTimeout(()=>{document.addEventListener('mousedown',outside);document.addEventListener('touchstart',outside)},10);
+};
+
+// Botão oculto: 7 taps no rótulo "máx X" em <2.5s libera/tranca limite
+let _attrSecretTaps=0,_attrSecretT=0;
+function _wireAttrSecret(scope){
+  scope.querySelectorAll('[data-attr-secret]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      const now=Date.now();
+      if(now-_attrSecretT>2500)_attrSecretTaps=0;
+      _attrSecretT=now;_attrSecretTaps++;
+      if(_attrSecretTaps>=4&&_attrSecretTaps<7){
+        if(typeof toast==='function')toast(`${7-_attrSecretTaps} toques...`,'info');
+      }
+      if(_attrSecretTaps>=7){
+        _attrSecretTaps=0;
+        _setAttrUnlocked(!_attrUnlocked);
+        if(typeof toast==='function')toast(_attrUnlocked?'🔓 Modo livre ativado':'🔒 Limite padrão restaurado',_attrUnlocked?'success':'info');
+        try{navigator.vibrate&&navigator.vibrate([40,30,80])}catch(_){}
+        renderAttrs();
+      }
+    },{passive:false});
+  });
 }
 
 window.openAttrLimitPopup=function(anchor){
@@ -8591,55 +8831,95 @@ window.openArchetypePicker=function(){
   if(!title||!body)return;
   title.textContent='Arquétipo de atributos';
   const cap=_archetypePointCap();
-  const intro=`<div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px">
-    Sistema de 4 atributos começando em 0. Distribui <b style="color:var(--lime)">${cap.totalPts} pontos</b> · máx <b style="color:var(--lime)">${cap.maxPerAttr}</b> por atributo. ${cap.level>=10?`<span style="color:#fb923c">Nv ${cap.level} — bônus ativado</span>`:`No Nv 10 ganha +2 pts e máx sobe pra 6.`}
+  const unlocked=_attrUnlocked;
+  const intro=`<div class="arch-pick-intro">
+    <div class="arch-pick-intro-row">
+      <div class="arch-pick-stat"><span class="arch-pick-stat-n">${unlocked?'∞':cap.totalPts}</span><span class="arch-pick-stat-l">pontos</span></div>
+      <div class="arch-pick-divider"></div>
+      <div class="arch-pick-stat"><span class="arch-pick-stat-n">${unlocked?'∞':cap.maxPerAttr}</span><span class="arch-pick-stat-l">máx/atrib</span></div>
+      <div class="arch-pick-divider"></div>
+      <div class="arch-pick-stat"><span class="arch-pick-stat-n">Nv ${cap.level}</span><span class="arch-pick-stat-l">${cap.level>=10?'bônus ativo':'→10 +bônus'}</span></div>
+    </div>
+    <div class="arch-pick-desc">Escolhe um caminho ou distribui livre. Sobrescreve valores atuais.</div>
   </div>`;
   const cards=ARCHETYPE_PRESETS.map(p=>{
     const rows=Object.entries(p.attrs).map(([k,v])=>{
       const pct=(v/5)*100;
-      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);width:64px">${k}</span>
-        <span style="flex:1;height:6px;background:var(--bg-input);border-radius:3px;overflow:hidden;position:relative">
-          <span style="position:absolute;inset:0 ${100-pct}% 0 0;background:${p.color};border-radius:3px"></span>
-        </span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:${p.color};width:18px;text-align:right">${v}</span>
+      return `<div class="arch-pick-row">
+        <span class="arch-pick-rname">${k}</span>
+        <span class="arch-pick-rbar"><span class="arch-pick-rfill" style="width:${pct}%;background:${p.color};box-shadow:0 0 10px ${p.color}66"></span></span>
+        <span class="arch-pick-rval" style="color:${p.color}">${v}</span>
       </div>`;
     }).join('');
-    return `<div class="archetype-card" data-key="${p.key}" style="padding:16px;background:linear-gradient(160deg,color-mix(in srgb,${p.color} 10%,var(--bg-card)),var(--bg-card));border:1px solid color-mix(in srgb,${p.color} 30%,var(--border));border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,${p.color} 15%,var(--bg-input));border:1px solid color-mix(in srgb,${p.color} 40%,transparent);display:flex;align-items:center;justify-content:center;color:${p.color};flex-shrink:0">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px">${p.ico}</svg>
-        </div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;letter-spacing:2px;color:${p.color}">${p.name}</div>
+    return `<button type="button" class="arch-pick-card" data-key="${p.key}" style="--c:${p.color}">
+      <div class="arch-pick-head">
+        <div class="arch-pick-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p.ico}</svg></div>
+        <div class="arch-pick-name">${p.name}</div>
       </div>
-      <div>${rows}</div>
-      <div style="font-size:11.5px;line-height:1.5;color:var(--text-secondary)">${p.desc}</div>
-    </div>`;
+      <div class="arch-pick-rows">${rows}</div>
+      <div class="arch-pick-descc">${p.desc}</div>
+      <div class="arch-pick-cta"><span>Aplicar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    </button>`;
   }).join('');
-  const custom=`<div class="archetype-card" data-key="custom" style="padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--lime) 10%,var(--bg-card)),var(--bg-card));border:1px dashed color-mix(in srgb,var(--lime) 50%,var(--border));border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,var(--lime) 15%,var(--bg-input));border:1px solid color-mix(in srgb,var(--lime) 40%,transparent);display:flex;align-items:center;justify-content:center;color:var(--lime);flex-shrink:0">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-      </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;letter-spacing:2px;color:var(--lime)">PRÓPRIO</div>
+  const custom=`<button type="button" class="arch-pick-card arch-pick-custom" data-key="custom" style="--c:#bef264">
+    <div class="arch-pick-head">
+      <div class="arch-pick-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+      <div class="arch-pick-name">PRÓPRIO</div>
     </div>
-    <div style="font-size:11.5px;line-height:1.5;color:var(--text-secondary)">Distribui livremente os <b>${cap.totalPts} pontos</b>. Crie seu personagem do zero — respeitando o limite de ${cap.maxPerAttr} por atributo.</div>
-  </div>`;
+    <div class="arch-pick-descc">Distribui livremente os <b>${unlocked?'∞':cap.totalPts} pontos</b>. Cria do zero, respeitando o limite de ${unlocked?'∞':cap.maxPerAttr} por atributo.</div>
+    <div class="arch-pick-cta"><span>Personalizar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+  </button>`;
   body.innerHTML=intro+
-    `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;max-height:60vh;overflow-y:auto">${cards}${custom}</div>
+    `<div class="arch-pick-grid">${cards}${custom}</div>
     <div class="modal-btns" style="margin-top:14px"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button></div>`;
   document.getElementById('modal-overlay').classList.add('open');
-  body.querySelectorAll('.archetype-card').forEach(c=>{
+  body.querySelectorAll('.arch-pick-card').forEach(c=>{
     c.addEventListener('click',()=>{
       const k=c.dataset.key;
       if(k==='custom'){_openCustomArchetype();return}
       const preset=ARCHETYPE_PRESETS.find(p=>p.key===k);
       if(!preset)return;
-      if(!confirm(`Aplicar arquétipo ${preset.name}?\n\nSobrescreve valores atuais dos atributos.`))return;
-      _applyArchetypeAttrs(preset.attrs);
-      if(typeof toast==='function')toast(`Arquétipo aplicado: ${preset.name}`,'success');
-      closeModal();
+      _archConfirm({
+        title:`Aplicar ${preset.name}?`,
+        msg:'Sobrescreve valores atuais dos atributos.',
+        color:preset.color,
+        ok:'Aplicar'
+      }).then(ok=>{
+        if(!ok)return;
+        _applyArchetypeAttrs(preset.attrs);
+        try{if(typeof profileData!=='undefined')profileData.arquetipoAttr=preset.name}catch(_){}
+        if(typeof toast==='function')toast(`Arquétipo aplicado: ${preset.name}`,'success');
+        closeModal();
+      });
     });
+  });
+};
+
+window._archConfirm=function({title,msg,color='var(--lime)',ok='Confirmar',cancel='Cancelar'}={}){
+  return new Promise(resolve=>{
+    document.querySelectorAll('.arch-confirm-overlay').forEach(el=>el.remove());
+    const wrap=document.createElement('div');
+    wrap.className='arch-confirm-overlay';
+    wrap.innerHTML=`
+      <div class="arch-confirm-box" style="--c:${color}">
+        <div class="arch-confirm-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="arch-confirm-title">${title}</div>
+        <div class="arch-confirm-msg">${msg}</div>
+        <div class="arch-confirm-btns">
+          <button type="button" class="arch-confirm-btn secondary" data-act="cancel">${cancel}</button>
+          <button type="button" class="arch-confirm-btn primary" data-act="ok">${ok}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+    requestAnimationFrame(()=>wrap.classList.add('open'));
+    const close=(v)=>{wrap.classList.remove('open');setTimeout(()=>{wrap.remove();resolve(v)},180)};
+    wrap.addEventListener('click',e=>{
+      if(e.target===wrap){close(false);return}
+      const b=e.target.closest('[data-act]');if(!b)return;
+      close(b.dataset.act==='ok');
+    });
+    const onKey=(e)=>{if(e.key==='Escape'){document.removeEventListener('keydown',onKey);close(false)}else if(e.key==='Enter'){document.removeEventListener('keydown',onKey);close(true)}};
+    document.addEventListener('keydown',onKey);
   });
 };
 function _openCustomArchetype(){
@@ -8694,10 +8974,12 @@ function _openCustomArchetype(){
     });
   });
   document.getElementById('arch-apply').addEventListener('click',()=>{
-    if(!confirm('Aplicar distribuição própria?\n\nSobrescreve valores atuais.'))return;
-    _applyArchetypeAttrs(values);
-    if(typeof toast==='function')toast('Arquétipo próprio aplicado','success');
-    closeModal();
+    _archConfirm({title:'Aplicar distribuição própria?',msg:'Sobrescreve valores atuais dos atributos.',color:'#bef264',ok:'Aplicar'}).then(okv=>{
+      if(!okv)return;
+      _applyArchetypeAttrs(values);
+      if(typeof toast==='function')toast('Arquétipo próprio aplicado','success');
+      closeModal();
+    });
   });
   render();
 }

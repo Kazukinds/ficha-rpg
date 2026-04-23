@@ -37,6 +37,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Eclipse-${variant.versionName}-${variant.buildType.name}.apk"
+        }
+    }
 }
 
 dependencies {

@@ -3932,17 +3932,6 @@ button:not(:disabled):active{transform:scale(.97)}
 }
 .attr-gear-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
 .attr-gear-menu.closing{opacity:0;transform:translateY(-4px) scale(.97);pointer-events:none}
-.attr-gear-menu .attr-arch-btn{margin-bottom:0}
-.attr-gear-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;border-radius:8px;cursor:pointer;
-  background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);
-  font-family:inherit;font-size:12.5px;font-weight:600;text-align:left;
-  transition:background .15s,border-color .15s,color .15s;
-}
-.attr-gear-item svg{width:16px;height:16px;flex-shrink:0;color:var(--text-dim)}
-.attr-gear-item:hover{background:var(--bg-body);border-color:var(--text-dim);color:var(--text)}
-.attr-gear-item:hover svg{color:var(--lime)}
 
 /* Gear menu rich — 5 cards arquétipo em linha horizontal, centralizado */
 .attr-gear-menu-rich{
@@ -4016,38 +4005,6 @@ button:not(:disabled):active{transform:scale(.97)}
 .agm-custom .agm-desc{opacity:1;max-height:80px}
 .agm-hint{font-size:9.5px;letter-spacing:.8px;color:var(--text-dim);text-align:center;padding:4px 0 0;opacity:.7}
 
-/* Botão Arquétipo */
-.attr-arch-btn{
-  display:flex;align-items:center;gap:12px;width:100%;
-  padding:12px 14px;margin-bottom:12px;cursor:pointer;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--arch-color,var(--lime)) 14%,var(--bg-card)),color-mix(in srgb,var(--arch-color,var(--lime)) 4%,var(--bg-input)));
-  border:1px solid color-mix(in srgb,var(--arch-color,var(--lime)) 35%,var(--border));
-  border-radius:12px;color:var(--text-primary);font-family:inherit;text-align:left;
-  transition:transform .18s,border-color .18s,box-shadow .18s;
-  position:relative;overflow:hidden;
-}
-.attr-arch-btn::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--arch-color,var(--lime)) 22%,transparent),transparent 55%);
-  pointer-events:none;opacity:.7;
-}
-.attr-arch-btn:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--arch-color,var(--lime)) 60%,var(--border));box-shadow:0 6px 20px color-mix(in srgb,var(--arch-color,var(--lime)) 22%,transparent)}
-.attr-arch-btn:active{transform:scale(.99)}
-.attr-arch-ico{
-  width:42px;height:42px;border-radius:11px;flex-shrink:0;
-  background:color-mix(in srgb,var(--arch-color,var(--lime)) 18%,var(--bg-input));
-  border:1px solid color-mix(in srgb,var(--arch-color,var(--lime)) 50%,transparent);
-  display:flex;align-items:center;justify-content:center;color:var(--arch-color,var(--lime));
-  position:relative;z-index:1;
-}
-.attr-arch-ico svg{width:22px;height:22px}
-.attr-arch-text{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;position:relative;z-index:1}
-.attr-arch-label{font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);font-weight:700}
-.attr-arch-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;letter-spacing:1px;color:var(--arch-color,var(--text));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.attr-arch-btn:not(.has-arch) .attr-arch-val{color:var(--text-dim);font-weight:600;letter-spacing:.5px}
-.attr-arch-chev{color:var(--text-dim);flex-shrink:0;transition:transform .2s,color .2s;position:relative;z-index:1}
-.attr-arch-chev svg{width:18px;height:18px}
-.attr-arch-btn:hover .attr-arch-chev{color:var(--arch-color,var(--lime));transform:translateX(3px)}
 
 /* Modal Arquétipo Picker — compacto 2x2 com fundo animado */
 .arch-pick-intro{
@@ -5673,7 +5630,7 @@ document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListen
 (function initMotion(){
   if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   // Ripple em qualquer botão relevante
-  const RIPPLE_SEL='.modal-btn,.credit-pill,.card-action-btn,.sidebar-btn,.xp-gear,.arch-pick-card,.arch-confirm-btn,.attr-arch-btn,.attr-gear-item,.toggle-pill,.filter-pill';
+  const RIPPLE_SEL='.modal-btn,.credit-pill,.card-action-btn,.sidebar-btn,.xp-gear,.arch-pick-card,.arch-confirm-btn,.toggle-pill,.filter-pill';
   document.addEventListener('pointerdown',e=>{
     const host=e.target.closest(RIPPLE_SEL);if(!host)return;
     const r=host.getBoundingClientRect();

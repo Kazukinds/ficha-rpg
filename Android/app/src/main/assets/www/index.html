@@ -82,7 +82,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 .biblio-pages-track,.biblio-subpage-dots,.ip-tags-wrap,.blc-wrap,.biblio-page-slide.bps-paged{touch-action:pan-x pan-y}
 .selectable,.selectable *,textarea,input,[contenteditable="true"],
 .profile-note,.profile-note-text,.credit-log-info,.detail-desc,.modal-body,#modal-body,
-.reader-content,.wg-notes-text,.skill-detail,.item-desc,.peri-desc,.spell-desc-text,
+.reader-content,.skill-detail,.item-desc,.peri-desc,.spell-desc-text,
 .summary-value,.profile-field-value{user-select:text;-webkit-user-select:text}
 ::selection{background:color-mix(in srgb,var(--lime) 32%,transparent);color:var(--text-primary)}
 *:focus-visible{outline:2px solid var(--lime);outline-offset:2px;border-radius:var(--radius-xs)}
@@ -411,74 +411,6 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 /* ═══ CARDS ═══ */
 .dash-grid{display:grid;grid-template-columns:340px 1fr 280px;grid-template-rows:auto auto;gap:16px}
 
-/* ═══ 5 WIDGETS (dashboard) ═══ */
-.widgets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px}
-.wg{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow-sm);transition:border-color .2s,transform .2s}
-.wg:hover{border-color:var(--border-light);transform:translateY(-2px)}
-.wg-head{display:flex;align-items:center;gap:10px}
-.wg-head h3{margin:0;font-size:13px;font-weight:700;color:var(--text-primary);flex:1;letter-spacing:.2px}
-.wg-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.wg-ico svg{width:16px;height:16px;stroke:currentColor;fill:none}
-.wg-mini-btn{width:24px;height:24px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:all .15s}
-.wg-mini-btn:hover{color:var(--lime);border-color:var(--lime-dim)}
-.wg-mini-btn svg{width:12px;height:12px;stroke:currentColor;fill:none}
-.wg-btn,.wg-ghost{padding:9px 14px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;border:1px solid var(--border)}
-.wg-btn{background:var(--lime);color:#0a0a0f;border-color:var(--lime)}
-.wg-btn:hover{filter:brightness(1.08)}
-.wg-ghost{background:transparent;color:var(--text-secondary)}
-.wg-ghost:hover{border-color:var(--border-light);color:var(--text-primary)}
-.wg-btn svg,.wg-ghost svg{width:13px;height:13px;stroke:currentColor;fill:none}
-
-/* Dados */
-.wg-dice-result{font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:800;color:var(--lime);text-align:center;line-height:1;padding:8px 0;letter-spacing:-2px;text-shadow:0 0 30px color-mix(in srgb,var(--lime) 35%,transparent);transition:transform .15s}
-.wg-dice-result.roll{animation:wg-dice-pop .4s cubic-bezier(.34,1.5,.64,1)}
-@keyframes wg-dice-pop{0%{transform:scale(.5) rotate(-8deg);opacity:.3}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0);opacity:1}}
-.wg-dice-meta{text-align:center;font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:-4px}
-.wg-dice-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.wg-dice-btns button{padding:10px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
-.wg-dice-btns button:hover{border-color:var(--lime-dim);color:var(--lime);background:var(--lime-bg);transform:translateY(-1px)}
-.wg-dice-btns button.d20{grid-column:span 3;background:var(--lime-bg);border-color:var(--lime-dim);color:var(--lime)}
-.wg-dice-btns button.d20:hover{background:var(--lime);color:#0a0a0f}
-
-/* Timer */
-.wg-timer-display{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:800;color:var(--text-primary);text-align:center;letter-spacing:-1px;line-height:1;padding:4px 0}
-.wg-timer-label{text-align:center;font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:-4px}
-.wg-timer-btns{display:grid;grid-template-columns:2fr 1fr;gap:6px;margin-top:auto}
-.wg-timer-btns button{padding:9px;font-size:12px;font-weight:600;border-radius:8px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);transition:all .15s}
-.wg-timer-btns button:first-child{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan)}
-.wg-timer-btns button:first-child:hover{background:var(--cyan);color:#0a0a0f}
-.wg-timer-btns button.wg-ghost{background:transparent;color:var(--text-secondary)}
-.wg-timer-btns svg{width:12px;height:12px;stroke:currentColor;fill:none}
-.wg-timer-btns button:first-child svg{fill:currentColor;stroke:none}
-
-/* Nível */
-.wg-level-ring{position:relative;width:140px;height:140px;margin:0 auto;display:flex;align-items:center;justify-content:center}
-.wg-ring-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(0deg)}
-.wg-ring-svg circle:last-child{transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
-.wg-level-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.wg-level-num{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:800;color:var(--yellow);line-height:1;letter-spacing:-1px}
-.wg-level-center small{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
-.wg-level-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);font-weight:600;padding-top:6px;border-top:1px solid var(--border);margin-top:auto}
-.wg-level-meta span:first-child{color:var(--yellow)}
-
-/* Notas */
-.wg-notes-area{flex:1;min-height:120px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text-primary);font-family:inherit;font-size:12.5px;line-height:1.5;resize:vertical;outline:none;transition:border-color .15s}
-.wg-notes-area:focus{border-color:var(--lime-dim)}
-.wg-saved{font-size:10px;color:var(--lime);font-weight:600;opacity:0;transition:opacity .2s}
-.wg-saved.show{opacity:1}
-
-/* Iniciativa */
-.wg-init-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;min-height:40px}
-.wg-init-list:empty::before{content:"Sem combatentes";display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:11px;font-weight:500;padding:12px;font-style:italic}
-.wg-init-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text-primary);transition:all .15s}
-.wg-init-item.active{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--bg-input));box-shadow:0 0 0 1px var(--red-dim)}
-.wg-init-item input.wg-init-name{flex:1;background:transparent;border:none;color:inherit;font-family:inherit;font-size:12px;outline:none;min-width:0}
-.wg-init-item input.wg-init-roll{width:40px;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;color:var(--yellow);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:center;padding:3px;outline:none}
-.wg-init-item button{width:20px;height:20px;background:transparent;border:none;color:var(--text-dim);cursor:pointer;padding:0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center}
-.wg-init-item button:hover{color:var(--red);background:var(--red-dim)}
-.wg-init-item button svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.4}
-.wg-init-foot{display:flex;gap:6px;margin-top:auto}
-.wg-init-foot .wg-btn{flex:1}
 .item-list-section{grid-row:auto}
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color .2s}
 .card.card-square,.dash-grid .card:has(#dash-attr-list),.dash-grid .card:has(#status-list){border-radius:4px}

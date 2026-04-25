@@ -5930,7 +5930,10 @@ document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListen
       prevText.set(el,cur);
     });
   };
-  const mo=new MutationObserver(()=>{clearTimeout(window._popT);window._popT=setTimeout(popTick,10)});
+  const mo=new MutationObserver(()=>{
+    if(document.visibilityState!=='visible')return;
+    clearTimeout(window._popT);window._popT=setTimeout(popTick,40);
+  });
   mo.observe(document.body,{childList:true,subtree:true,characterData:true});
 })();
 
@@ -12328,9 +12331,9 @@ setTimeout(()=>{if(_hasNative())otaCheckAndInstall(false)},4000);
     btn.classList.toggle('show',y>240);
   }
   function onScroll(){if(!ticking){requestAnimationFrame(check);ticking=true}}
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',check);
+  // capture:true cobre scroll em window + containers internos sem duplicar
   document.addEventListener('scroll',onScroll,{passive:true,capture:true});
+  window.addEventListener('resize',check);
   btn.addEventListener('click',()=>{
     const t=target();
     if(t===window)window.scrollTo({top:0,behavior:'smooth'});

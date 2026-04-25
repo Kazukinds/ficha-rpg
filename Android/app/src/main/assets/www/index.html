@@ -9794,6 +9794,18 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v1.8',date:'2026-04-25',title:'Limpeza profunda, update sheet e widgets Android',items:[
+    {tag:'fix',text:'Removido módulo android-python (Kivy/buildozer, ~11.8k linhas) — Capacitor e Android nativo cobrem distribuição'},
+    {tag:'fix',text:'Purga massiva de CSS morto: blocos inteiros de inv-panel/case/main/ctrl + suitcase + re4-* + wg-* widgets + mini-block + personality-* + ficha-combat-* + credit-asset-* + chl-* + detail-* + dual-card + attr-arch-* + tab-header-* + ~100 classes órfãs'},
+    {tag:'fix',text:'Keyframes mortos apagados (vattr-*, anim-slide-*, icon-draw/shine/spin-slow, pulse-draw, anim-pop-in, anim-slide-down, anim-pulse-flash, anim-wiggle, book-page-detach, book-cover-open, wg-dice-pop, suitcase-pulse/hint)'},
+    {tag:'fix',text:'Stubs e funções JS não chamadas removidos (openGenericModal, escapeHtml, setText, playSfxConsume, switchToTab, openSistemasMenu) + setInterval morto de relógio UTC'},
+    {tag:'feat',text:'Update sheet redesenhado estilo bottom-sheet approval: ícone do app + badge escudo, título/domínio, card descritivo, linha versão atual ↔ nova, botões pílula'},
+    {tag:'feat',text:'Notificação OS (Notification API) quando SW detecta update; sem mais auto-apply silencioso'},
+    {tag:'feat',text:'sw.js v113 + pre-cache dos logos Eclipse (moon/star) pra offline total'},
+    {tag:'ui',text:'Widgets Android Dice + Shortcut refeitos: header ECLIPSE mono, número 64sp com glow, botões pílula, cantos widget_bg 22dp'},
+    {tag:'ui',text:'Biblioteca reader: entrada em C-arc (page-c-arc) só na abertura/troca de capítulo, sem replay no subflip; transição entre sub-páginas instantânea'},
+    {tag:'feat',text:'Bump Android v5.1→v5.2 (vc 31→32), buildozer 5.1→5.2'},
+  ]},
   {version:'v1.7',date:'2026-04-21',title:'Proporção áurea, gerador de ficha automática e novo ícone Esforço',items:[
     {tag:'feat',text:'Gerador de ficha automática (perfil e admin) — slider de nível 1-20, preview em tempo real, gera linhagem/arquétipo/passado/caminho/atributos/status/perícias/habilidades/feitiços (se classe mágica)'},
     {tag:'feat',text:'Escala HP/status/XP proporcional ao nível: HP = 30 + 8×nv (+2 se Guerreiro), Esforço/Foco = 10 + 3×nv, Determinação = 5 + 2×nv, XP progride 1.2^nv'},

@@ -4,30 +4,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/widget_bg"
-    android:padding="12dp">
+    android:padding="14dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="6dp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="DADOS"
-            android:textColor="#A0A0B0"
+            android:layout_weight="1"
+            android:text="ECLIPSE · DADOS"
+            android:textColor="#8B8B9A"
             android:textStyle="bold"
             android:textSize="10sp"
-            android:letterSpacing="0.15"/>
+            android:letterSpacing="0.18"
+            android:fontFamily="monospace"/>
         <TextView
             android:id="@+id/dice_meta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Toque"
-            android:textColor="#5A5A6E"
+            android:text="—"
+            android:textColor="#C8F542"
+            android:textStyle="bold"
             android:textSize="10sp"
-            android:layout_marginStart="8dp"/>
+            android:letterSpacing="0.12"
+            android:fontFamily="monospace"/>
     </LinearLayout>
 
     <TextView
@@ -37,10 +41,14 @@
         android:layout_weight="1"
         android:text="—"
         android:textColor="#C8F542"
-        android:textSize="56sp"
+        android:textSize="64sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:fontFamily="monospace"/>
+        android:fontFamily="monospace"
+        android:shadowColor="#40C8F542"
+        android:shadowRadius="18"
+        android:shadowDx="0"
+        android:shadowDy="0"/>
 
     <LinearLayout
         android:layout_width="match_parent"

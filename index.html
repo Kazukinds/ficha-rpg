@@ -1998,8 +1998,6 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* ═══ Intro decorativo ═══ */
 .biblio-reader-stage{position:relative;z-index:3}
-/* Cursor decorativo canto inferior direito */
-.biblio-reader-cursor{display:none}
 
 
 /* ═══ Painel leitor (sem fundo, só texto + linha decorativa) ═══ */
@@ -5336,7 +5334,6 @@ img{content-visibility:auto}
 
 <!-- ═══ BIBLIOTECA READER (livro 3D + page flip) ═══ -->
 <div class="biblio-reader" id="biblio-reader" onclick="biblioReaderBackdrop(event)">
-  <div class="biblio-reader-cursor" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#1a1512" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"><path d="M5 3 L5 19 L9.2 15.4 L11.8 20.8 L14.4 19.6 L11.8 14.2 L17.2 13.8 Z"/></svg></div>
   <button type="button" class="biblio-reader-close-floating" onclick="event.stopPropagation();closeBiblioReader()" aria-label="Fechar leitor" title="Fechar (ESC)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   <div class="biblio-reader-stage" onclick="event.stopPropagation()">
     <div class="biblio-reader-book" id="biblio-reader-book" onclick="biblioReaderAdvance()">
@@ -7805,12 +7802,15 @@ function openGenericModal(title,html){
   const b=document.getElementById('modal-body');if(b)b.innerHTML=html;
   ov.classList.add('open');
 }
-// Relógio UTC no painel
+// Relógio UTC no painel — pausa quando aba escondida
 setInterval(()=>{
+  if(document.visibilityState!=='visible')return;
+  const tabActive=document.getElementById('tab-implants')?.classList.contains('active');
+  if(!tabActive)return;
   const el=document.getElementById('imp-clock');
   if(el){const d=new Date();el.textContent=`${String(d.getUTCHours()).padStart(2,'0')}:${String(d.getUTCMinutes()).padStart(2,'0')}:${String(d.getUTCSeconds()).padStart(2,'0')} UTC`}
   const wave=document.getElementById('imp-report-wave');
-  if(wave&&document.getElementById('tab-implants')?.classList.contains('active')){
+  if(wave){
     wave.innerHTML=Array.from({length:12},(_,i)=>`<span style="height:${4+Math.abs(Math.sin(i*.7+Date.now()/500))*10}px"></span>`).join('');
   }
 },1000);

@@ -6636,35 +6636,6 @@ function saveEditItem(){
   const iks=ICON_MAP[item.cat];item.iconKey=iks[Math.floor(Math.random()*iks.length)];
   closeModal();renderGrid();renderDashLists();toast(`${item.name} atualizado`);
 }
-let sfxEnabled=true;
-function playSfxConsume(){
-  if(!sfxEnabled)return;
-  try{
-    const ac=new(window.AudioContext||window.webkitAudioContext)();
-    const vol=ac.createGain();vol.gain.value=0.15;vol.connect(ac.destination);
-    // Bolha 1
-    const o1=ac.createOscillator();o1.type='sine';o1.frequency.setValueAtTime(600,ac.currentTime);
-    o1.frequency.exponentialRampToValueAtTime(200,ac.currentTime+0.15);
-    const g1=ac.createGain();g1.gain.setValueAtTime(0.3,ac.currentTime);g1.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.15);
-    o1.connect(g1);g1.connect(vol);o1.start(ac.currentTime);o1.stop(ac.currentTime+0.15);
-    // Bolha 2
-    const o2=ac.createOscillator();o2.type='sine';o2.frequency.setValueAtTime(500,ac.currentTime+0.1);
-    o2.frequency.exponentialRampToValueAtTime(180,ac.currentTime+0.25);
-    const g2=ac.createGain();g2.gain.setValueAtTime(0.2,ac.currentTime+0.1);g2.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.25);
-    o2.connect(g2);g2.connect(vol);o2.start(ac.currentTime+0.1);o2.stop(ac.currentTime+0.25);
-    // Bolha 3
-    const o3=ac.createOscillator();o3.type='sine';o3.frequency.setValueAtTime(700,ac.currentTime+0.2);
-    o3.frequency.exponentialRampToValueAtTime(250,ac.currentTime+0.4);
-    const g3=ac.createGain();g3.gain.setValueAtTime(0.25,ac.currentTime+0.2);g3.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.45);
-    o3.connect(g3);g3.connect(vol);o3.start(ac.currentTime+0.2);o3.stop(ac.currentTime+0.45);
-    // Gulp
-    const o4=ac.createOscillator();o4.type='triangle';o4.frequency.setValueAtTime(300,ac.currentTime+0.35);
-    o4.frequency.exponentialRampToValueAtTime(80,ac.currentTime+0.6);
-    const g4=ac.createGain();g4.gain.setValueAtTime(0.15,ac.currentTime+0.35);g4.gain.exponentialRampToValueAtTime(0.01,ac.currentTime+0.6);
-    o4.connect(g4);g4.connect(vol);o4.start(ac.currentTime+0.35);o4.stop(ac.currentTime+0.6);
-    setTimeout(()=>ac.close(),1000);
-  }catch(e){}
-}
 
 // ═══ REGISTER OVERLAY ═══
 function closeRegister(){document.getElementById('register-overlay').classList.remove('open')}
@@ -7717,13 +7688,6 @@ document.addEventListener('click',()=>{document.querySelectorAll('.cselect-trigg
 
 // ═══ IMPLANTES CIBERNÉTICOS ═══
 let _impSelectedQuality='basico';
-function openGenericModal(title,html){
-  const ov=document.getElementById('modal-overlay');if(!ov)return;
-  const t=document.getElementById('modal-title');if(t)t.textContent=title;
-  const b=document.getElementById('modal-body');if(b)b.innerHTML=html;
-  ov.classList.add('open');
-}
-// Relógio UTC removido (elementos imp-clock/imp-report-wave não existem mais no HTML)
 
 // ═══ HELPERS ═══
 let _toasting=false;
@@ -7909,12 +7873,6 @@ function toggleTheme(){
 (function(){const t=localStorage.getItem('rpg-theme');if(t){currentTheme=t;document.documentElement.setAttribute('data-theme',t)}try{updateMetaTheme()}catch(_){}})();
 window.addEventListener('load',updateThemeIcon);
 
-function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v||''}
-
-// ═══ FEITIÇOS ═══
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c])}
-
-// ── Viewer full-screen com carrossel + drag livre ──
 // ═══ SAVE / EXPORT / IMPORT ═══
 function toggleSaveMenu(){document.getElementById('save-dropdown').classList.toggle('open')}
 document.addEventListener('click',e=>{if(!e.target.closest('.save-wrap'))document.getElementById('save-dropdown')?.classList.remove('open')});

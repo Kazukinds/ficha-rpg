@@ -100,29 +100,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg-body);colo
 ::-webkit-scrollbar-track,::-webkit-scrollbar-thumb,::-webkit-scrollbar-corner{display:none!important;background:transparent}
 
 /* ═══ MOTION LIBRARY ═══ (transitions.dev / origin-ui inspired) */
-@keyframes anim-pop-in{0%{opacity:0;transform:scale(.85)}60%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
 @keyframes anim-slide-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes anim-slide-down{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes anim-scale-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-@keyframes anim-blur-in{from{opacity:0;filter:blur(8px);transform:scale(.98)}to{opacity:1;filter:blur(0);transform:scale(1)}}
 @keyframes anim-fade-in{from{opacity:0}to{opacity:1}}
-@keyframes anim-pulse-flash{0%{background-color:transparent}30%{background-color:color-mix(in srgb,var(--lime) 30%,transparent)}100%{background-color:transparent}}
 @keyframes anim-number-pop{0%{transform:scale(1)}30%{transform:scale(1.22)}60%{transform:scale(.96)}100%{transform:scale(1)}}
 @keyframes anim-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
-@keyframes anim-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
 @keyframes anim-ripple{from{opacity:.6;transform:scale(0)}to{opacity:0;transform:scale(2.4)}}
 
 /* Helpers aplicáveis */
-.anim-pop{animation:anim-pop-in var(--dur-md) var(--ease-spring) both}
-.anim-slide-up{animation:anim-slide-up var(--dur-md) var(--ease-out-expo) both}
-.anim-slide-down{animation:anim-slide-down var(--dur-md) var(--ease-out-expo) both}
-.anim-scale-in{animation:anim-scale-in var(--dur-md) var(--ease-out-soft) both}
-.anim-blur-in{animation:anim-blur-in var(--dur-lg) var(--ease-out-expo) both}
-.anim-fade{animation:anim-fade-in var(--dur-md) linear both}
-.anim-flash{animation:anim-pulse-flash 700ms var(--ease-out-expo) both}
 .anim-number-pop{animation:anim-number-pop 420ms var(--ease-spring) both;display:inline-block}
 .anim-shake{animation:anim-shake 360ms var(--ease-tactile) both}
-.anim-wiggle{animation:anim-wiggle 400ms var(--ease-spring) both}
 
 /* Stagger — usar style="--i:0" em filhos ou aplicar .stagger-auto no pai */
 .stagger-children>*{animation:anim-slide-up var(--dur-md) var(--ease-out-expo) both;animation-delay:calc(var(--i,0) * 40ms + 40ms)}
@@ -675,7 +662,6 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .account-avatar svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
 .account-info{flex:1;min-width:0;overflow:hidden}
 .account-name{font-size:13px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.account-change{font-family:'JetBrains Mono',monospace;font-size:10px}
 .account-balance{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;flex-shrink:0;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .account-badge{width:32px;height:32px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .account-badge svg{width:14px;height:14px;stroke:var(--text-dim);fill:none;stroke-width:2.2}

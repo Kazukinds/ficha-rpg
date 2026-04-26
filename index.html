@@ -669,10 +669,10 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 /* ═══ RE4 INVENTORY (attaché case) ═══ */
 .re4-shell{display:grid;grid-template-columns:minmax(0,1fr);column-gap:14px;row-gap:10px;max-width:1480px;margin:0 auto}
 .re4-shell>.re4-bar{grid-column:1/-1}
-.re4-shell>.re4-body{grid-column:1/-1;display:contents}
-.re4-shell>.re4-body>.re4-side{grid-column:1;grid-row:2}
-.re4-shell>.re4-body>.re4-case-pane{grid-column:1/-1;grid-row:2}
-@media(max-width:980px){.re4-shell{grid-template-columns:1fr}.re4-shell>.re4-body>.re4-case-pane,.re4-shell>.re4-body>.re4-side{grid-column:1;grid-row:auto}.re4-case-pane{width:100%;max-width:none}.re4-case-frame{margin-bottom:20px}}
+.re4-shell>.re4-body{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start}
+.re4-shell>.re4-body>.re4-case-pane{flex:0 0 auto;min-width:0}
+.re4-shell>.re4-body>.re4-item-detail{flex:0 0 280px;min-width:0}
+@media(max-width:980px){.re4-shell{grid-template-columns:1fr}.re4-shell>.re4-body{flex-direction:column;min-height:0}.re4-shell .re4-case-pane{width:100%;max-width:none;align-self:auto}.re4-shell>.re4-body>.re4-item-detail{width:100%;flex:0 0 auto}}
 .re4-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);flex-wrap:wrap}
 .re4-cases{display:flex;gap:6px;flex-wrap:wrap}
 .re4-case-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s,background .15s}
@@ -686,7 +686,30 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .re4-btn-primary{background:var(--lime-bg-strong);border-color:var(--lime-dim);color:var(--lime)}
 .re4-btn-primary:hover{background:var(--lime-bg);border-color:var(--lime);color:var(--lime)}
 .re4-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:flex-start}
-.re4-case-pane{display:block;width:50%;min-width:0;max-width:720px}
+.re4-case-pane{display:block;width:100%;min-width:0;max-width:560px;margin:0}
+.re4-item-detail{background:linear-gradient(160deg,#1f1f23 0%,#15151a 100%);border:1px solid #2e2e34;border-radius:12px;padding:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 4px 16px rgba(0,0,0,.35);font-size:11px}
+.re4-item-detail .rid-empty{display:flex;align-items:center;justify-content:center;height:100%;min-height:120px;color:var(--text-dim);font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;text-align:center;padding:20px 8px}
+.re4-item-detail .rid-head{display:flex;align-items:center;gap:8px;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.re4-item-detail .rid-icon{width:40px;height:40px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.re4-item-detail .rid-icon img{max-width:80%;max-height:80%;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.re4-item-detail .rid-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6}
+.re4-item-detail .rid-icon .rarity-dot{position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%}
+.re4-item-detail .rid-title-wrap{flex:1;min-width:0}
+.re4-item-detail .rid-name{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.re4-item-detail .rid-meta{display:flex;gap:5px;align-items:center;font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+.re4-item-detail .rid-meta .rid-rarity{padding:1px 6px;border-radius:999px;background:var(--bg-input)}
+.re4-item-detail .rid-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.re4-item-detail .rid-stat{background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:6px 8px}
+.re4-item-detail .rid-stat-label{font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:2px}
+.re4-item-detail .rid-stat-value{font-size:13px;font-weight:700;color:var(--text-primary);font-family:'JetBrains Mono',monospace}
+.re4-item-detail .rid-stat-value.dur-bar{position:relative;height:5px;border-radius:3px;background:var(--bg-card);overflow:hidden;font-size:0;margin-top:3px}
+.re4-item-detail .rid-stat-value.dur-bar::after{content:'';position:absolute;top:0;left:0;height:100%;width:var(--dur,100%);background:linear-gradient(90deg,var(--lime),color-mix(in srgb,var(--lime) 60%,transparent));border-radius:3px}
+.re4-item-detail .rid-stat .dur-text{font-size:9px;font-weight:700;color:var(--lime);font-family:'JetBrains Mono',monospace;display:block;margin-top:3px}
+.re4-item-detail .rid-desc{padding:7px 8px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;font-size:10px;color:var(--text-secondary);line-height:1.4;margin-bottom:8px}
+.re4-item-detail .rid-actions{display:flex;gap:5px}
+.re4-item-detail .rid-btn{flex:1;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);font-family:inherit;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:all .15s}
+.re4-item-detail .rid-btn:hover{border-color:var(--lime-dim);color:var(--lime);background:var(--lime-bg)}
+.re4-item-detail .rid-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red-bg)}
 .re4-case{background:transparent;border:none;padding:0;box-shadow:none;position:relative;width:100%;display:block}
 .re4-case-nav{position:relative;width:100%}
 .re4-case-nav .re4-case-frame{width:100%}
@@ -700,13 +723,19 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .re4-nav-arrow:active{transform:scale(.94)}
 .re4-nav-arrow:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .re4-nav-arrow svg{width:18px;height:18px}
-.re4-case-frame{position:relative;background:linear-gradient(160deg,#2a2a2e 0%,#1f1f23 60%,#15151a 100%);border:1px solid #3a3a40;border-radius:14px;padding:0;box-shadow:inset 0 2px 12px rgba(0,0,0,.6),inset 0 -2px 8px rgba(255,255,255,.02),0 4px 16px rgba(0,0,0,.4);width:100%;margin:0 0 80px 0;display:block;overflow:hidden}
+.re4-case-frame{position:relative;background:linear-gradient(160deg,#2a2a2e 0%,#1f1f23 60%,#15151a 100%);border:1px solid #3a3a40;border-radius:14px;padding:0;box-shadow:inset 0 2px 12px rgba(0,0,0,.6),inset 0 -2px 8px rgba(255,255,255,.02),0 4px 16px rgba(0,0,0,.4);width:100%;margin:0;display:block;overflow:hidden}
 .re4-case-topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:transparent;border-bottom:1px solid #2e2e34}
 .re4-top-btn{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
 .re4-top-btn:hover{border-color:var(--lime-dim);color:var(--lime);background:var(--lime-bg)}
 .re4-top-btn:active{transform:scale(.92)}
 .re4-top-btn svg{width:16px;height:16px}
-.re4-case-frame .inv-grid{padding:14px}
+.re4-case-frame .inv-grid{padding:14px 14px 4px 14px}
+.re4-case-bottom{display:flex;align-items:center;justify-content:center;padding:0;margin-top:-2px}
+.re4-expand-btn{display:inline-flex;align-items:center;justify-content:center;width:28px;height:12px;padding:0;background:transparent;border:none;border-radius:6px;color:var(--text-dim);cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,transform .15s}
+.re4-expand-btn:hover{opacity:1;color:var(--text-secondary)}
+.re4-expand-btn:active{transform:translateY(1px)}
+.re4-expand-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;transition:transform .25s var(--ease-spring,cubic-bezier(.34,1.56,.64,1))}
+.re4-expand-btn.open svg{transform:rotate(180deg)}
 .re4-case-frame::-webkit-scrollbar{width:8px;height:8px}
 .re4-case-frame::-webkit-scrollbar-track{background:transparent}
 .re4-case-frame::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--lime) 35%,var(--border));border-radius:4px}
@@ -868,6 +897,18 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .profile-system-name{font-size:13px;font-weight:700;color:var(--text-primary)}
 .profile-system-sub{font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .profile-system-arrow{width:14px;height:14px;stroke:var(--text-dim);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;transition:transform .2s ease,color .2s ease}
+.profile-subtabs{display:inline-flex;gap:4px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:18px;box-shadow:var(--shadow-sm)}
+.profile-subtab{padding:9px 18px;background:transparent;border:none;color:var(--text-dim);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--radius-xs);transition:background .15s,color .15s;display:inline-flex;align-items:center;gap:8px;letter-spacing:.2px}
+.profile-subtab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.profile-subtab:hover{color:var(--text-primary);background:var(--bg-hover)}
+.profile-subtab.active{background:var(--lime-bg);color:var(--lime);border:1px solid color-mix(in srgb,var(--lime) 35%,transparent)}
+.profile-subview{display:none}
+.profile-subview.active{display:block}
+.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start}
+.config-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm)}
+.config-section h4{font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.config-section h4 svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;color:var(--lime)}
+@media(max-width:640px){.profile-subtabs{width:100%;display:flex}.profile-subtab{flex:1;justify-content:center}}
 /* ═══ REGISTER OVERLAY ═══ */
 .register-overlay{position:fixed;inset:0;background:rgba(9,9,11,.8);z-index:250;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
 .register-overlay.open{opacity:1;pointer-events:all}
@@ -1013,6 +1054,17 @@ input[type="number"]{-moz-appearance:textfield}
 .item-form-split .ifs-side .form-group{margin-bottom:0}
 .item-form-split .ifs-side .form-group label{font-size:9px;margin-bottom:2px;color:var(--text-dim);font-weight:700;letter-spacing:.6px;text-align:center;display:block}
 .item-form-split .ifs-side .form-group input{padding:5px 8px;font-size:12px;text-align:center;border-radius:5px}
+/* Mobile portrait — ifs-side vira grid abaixo de ifs-main, full-width */
+@media (max-width:640px) and (orientation:portrait){
+  .item-form-split{display:block}
+  .item-form-split .ifs-side{
+    position:static!important;left:auto!important;top:auto!important;
+    width:100%!important;margin-top:12px;
+    display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px;
+    box-shadow:none;background:transparent;border:none;padding:0
+  }
+  .item-form-split .ifs-side .form-group{margin-bottom:0}
+}
 .modal{overflow:visible!important;position:relative}
 .item-form-compact .form-group{margin-bottom:6px}
 .item-form-compact .form-row{margin-bottom:6px}
@@ -1059,6 +1111,22 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
 .wpn-side-drawer .weapon-card-pick:active{transform:scale(.94)}
 .wpn-side-drawer .weapon-card-pick.active{animation:wpdPick .45s cubic-bezier(.34,1.56,.64,1)}
 @keyframes wpdPick{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+/* Mobile portrait — stack drawers verticalmente, full-width, sem overflow */
+@media (max-width:640px) and (orientation:portrait){
+  .wpn-side-drawer{
+    width:calc(100vw - 16px)!important;max-width:none!important;
+    height:42vh!important;max-height:42vh!important;
+    top:auto!important;margin-top:0!important;
+    left:8px!important;right:auto!important;
+    padding:12px;border-radius:14px;
+  }
+  .wpn-side-left{transform:translateY(-12vh) scale(.85)}
+  .wpn-side-right{transform:translateY(12vh) scale(.85)}
+  .wpn-side-left,.wpn-side-left.open{bottom:calc(48vh + 76px)!important;top:auto!important;left:8px!important;right:auto!important}
+  .wpn-side-right,.wpn-side-right.open{bottom:76px!important;top:auto!important;left:8px!important;right:auto!important}
+  .wpn-side-drawer.open{transform:translateY(0) scale(1)!important}
+  .wpn-side-drawer .weapon-cards{grid-template-columns:repeat(3,1fr)}
+}
 .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .modal-title{font-size:16px;font-weight:700}
 .modal-close{width:32px;height:32px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .2s}
@@ -2939,14 +3007,15 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
     transform:translateX(-50%);
     flex-direction:row;align-items:center;justify-content:center;
     padding:6px 8px;gap:4px;
-    background:color-mix(in srgb,var(--bg-card) 86%,transparent);
-    -webkit-backdrop-filter:blur(20px) saturate(140%);backdrop-filter:blur(20px) saturate(140%);
-    border:1px solid var(--border-light);
+    background:color-mix(in srgb,var(--bg-card) 55%,transparent);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:1px solid color-mix(in srgb,var(--border-light) 70%,transparent);
     border-radius:999px;
-    box-shadow:0 16px 40px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.22);
+    box-shadow:0 12px 32px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.18);
     z-index:200;overflow:visible;max-width:calc(100vw - 24px)
   }
-  .sidebar.open{width:auto!important;border-radius:999px;box-shadow:0 16px 40px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.25)}
+  [data-theme="light"] .sidebar{background:color-mix(in srgb,#fff 55%,transparent);border-color:color-mix(in srgb,rgba(0,0,0,.1) 70%,transparent)}
+  .sidebar.open{width:auto!important;border-radius:999px;box-shadow:0 12px 32px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2)}
   .sidebar::after{display:none}
   .sidebar-grip{display:none}
   .sidebar-logo{display:none}
@@ -2962,16 +3031,25 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
   .sidebar-btn svg{margin-left:0;width:20px;height:20px}
   .sidebar-label{display:none!important}
   .sidebar-btn.active{
-    width:auto!important;min-width:42px;
-    padding:0 14px 0 11px!important;
+    width:42px!important;min-width:42px!important;
+    padding:0!important;
     background:var(--text-primary)!important;color:var(--bg-card)!important;
-    border-radius:999px;justify-content:flex-start;gap:7px
+    border-radius:999px;justify-content:center;gap:0;
+    transition:width .35s cubic-bezier(.2,.8,.2,1),padding .3s
   }
   .sidebar-btn.active svg{filter:none!important;stroke:var(--bg-card)!important}
-  .sidebar-btn.active .sidebar-label{
-    display:inline!important;opacity:1!important;transform:none!important;
-    font-size:12px;font-weight:700;letter-spacing:.2px;color:var(--bg-card)!important;pointer-events:none
+  .sidebar-btn.active .sidebar-label{display:none!important}
+  /* Expandida ao tocar/hover (.m-expanded via JS) — colapsa em 2s */
+  .sidebar-btn.active.m-expanded{
+    width:auto!important;padding:0 14px 0 11px!important;
+    justify-content:flex-start!important;gap:7px!important
   }
+  .sidebar-btn.active.m-expanded .sidebar-label{
+    display:inline!important;font-size:12px;font-weight:700;letter-spacing:.2px;
+    color:var(--bg-card)!important;pointer-events:none;
+    opacity:1;transform:none
+  }
+  [data-theme="light"] .sidebar-btn.active.m-expanded .sidebar-label{color:#fff!important}
   [data-theme="light"] .sidebar{background:color-mix(in srgb,#fff 92%,transparent);box-shadow:0 14px 36px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08)}
   [data-theme="light"] .sidebar-btn.active{background:#0c0c0e!important;color:#fff!important}
   [data-theme="light"] .sidebar-btn.active svg{stroke:#fff!important}
@@ -2995,14 +3073,14 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
   .sidebar-gear:hover svg{transform:rotate(90deg)}
   /* Radial trigger — botão GRANDE e destacado no centro da pill */
   .sidebar-more{
-    width:52px!important;height:52px!important;
+    width:48px!important;height:48px!important;
     background:var(--lime)!important;color:#0c0c0e!important;
-    box-shadow:0 6px 18px color-mix(in srgb,var(--lime) 45%,transparent),0 2px 6px rgba(0,0,0,.3)!important;
+    box-shadow:0 2px 8px color-mix(in srgb,var(--lime) 22%,transparent),0 1px 3px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.18)!important;
     margin:0 6px;border-radius:999px!important;
     transition:transform .25s var(--ease-spring),box-shadow .25s,background .25s!important;
   }
-  .sidebar-more svg{width:24px;height:24px;stroke:#0c0c0e!important;transition:transform .4s var(--ease-spring)}
-  .sidebar-more:hover{transform:scale(1.06)!important;box-shadow:0 8px 24px color-mix(in srgb,var(--lime) 60%,transparent),0 3px 8px rgba(0,0,0,.35)!important}
+  .sidebar-more svg{width:22px;height:22px;stroke:#0c0c0e!important;transition:transform .4s var(--ease-spring)}
+  .sidebar-more:hover{transform:scale(1.06)!important;box-shadow:0 4px 12px color-mix(in srgb,var(--lime) 32%,transparent),0 1px 4px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.22)!important}
   .sidebar-more:active{transform:scale(.94)!important}
   .sidebar-more.open svg{transform:rotate(45deg) scale(.92)}
   [data-theme="light"] .sidebar-more{background:var(--lime-dim)!important;color:#fff!important}
@@ -5569,13 +5647,18 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
                     </button>
                   </div>
                   <div class="inv-grid" id="inv-grid"></div>
+                  <div class="re4-case-bottom">
+                    <button class="re4-expand-btn" type="button" onclick="window._expandCase&&window._expandCase()" title="Adicionar espaço extra" aria-label="Expandir inventário">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div class="re4-case-foot" style="display:none">
-                <span class="re4-cap-lbl" id="inv-cap-label">0 / 0 slots</span>
               </div>
             </div>
           </div>
+          <aside class="re4-item-detail" id="re4-item-detail">
+            <div class="rid-empty">Selecione um item</div>
+          </aside>
           <aside class="re4-side" style="display:none">
             <div class="inv-detail" id="inv-detail">
               <div class="re4-side-head">
@@ -5660,6 +5743,11 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 
     <!-- ═══ PROFILE ═══ -->
     <section class="tab-content" id="tab-profile">
+      <nav class="profile-subtabs" role="tablist" aria-label="Sub-abas">
+        <button class="profile-subtab active" type="button" role="tab" data-subtab="perfil" onclick="switchProfileSub('perfil')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg><span>Perfil</span></button>
+        <button class="profile-subtab" type="button" role="tab" data-subtab="config" onclick="switchProfileSub('config')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Configuração</span></button>
+      </nav>
+      <div class="profile-subview active" data-subview="perfil">
       <div class="profile-header-card">
         <div class="profile-avatar" onclick="changeProfileAvatar()" style="cursor:pointer" title="Trocar foto"><span id="profile-avatar-content"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span></div>
         <button class="profile-char-figure" type="button" onclick="openSheetGeneratorModal()" title="Gerar ficha automática" aria-label="Gerar ficha automática">
@@ -5730,8 +5818,13 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
             <h4>Log</h4>
             <div id="profile-log" class="profile-log"></div>
           </div>
-          <div class="profile-sidebar-card profile-systems-card">
-            <h4>Sistemas</h4>
+        </div>
+      </div>
+      </div><!-- /perfil subview -->
+      <div class="profile-subview" data-subview="config">
+        <div class="config-grid">
+          <div class="config-section profile-systems-card">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Sistemas</h4>
             <a class="profile-system-link" href="#" title="Abrir biblioteca embutida" onclick="event.preventDefault();document.querySelector('.sidebar-btn[data-tab=biblioteca]')?.click();">
               <span class="profile-system-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5a2.5 2.5 0 0 0-2.5 2.5V4.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/></svg>
@@ -6527,6 +6620,24 @@ document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListen
 // legacy popup mantido p/ compat caso outros lugares usem — noop wrapper
 /* legacy sidebar-more-pop substituído pelo radial menu — sem handlers aqui */
 
+// ═══ MOBILE: Pill ativa expande ao tocar/hover, colapsa em 2s ═══
+(function initPillExpand(){
+  const mq=window.matchMedia('(max-width:640px) and (orientation:portrait)');
+  const HOLD=2000;
+  let timer;
+  function expand(b){
+    if(!mq.matches)return;
+    document.querySelectorAll('.sidebar-btn.m-expanded').forEach(x=>{if(x!==b)x.classList.remove('m-expanded')});
+    b.classList.add('m-expanded');
+    clearTimeout(timer);
+    timer=setTimeout(()=>b.classList.remove('m-expanded'),HOLD);
+  }
+  document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{
+    b.addEventListener('pointerenter',()=>expand(b));
+    b.addEventListener('click',()=>expand(b));
+  });
+})();
+
 // ═══ DEVICE CAMERA / CUTOUT DETECT ═══
 // Define dataset.cutout, dataset.camPos, dataset.camStyle no body p/ CSS adaptar.
 // Usa env(safe-area-inset-top) como heurística + UA parsing leve.
@@ -7221,10 +7332,10 @@ function buildCell(i){
 }
 // Case progression: grid sempre 14x10, caseLevel desbloqueia area top-left
 const CASE_LEVELS=[
-  {key:'default', label:'Maleta', cols:8, rows:10, total:80}
+  {key:'default', label:'Maleta', cols:10, rows:7, total:70}
 ];
 let caseLevel=0;
-let gridCols=14,gridRows=10;
+let gridCols=10,gridRows=7;
 
 function unlockArea(){return CASE_LEVELS[caseLevel]||CASE_LEVELS[0]}
 function isCellUnlocked(idx){
@@ -7238,6 +7349,17 @@ function setCaseLevel(lv){
   renderGrid();renderCaseSelector();
 }
 window.setCaseLevel=setCaseLevel;
+window._expandCase=function(){
+  const a=unlockArea();
+  if(a._baseRows==null)a._baseRows=a.rows;
+  const expanded=a.rows>a._baseRows;
+  a.rows=expanded?a._baseRows:a._baseRows+2;
+  a.total=a.cols*a.rows;
+  gridRows=a.rows;GRID_SIZE=a.cols*a.rows;
+  renderGrid();
+  const btn=document.querySelector('.re4-expand-btn');if(btn)btn.classList.toggle('open',!expanded);
+  if(typeof saveGame==='function')try{saveGame()}catch(_){}
+};
 
 function renderCaseSelector(){
   const c=document.getElementById('re4-cases');if(!c)return;
@@ -7258,7 +7380,8 @@ function renderGrid(){
   for(let i=0;i<GRID_SIZE;i++)g.appendChild(buildCell(i));
   const placedCount=inventory.length-overflowItems.length;
   const ua=unlockArea();
-  document.getElementById('inv-cap-label').textContent=`${placedCount} / ${ua.total} · ${ua.label}`;
+  const btn=document.querySelector('.re4-expand-btn');if(btn)btn.classList.toggle('open',gridRows>7);
+  const lbl=document.getElementById('inv-cap-label');if(lbl)lbl.textContent=`${placedCount} / ${ua.total} · ${ua.label}`;
   renderOverflow();
 }
 function renderOverflow(){
@@ -7383,7 +7506,7 @@ function openSuitcaseCustom(){
 }
 function renderGridFromSlots(){const g=document.getElementById('inv-grid');g.innerHTML='';for(let i=0;i<GRID_SIZE;i++)g.appendChild(buildCell(i))}
 
-function clearDetail(){selectedItemId=null;document.querySelectorAll('.inv-cell').forEach(c=>c.classList.remove('selected'));renderOverflow()}
+function clearDetail(){selectedItemId=null;document.querySelectorAll('.inv-cell').forEach(c=>c.classList.remove('selected'));renderOverflow();renderItemDetail()}
 
 function selectInvItem(id){
   selectedItemId=id;
@@ -7392,6 +7515,53 @@ function selectInvItem(id){
     c.classList.toggle('selected-item',cid===id);
     c.classList.toggle('selected',cid===id);
   });
+  renderItemDetail();
+}
+
+function renderItemDetail(){
+  const el=document.getElementById('re4-item-detail');if(!el)return;
+  const it=selectedItemId!==null?inventory.find(i=>i.id===selectedItemId):null;
+  if(!it){el.innerHTML='<div class="rid-empty">Selecione um item</div>';return}
+  const wpn=it.iconWpn&&WEAPON_SVGS[it.iconWpn]?WEAPON_SVGS[it.iconWpn]:null;
+  const iconHTML=wpn?`<img src="${wpn.file}" alt="${wpn.label}">`:(SVG[it.iconKey]||SVG.sword||'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>');
+  const rarLabel=({common:'Comum',uncommon:'Incomum',rare:'Raro',epic:'Épico',legendary:'Lendário'})[it.rarity]||'Comum';
+  const dur=Math.max(0,Math.min(100,it.durability||100));
+  const isWeapon=it.cat==='arma';
+  const dmg=it.damage||(isWeapon?(wpn?.dmg||'1d6'):'—');
+  const crit=it.crit||(isWeapon?(wpn?.crit||'19-20'):'—');
+  const range=it.range||(isWeapon?(wpn?.range||'Curto'):'—');
+  const weight=it.weight||1;
+  const qty=it.qty||1;
+  const value=it.value||0;
+  el.innerHTML=`
+    <div class="rid-head">
+      <div class="rid-icon">
+        <div class="rarity-dot" style="background:var(--rarity-${it.rarity});--dot-glow:var(--rarity-${it.rarity})"></div>
+        ${iconHTML}
+      </div>
+      <div class="rid-title-wrap">
+        <div class="rid-name">${it.name}</div>
+        <div class="rid-meta"><span class="rid-rarity" style="color:var(--rarity-${it.rarity})">${rarLabel}</span><span>${({arma:'Arma',armadura:'Armadura',consumivel:'Consumível',material:'Material',chave:'Chave'})[it.cat]||it.cat}</span></div>
+      </div>
+    </div>
+    <div class="rid-stats">
+      <div class="rid-stat"><div class="rid-stat-label">Dano</div><div class="rid-stat-value">${dmg}</div></div>
+      <div class="rid-stat"><div class="rid-stat-label">Alcance Crítico</div><div class="rid-stat-value">${crit}</div></div>
+      <div class="rid-stat"><div class="rid-stat-label">Alcance</div><div class="rid-stat-value">${range}</div></div>
+      <div class="rid-stat"><div class="rid-stat-label">Peso</div><div class="rid-stat-value">${weight} kg</div></div>
+      <div class="rid-stat"><div class="rid-stat-label">Quantidade</div><div class="rid-stat-value">${qty}</div></div>
+      <div class="rid-stat"><div class="rid-stat-label">Valor</div><div class="rid-stat-value">${value}</div></div>
+      <div class="rid-stat" style="grid-column:1/-1">
+        <div class="rid-stat-label">Durabilidade</div>
+        <div class="rid-stat-value dur-bar" style="--dur:${dur}%"></div>
+        <span class="dur-text">${dur} / 100</span>
+      </div>
+    </div>
+    ${it.desc&&it.desc!=='Sem descricao.'?`<div class="rid-desc">${it.desc}</div>`:''}
+    <div class="rid-actions">
+      ${isWeapon||it.cat==='consumivel'?`<button class="rid-btn" onclick="useItem(${it.id})">${isWeapon?'Equipar':'Usar'}</button>`:''}
+      <button class="rid-btn danger" onclick="dropItem(${it.id})">Descartar</button>
+    </div>`;
 }
 
 function openItemCtxMenu(e,id){
@@ -8392,22 +8562,11 @@ function openModal(type,eid){
   } else if(type==='item'){
     title.textContent='Adicionar Item';
     const wpnBtns=Object.keys(WEAPON_TYPE_LABELS).map(t=>{const subs=WEAPON_SUB_LABELS[t]||{};const subKeys=Object.keys(subs);if(!subKeys.length)return'';const tabs=subKeys.map((s,i)=>`<button type="button" class="weapon-sub-tab${i===0?' active':''}" data-sub="${t}-${s}" onclick="window._pickWpnSubItem('${t}','${s}')">${subs[s]}</button>`).join('');const panes=subKeys.map((s,i)=>{const list=Object.entries(WEAPON_SVGS).filter(([,v])=>v.type===t&&v.sub===s);const btns=list.map(([k,v])=>`<button type="button" class="weapon-pick-btn" data-wpn="${k}" title="${v.label}" onclick="window._pickWeapon('${k}')"><img src="${v.file}" alt="${v.label}" draggable="false"><span>${v.label}</span></button>`).join('')||'<div style="font-size:11px;color:var(--text-dim);padding:8px">Vazio</div>';return`<div class="weapon-sub-pane${i===0?' active':''}" data-pane="${t}-${s}"><div class="weapon-pick-grid">${btns}</div></div>`}).join('');return`<div class="weapon-pick-group-label">${WEAPON_TYPE_LABELS[t]}</div><div class="weapon-sub-tabs" data-type="${t}">${tabs}</div>${panes}`}).join('');
-    body.innerHTML=`<div class="item-form-split">
-  <div class="ifs-main">
-    <div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div>
-    <div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker()"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div>
-    <div class="form-group" id="m-wpn-wrap"><label>Ícone <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher ícone...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
-    <div class="form-group"><label>Descrição</label><input type="text" id="m-idesc" placeholder="Notas..."></div>
-  </div>
-  <div class="ifs-side">
-    <div class="form-group"><label>Largura</label><input type="number" id="m-igw" value="1" min="1" max="4"></div>
-    <div class="form-group"><label>Altura</label><input type="number" id="m-igh" value="1" min="1" max="4"></div>
-    <div class="form-group"><label>Quantidade</label><input type="number" id="m-iqty" value="1" min="1"></div>
-    <div class="form-group"><label>Peso</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div>
-    <div class="form-group"><label>Valor</label><input type="number" id="m-ivalue" value="0" min="0"></div>
-    <div class="form-group"><label>Durabilidade</label><input type="number" id="m-idur" value="100" min="0" max="100"></div>
-  </div>
-</div>
+    body.innerHTML=`<div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div>
+<div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker()"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div>
+<div class="form-group" id="m-wpn-wrap"><label>Ícone <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher ícone...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
+<div class="form-group"><label>Descrição</label><input type="text" id="m-idesc" placeholder="Notas..."></div>
+<input type="hidden" id="m-igw" value="1"><input type="hidden" id="m-igh" value="1"><input type="hidden" id="m-iqty" value="1"><input type="hidden" id="m-iweight" value="1"><input type="hidden" id="m-ivalue" value="0"><input type="hidden" id="m-idur" value="100">
 <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>`;
     window._switchItemTab=function(t){document.querySelectorAll('.item-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));document.querySelectorAll('.item-pane').forEach(p=>p.classList.toggle('active',p.dataset.pane===t))};
     window._pickWeapon=function(k){
@@ -11844,7 +12003,13 @@ function switchToProfile(){
   document.querySelectorAll('.sidebar-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
   document.getElementById('tab-profile').classList.add('active');
+  switchProfileSub('perfil');
   renderProfile();
+}
+
+function switchProfileSub(name){
+  document.querySelectorAll('#tab-profile .profile-subtab').forEach(b=>b.classList.toggle('active',b.dataset.subtab===name));
+  document.querySelectorAll('#tab-profile .profile-subview').forEach(v=>v.classList.toggle('active',v.dataset.subview===name));
 }
 
 function changeProfileAvatar(){

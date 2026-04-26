@@ -643,7 +643,7 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .weapon-pick-btn img{width:75%;height:55%;object-fit:contain}
 .weapon-pick-btn span{font-size:10px;color:var(--text-dim);font-weight:600}
 .weapon-pick-btn.active span{color:var(--lime)}
-.weapon-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+.weapon-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px;max-height:340px;overflow-y:auto}
 .weapon-card-pick{background:var(--bg-input);border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 8px;gap:8px;transition:all .15s}
 .weapon-card-pick:hover{border-color:var(--border-light);background:var(--bg-hover);transform:translateY(-2px)}
 .weapon-card-pick.active{border-color:var(--lime);background:var(--lime-bg-strong);box-shadow:0 0 0 1px var(--lime),0 6px 16px color-mix(in srgb,var(--lime) 25%,transparent)}
@@ -5953,7 +5953,12 @@ const SVG={
 const ICON_MAP={arma:['sword','bow','dagger','axe','staff','crossbow','lightning'],armadura:['shield','helmet','shield'],consumivel:['potion','herb','food','flask','syringe'],material:['gem','ore','gem','ore'],chave:['key','scroll','key']};
 const WEAPON_SVGS={
   pistol1:{label:'Pistola 1',file:'icons/weapons/pistol-1.svg'},
-  pistol2:{label:'Pistola 2',file:'icons/weapons/pistol-2.svg'}
+  pistol2:{label:'Pistola 2',file:'icons/weapons/pistol-2.svg'},
+  pistol3:{label:'Pistola 3',file:'icons/weapons/pistol-3.svg'},
+  pistol4:{label:'Pistola 4',file:'icons/weapons/pistol-4.svg'},
+  pistol5:{label:'Pistola 5',file:'icons/weapons/pistol-5.svg'},
+  pistol6:{label:'Pistola 6',file:'icons/weapons/pistol-6.svg'},
+  pistol7:{label:'SMG',     file:'icons/weapons/pistol-7.svg'}
 };
 const RARITY_LABELS={common:'Comum',uncommon:'Incomum',rare:'Raro',epic:'Epico',legendary:'Lendario'};
 const CATEGORY_LABELS={arma:'Arma',armadura:'Armadura',consumivel:'Consumivel',material:'Material',chave:'Chave'};

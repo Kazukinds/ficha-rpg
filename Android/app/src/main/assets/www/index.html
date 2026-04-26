@@ -626,6 +626,67 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .overflow-item.drag-hint{cursor:grab}
 .detail-empty{text-align:center;color:var(--text-dim);padding:60px 0;font-size:13px}
 
+/* ═══ RE4 INVENTORY (attaché case) ═══ */
+.re4-shell{display:flex;flex-direction:column;gap:14px;max-width:1480px;margin:0 auto}
+.re4-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:linear-gradient(180deg,#1a1410 0%,#120d09 100%);border:1px solid rgba(180,140,80,.18);border-radius:var(--radius);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 4px 14px rgba(0,0,0,.45);flex-wrap:wrap}
+.re4-cases{display:flex;gap:6px;flex-wrap:wrap}
+.re4-case-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(0,0,0,.3);border:1px solid rgba(180,140,80,.16);border-radius:var(--radius-xs);color:var(--text-dim);cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.re4-case-btn:hover{border-color:rgba(200,245,66,.4);color:var(--text-secondary);background:rgba(0,0,0,.5)}
+.re4-case-btn.active{border-color:var(--lime);color:var(--lime);background:var(--lime-bg-strong);box-shadow:0 0 0 1px color-mix(in srgb,var(--lime) 25%,transparent),0 0 14px rgba(200,245,66,.18)}
+.re4-case-btn .re4-case-dim{font-size:10px;color:inherit;opacity:.7}
+.re4-bar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.re4-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;font-family:inherit;font-size:12px;font-weight:600;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.re4-btn:hover{border-color:var(--border-light);color:var(--text-primary);background:var(--bg-hover)}
+.re4-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.re4-btn-primary{background:var(--lime-bg-strong);border-color:var(--lime-dim);color:var(--lime)}
+.re4-btn-primary:hover{background:var(--lime-bg);border-color:var(--lime);color:var(--lime)}
+.re4-body{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:flex-start}
+.re4-case-pane{display:flex;justify-content:center}
+.re4-case{background:linear-gradient(180deg,#0e0a07 0%,#0a0705 100%);border:1px solid rgba(180,140,80,.2);border-radius:var(--radius);padding:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 8px 26px rgba(0,0,0,.55);position:relative;overflow:hidden;width:100%}
+.re4-case::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(180,140,80,.06) 0%,transparent 60%);pointer-events:none}
+.re4-case-frame{position:relative;background:#050403;border:1px solid rgba(180,140,80,.12);border-radius:var(--radius-xs);padding:10px;box-shadow:inset 0 0 24px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,0,0,.6)}
+.re4-case-foot{display:flex;justify-content:flex-end;margin-top:10px;padding:6px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(180,140,80,.1);border-radius:var(--radius-xs)}
+.re4-cap-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--lime)}
+.re4-side{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
+.re4-side-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.re4-side-title{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px}
+.re4-overflow-count{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--lime);background:var(--lime-bg);border:1px solid var(--lime-dim);border-radius:10px;padding:2px 10px}
+.re4-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.re4-filters{display:flex;gap:6px;flex-wrap:wrap;padding:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.inv-filter-pill{padding:5px 10px;font-family:inherit;font-size:11px;font-weight:600;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--text-dim);cursor:pointer;transition:all .15s}
+.inv-filter-pill:hover{border-color:var(--border-light);color:var(--text-secondary)}
+.inv-filter-pill.active{border-color:var(--lime-dim);color:var(--lime);background:var(--lime-bg-strong)}
+.re4-list{display:flex;flex-direction:column;gap:6px;max-height:520px;overflow-y:auto;padding-right:4px}
+.re4-list::-webkit-scrollbar{width:6px}
+.re4-list::-webkit-scrollbar-track{background:transparent}
+.re4-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.inv-empty{text-align:center;padding:32px 16px;color:var(--text-dim)}
+.inv-empty-icon{width:56px;height:56px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;color:var(--text-dim)}
+.inv-empty h3{font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:4px}
+.inv-empty p{font-size:11px;color:var(--text-dim)}
+.inv-card{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--ic,var(--border));border-radius:var(--radius-sm);cursor:pointer;transition:border-color .15s,background .15s}
+.inv-card:hover{border-color:var(--border-light);background:var(--bg-hover)}
+.inv-card-icon{width:32px;height:32px;border-radius:var(--radius-xs);background:var(--bg-input);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ic,var(--text-secondary))}
+.inv-card-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.inv-card-info{flex:1;min-width:0}
+.inv-card-name{font-size:12px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inv-card-meta{display:flex;gap:6px;margin-top:2px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);flex-wrap:wrap}
+.inv-card-meta .cat{color:var(--text-secondary)}
+.inv-card-meta .rarity{color:var(--ic)}
+.inv-card-dur{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.inv-card-dur-bar{width:40px;height:4px;background:var(--bg-input);border-radius:2px;overflow:hidden}
+.inv-card-dur-fill{height:100%;background:var(--d-c,var(--lime));transition:width .3s}
+.inv-card-dur-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);min-width:28px;text-align:right}
+.inv-card-qty{display:flex;flex-direction:column;align-items:center;flex-shrink:0;min-width:32px}
+.inv-card-qty-num{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:800;color:var(--lime)}
+.inv-card-qty-lbl{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.inv-card-actions{display:flex;gap:4px;flex-shrink:0}
+.inv-card-btn{width:26px;height:26px;border-radius:var(--radius-xs);background:var(--bg-input);border:1px solid var(--border);color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.inv-card-btn:hover{color:var(--text-primary);border-color:var(--border-light)}
+.inv-card-btn.danger:hover{color:var(--red);border-color:var(--red)}
+.inv-card-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+@media(max-width:980px){.re4-body{grid-template-columns:1fr}.re4-side{position:static}}
+
 /* ═══ CREDIT TAB ═══ */
 .credit-top{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px}
 .credit-top::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(251,191,36,.04);pointer-events:none}
@@ -5184,12 +5245,6 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
       </div>
     </section>
 
-    <!-- Inventário: raízes de grid/detalhe ocultas (UI de grid removida, reconstruída como módulo separado) -->
-    <div style="display:none" aria-hidden="true" id="inv-hidden-root">
-      <div class="inv-grid" id="inv-grid"></div>
-      <div id="inv-detail"><span id="overflow-count">0</span><div id="overflow-list"></div></div>
-      <span id="inv-cap-label"></span>
-    </div>
 
     <!-- ═══ PROGRESS ═══ -->
     <section class="tab-content" id="tab-progress">
@@ -5296,13 +5351,56 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
       </div>
     </section>
 
-    <!-- ═══ INVENTÁRIO ═══ -->
+    <!-- ═══ INVENTÁRIO (RE4-style attaché case) ═══ -->
     <section class="tab-content" id="tab-inventory">
-      <div class="tab-soon">
-        <div class="tab-soon-ico"><svg viewBox="0 0 24 24"><path d="M20.91 8.84 8.56 2.23a1.93 1.93 0 0 0-1.81 0L3.1 4.13a2.12 2.12 0 0 0-.05 3.69l12.22 6.93a2 2 0 0 0 1.94 0L21 12.51a2.12 2.12 0 0 0-.09-3.67z"/><path d="M3.09 8.84v12.16L12 22V15.52"/></svg></div>
-        <span class="tab-soon-tag">Em breve</span>
-        <h1>Inventário</h1>
-        <p>Gerenciamento de itens, armaduras, consumíveis e materiais chegando em breve.</p>
+      <div class="re4-shell">
+        <!-- HEADER: case sizes + actions -->
+        <div class="re4-bar">
+          <div class="re4-cases" id="re4-cases" role="tablist" aria-label="Tamanho da maleta"></div>
+          <div class="re4-bar-actions">
+            <button class="re4-btn" type="button" onclick="openSuitcaseCustom()" title="Personalizar maleta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+              <span>Personalizar</span>
+            </button>
+            <button class="re4-btn re4-btn-primary" type="button" onclick="openModal('item')" title="Adicionar item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Novo item</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- BODY: case grid + side panel -->
+        <div class="re4-body">
+          <div class="re4-case-pane">
+            <div class="re4-case">
+              <div class="re4-case-frame">
+                <div class="inv-grid" id="inv-grid"></div>
+              </div>
+              <div class="re4-case-foot">
+                <span class="re4-cap-lbl" id="inv-cap-label">0 / 0 slots</span>
+              </div>
+            </div>
+          </div>
+          <aside class="re4-side">
+            <div class="inv-detail" id="inv-detail">
+              <div class="re4-side-head">
+                <span class="re4-side-title">Excedentes</span>
+                <span class="re4-overflow-count" id="overflow-count">0</span>
+              </div>
+              <div id="overflow-list"></div>
+            </div>
+            <div class="re4-stats" id="inv-stat-blocks"></div>
+            <div class="re4-filters">
+              <button class="inv-filter-pill active" data-f="all">Tudo</button>
+              <button class="inv-filter-pill" data-f="arma">Armas</button>
+              <button class="inv-filter-pill" data-f="armadura">Armaduras</button>
+              <button class="inv-filter-pill" data-f="consumivel">Consumíveis</button>
+              <button class="inv-filter-pill" data-f="material">Materiais</button>
+              <button class="inv-filter-pill" data-f="chave">Chaves</button>
+            </div>
+            <div class="re4-list" id="inv-tab-list"></div>
+          </aside>
+        </div>
       </div>
     </section>
 
@@ -5992,7 +6090,7 @@ document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListen
     if(t==='dashboard'){renderSummary();renderXP();setTimeout(()=>drawChart(false),60)}
     else if(t==='feiticos'){try{renderFeitTab()}catch(_){}}
     else if(t==='biblioteca'){try{renderBiblioGrid()}catch(_){}}
-    else if(t==='inventory'){try{renderInvTab()}catch(_){}}
+    else if(t==='inventory'){try{renderInvTab();renderCaseSelector();renderGrid()}catch(_){}}
   };
   if(document.startViewTransition&&!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
     try{document.startViewTransition(doSwitch)}catch(_){doSwitch()}
@@ -6849,24 +6947,29 @@ function buildCell(i){
 }
 // Grid layout presets: [cols, rows, label]
 const GRID_PRESETS=[
-  [6,10,'Pequena · 6×10'],[7,10,'Média · 7×10'],[8,10,'Grande · 8×10']
+  [10,7,'Small Case · 70 (10×7)'],
+  [12,8,'Medium Case · 96 (12×8)'],
+  [13,9,'Large Case · 117 (13×9)'],
+  [14,10,'Extra Large · 140 (14×10)']
 ];
-let gridCols=7,gridRows=10;
+let gridCols=10,gridRows=7;
 
 function applyGridLayout(cols,rows){
   gridCols=cols;gridRows=rows;
   GRID_SIZE=cols*rows;
   renderGrid();
-  renderGridCfgOptions();
-  document.querySelectorAll('.re4-size-btn').forEach(b=>b.classList.toggle('active',b.dataset.size===`${cols}-${rows}`));
+  renderCaseSelector();
 }
 
-function renderGridCfgOptions(){
-  const c=document.getElementById('grid-cfg-options');
-  c.innerHTML=GRID_PRESETS.map(([co,ro,lb])=>`<div class="grid-cfg-opt${co===gridCols&&ro===gridRows?' active':''}" onclick="applyGridLayout(${co},${ro})">${lb}</div>`).join('');
+function renderCaseSelector(){
+  const c=document.getElementById('re4-cases');if(!c)return;
+  const labels={70:'Small',96:'Medium',117:'Large',140:'XL'};
+  c.innerHTML=GRID_PRESETS.map(([co,ro])=>{
+    const tot=co*ro,lb=labels[tot]||tot;
+    const active=co===gridCols&&ro===gridRows;
+    return `<button class="re4-case-btn${active?' active':''}" type="button" role="tab" aria-selected="${active}" onclick="applyGridLayout(${co},${ro})">${lb} <span class="re4-case-dim">${co}×${ro}</span></button>`;
+  }).join('');
 }
-
-document.addEventListener('click',e=>{if(!e.target.closest('.grid-cfg'))document.getElementById('grid-cfg-drop')?.classList.remove('open')});
 
 function renderGrid(){
   const g=document.getElementById('inv-grid');
@@ -7002,6 +7105,46 @@ function openSuitcaseCustom(){
 function renderGridFromSlots(){const g=document.getElementById('inv-grid');g.innerHTML='';for(let i=0;i<GRID_SIZE;i++)g.appendChild(buildCell(i))}
 
 function clearDetail(){selectedItemId=null;document.querySelectorAll('.inv-cell').forEach(c=>c.classList.remove('selected'));renderOverflow()}
+
+function selectInvItem(id){
+  selectedItemId=id;
+  document.querySelectorAll('.inv-cell').forEach(c=>{
+    const cid=parseInt(c.dataset.itemId);
+    c.classList.toggle('selected-item',cid===id);
+    c.classList.toggle('selected',cid===id);
+  });
+}
+
+function openItemCtxMenu(e,id){
+  if(e&&e.preventDefault)e.preventDefault();
+  selectInvItem(id);
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  document.querySelectorAll('.item-ctx-pop').forEach(p=>p.remove());
+  const pop=document.createElement('div');
+  pop.className='item-ctx-pop';
+  pop.style.cssText='position:fixed;z-index:200;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-sm);box-shadow:0 12px 32px rgba(0,0,0,.6);padding:6px;display:flex;flex-direction:column;gap:2px;min-width:140px';
+  const x=e?(e.clientX||e.touches?.[0]?.clientX||0):0,y=e?(e.clientY||e.touches?.[0]?.clientY||0):0;
+  pop.style.left=Math.min(x,window.innerWidth-160)+'px';
+  pop.style.top=Math.min(y,window.innerHeight-180)+'px';
+  const mkBtn=(label,fn,danger)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.style.cssText=`padding:8px 12px;font-family:inherit;font-size:12px;font-weight:600;background:transparent;border:none;color:${danger?'var(--red)':'var(--text-secondary)'};cursor:pointer;text-align:left;border-radius:var(--radius-xs);transition:background .15s`;
+    b.textContent=label;
+    b.onmouseenter=()=>b.style.background='var(--bg-hover)';
+    b.onmouseleave=()=>b.style.background='transparent';
+    b.onclick=ev=>{ev.stopPropagation();pop.remove();fn()};
+    return b;
+  };
+  pop.appendChild(mkBtn('Editar',()=>openEditItem(id)));
+  if(it.cat==='consumivel')pop.appendChild(mkBtn('Usar',()=>useItem(id)));
+  pop.appendChild(mkBtn('Descartar',()=>dropItem(id),true));
+  document.body.appendChild(pop);
+  setTimeout(()=>{
+    const close=ev=>{if(!pop.contains(ev.target)){pop.remove();document.removeEventListener('click',close)}};
+    document.addEventListener('click',close);
+  },10);
+}
 
 // click outside grid clears detail
 document.addEventListener('click',e=>{if(!e.target.closest('.inv-cell')&&!e.target.closest('.inv-detail')&&!e.target.closest('.modal'))clearDetail()});
@@ -7916,7 +8059,7 @@ function openModal(type,eid){
     initCustomSelects(body);
   } else if(type==='item'){
     title.textContent='Adicionar Item';
-    body.innerHTML=`<div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div><div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div><div class="form-row"><div class="form-group"><label>Quantidade</label><input type="number" id="m-iqty" value="1" min="1"></div><div class="form-group"><label>Peso</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div></div><div class="form-row"><div class="form-group"><label>Valor (credito)</label><input type="number" id="m-ivalue" value="0" min="0"></div><div class="form-group"><label>Durabilidade</label><input type="number" id="m-idur" value="100" min="0" max="100"></div></div><div class="form-group"><label>Descricao</label><input type="text" id="m-idesc" placeholder="Descricao..."></div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>`;
+    body.innerHTML=`<div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div><div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div><div class="form-row"><div class="form-group"><label>Largura (slots)</label><input type="number" id="m-igw" value="1" min="1" max="4"></div><div class="form-group"><label>Altura (slots)</label><input type="number" id="m-igh" value="1" min="1" max="4"></div></div><div class="form-row"><div class="form-group"><label>Quantidade</label><input type="number" id="m-iqty" value="1" min="1"></div><div class="form-group"><label>Peso</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div></div><div class="form-row"><div class="form-group"><label>Valor (credito)</label><input type="number" id="m-ivalue" value="0" min="0"></div><div class="form-group"><label>Durabilidade</label><input type="number" id="m-idur" value="100" min="0" max="100"></div></div><div class="form-group"><label>Descricao</label><input type="text" id="m-idesc" placeholder="Descricao..."></div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>`;
   }
   document.getElementById('modal-overlay').classList.add('open');
   initCustomSelects(body);
@@ -8056,7 +8199,7 @@ function saveAch(){const t=document.getElementById('m-atitle').value.trim(),tp=d
 
 function saveMember(){const n=document.getElementById('m-mname').value.trim();if(!n)return;const tp=document.querySelector('input[name="mem-type"]:checked')?.value||'aliado';const iconKeys=['sword','layers','bow','shield','heart','key'];groupMembers.push({id:nextMemberId++,name:n,type:tp,gold:parseInt(document.getElementById('m-mgold').value)||0,iconKey:iconKeys[Math.floor(Math.random()*iconKeys.length)],desc:document.getElementById('m-mdesc').value.trim()});renderGroup();closeModal();toast(`${n} adicionado ao grupo`)}
 
-function saveItem(){const n=document.getElementById('m-iname').value.trim();if(!n)return;const cat=document.getElementById('m-icat').value,iks=ICON_MAP[cat],ni={id:nextId++,name:n,cat,rarity:document.getElementById('m-irarity').value,qty:parseInt(document.getElementById('m-iqty').value)||1,weight:parseFloat(document.getElementById('m-iweight').value)||1,value:parseInt(document.getElementById('m-ivalue').value)||0,durability:parseInt(document.getElementById('m-idur').value)||100,iconKey:iks[Math.floor(Math.random()*iks.length)],desc:document.getElementById('m-idesc').value.trim()||'Sem descricao.'};inventory.push(ni);addLogRow(ni);renderGrid();renderDashLists();closeModal();toast(`${n} adicionado ao inventario`)}
+function saveItem(){const n=document.getElementById('m-iname').value.trim();if(!n)return;const cat=document.getElementById('m-icat').value,iks=ICON_MAP[cat],ni={id:nextId++,name:n,cat,rarity:document.getElementById('m-irarity').value,qty:parseInt(document.getElementById('m-iqty').value)||1,weight:parseFloat(document.getElementById('m-iweight').value)||1,value:parseInt(document.getElementById('m-ivalue').value)||0,durability:parseInt(document.getElementById('m-idur').value)||100,gw:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igw')?.value)||1)),gh:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igh')?.value)||1)),iconKey:iks[Math.floor(Math.random()*iks.length)],desc:document.getElementById('m-idesc').value.trim()||'Sem descricao.'};inventory.push(ni);if(typeof addLogRow==='function')try{addLogRow(ni)}catch(_){}renderGrid();if(typeof renderDashLists==='function')renderDashLists();if(typeof renderInvTab==='function')renderInvTab();closeModal();toast(`${n} adicionado ao inventario`)}
 
 // ═══ CUSTOM SELECT ═══
 function initCustomSelects(scope){
@@ -8386,7 +8529,7 @@ function applyAllData(d){
 
 function refreshAll(){
   renderGrid();renderDashLists();renderXP();renderSkills();renderAttrs();renderAch();renderGroup();
-  renderGridCfgOptions();renderStatus();renderProficiencias();renderSummary();
+  renderCaseSelector();renderStatus();renderProficiencias();renderSummary();
   if(typeof renderCredit==='function')renderCredit();
   if(typeof renderProfile==='function')renderProfile();
   if(typeof rebuildLid==='function'){rebuildLid();applySuitcaseColor(suitcaseColor)}
@@ -11862,7 +12005,7 @@ _safe(renderAttrs,'renderAttrs');
 _safe(renderAch,'renderAch');
 _safe(renderGroup,'renderGroup');
 _safe(renderPericias,'renderPericias');
-_safe(renderGridCfgOptions,'renderGridCfgOptions');
+_safe(renderCaseSelector,'renderCaseSelector');
 _safe(()=>initCustomSelects(),'initCustomSelects');
 setTimeout(()=>_safe(()=>drawChart(true),'drawChart'),100);
 let _chartResizeTmr=null;

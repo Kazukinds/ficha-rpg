@@ -11,4 +11,6 @@ cp "$SRC/biblioteca.html" "$DST/"
 cp "$SRC/manifest.webmanifest" "$DST/"
 cp "$SRC/sw.js" "$DST/"
 cp -r "$SRC/icons/." "$DST/icons/"
+mkdir -p "$DST/icons/weapons"
+cp -r "$SRC/icons/weapons/." "$DST/icons/weapons/" 2>/dev/null || true
 echo "Bundled → $DST"

@@ -635,6 +635,14 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .overflow-item{user-select:none}
 .overflow-item.drag-hint{cursor:grab}
 .detail-empty{text-align:center;color:var(--text-dim);padding:20px 0;font-size:12px}
+.item-icon-svg{width:85%;height:85%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.weapon-pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.weapon-pick-btn{aspect-ratio:1;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;gap:4px;transition:all .15s}
+.weapon-pick-btn:hover{border-color:var(--border-light);background:var(--bg-hover)}
+.weapon-pick-btn.active{border-color:var(--lime);background:var(--lime-bg-strong);box-shadow:0 0 0 1px var(--lime)}
+.weapon-pick-btn img{width:75%;height:55%;object-fit:contain}
+.weapon-pick-btn span{font-size:10px;color:var(--text-dim);font-weight:600}
+.weapon-pick-btn.active span{color:var(--lime)}
 
 /* ═══ RE4 INVENTORY (attaché case) ═══ */
 .re4-shell{display:flex;flex-direction:column;gap:14px;max-width:1480px;margin:0 auto}
@@ -5931,6 +5939,11 @@ const SVG={
   zap:'<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
 };
 const ICON_MAP={arma:['sword','bow','dagger','axe','staff','crossbow','lightning'],armadura:['shield','helmet','shield'],consumivel:['potion','herb','food','flask','syringe'],material:['gem','ore','gem','ore'],chave:['key','scroll','key']};
+const WEAPON_SVGS={
+  pistol1:{label:'Pistola 1',file:'icons/weapons/pistol-1.svg'},
+  pistol2:{label:'Pistola 2',file:'icons/weapons/pistol-2.svg'},
+  pistol3:{label:'Pistola 3',file:'icons/weapons/pistol-3.svg'}
+};
 const RARITY_LABELS={common:'Comum',uncommon:'Incomum',rare:'Raro',epic:'Epico',legendary:'Lendario'};
 const CATEGORY_LABELS={arma:'Arma',armadura:'Armadura',consumivel:'Consumivel',material:'Material',chave:'Chave'};
 const TYPE_LABELS={combat:'Combate',explore:'Exploracao',quest:'Quest',level:'Nivel',loot:'Loot',social:'Social'};
@@ -6328,7 +6341,7 @@ function renderInvTab(){
     const dur=Math.max(0,Math.min(100,i.durability||0));
     const durC=dur>70?'var(--green)':dur>40?'var(--yellow)':'var(--red)';
     return `<div class="inv-card" style="--ic:var(--rarity-${i.rarity})" onclick="openEditItem(${i.id})">
-      <div class="inv-card-icon">${gi(i.iconKey)}</div>
+      <div class="inv-card-icon">${i.iconWpn&&WEAPON_SVGS[i.iconWpn]?`<img src="${WEAPON_SVGS[i.iconWpn].file}" style="width:80%;height:80%;object-fit:contain" draggable="false">`:gi(i.iconKey)}</div>
       <div class="inv-card-info">
         <div class="inv-card-name">${esc(i.name)}</div>
         <div class="inv-card-meta"><span class="cat">${CATEGORY_LABELS[i.cat]}</span><span class="rarity">${RL[i.rarity]||i.rarity}</span>${i.value?`<span>${i.value} cr</span>`:''}${i.weight?`<span>${i.weight}kg</span>`:''}</div>
@@ -6813,7 +6826,10 @@ function buildCell(i){
     if(item.id===selectedItemId)cell.classList.add('selected-item');
     const gearBtn=`<button class="item-gear-float" onclick="event.stopPropagation();openItemCtxMenu(event,${item.id})"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12h1M4 12h1M12 4v1M12 19v1M17.7 6.3l-.7.7M7 17l-.7.7M17 17l.7.7M7 7l-.7-.7"/></svg></button>`;
 
-    const iconHTML=`<span class="item-icon" style="color:var(--rarity-${item.rarity})">${gi(item.iconKey)}</span>`;
+    const wpnEntry=item.iconWpn&&WEAPON_SVGS[item.iconWpn];
+    const iconHTML=wpnEntry
+      ?`<img class="item-icon-svg" src="${wpnEntry.file}" alt="${wpnEntry.label}" draggable="false">`
+      :`<span class="item-icon" style="color:var(--rarity-${item.rarity})">${gi(item.iconKey)}</span>`;
     if(isMulti){
       cell.classList.add('multi-origin');
       const overlay=document.createElement('div');
@@ -7991,7 +8007,20 @@ function openModal(type,eid){
     initCustomSelects(body);
   } else if(type==='item'){
     title.textContent='Adicionar Item';
-    body.innerHTML=`<div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div><div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div><div class="form-row"><div class="form-group"><label>Largura (slots)</label><input type="number" id="m-igw" value="1" min="1" max="4"></div><div class="form-group"><label>Altura (slots)</label><input type="number" id="m-igh" value="1" min="1" max="4"></div></div><div class="form-row"><div class="form-group"><label>Quantidade</label><input type="number" id="m-iqty" value="1" min="1"></div><div class="form-group"><label>Peso</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div></div><div class="form-row"><div class="form-group"><label>Valor (credito)</label><input type="number" id="m-ivalue" value="0" min="0"></div><div class="form-group"><label>Durabilidade</label><input type="number" id="m-idur" value="100" min="0" max="100"></div></div><div class="form-group"><label>Descricao</label><input type="text" id="m-idesc" placeholder="Descricao..."></div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>`;
+    const wpnBtns=Object.entries(WEAPON_SVGS).map(([k,v])=>`<button type="button" class="weapon-pick-btn" data-wpn="${k}" onclick="window._pickWeapon('${k}')"><img src="${v.file}" alt="${v.label}" draggable="false"><span>${v.label}</span></button>`).join('');
+    body.innerHTML=`<div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div><div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker()"><option value="arma">Arma</option><option value="armadura">Armadura</option><option value="consumivel">Consumivel</option><option value="material">Material</option><option value="chave">Chave</option></select></div><div class="form-group"><label>Raridade</label><select id="m-irarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Epico</option><option value="legendary">Lendario</option></select></div></div><div class="form-group" id="m-wpn-wrap"><label>Ícone da arma <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><div class="weapon-pick-grid">${wpnBtns}</div><input type="hidden" id="m-iwpn" value=""></div><div class="form-row"><div class="form-group"><label>Largura (slots)</label><input type="number" id="m-igw" value="1" min="1" max="4"></div><div class="form-group"><label>Altura (slots)</label><input type="number" id="m-igh" value="1" min="1" max="4"></div></div><div class="form-row"><div class="form-group"><label>Quantidade</label><input type="number" id="m-iqty" value="1" min="1"></div><div class="form-group"><label>Peso</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div></div><div class="form-row"><div class="form-group"><label>Valor (credito)</label><input type="number" id="m-ivalue" value="0" min="0"></div><div class="form-group"><label>Durabilidade</label><input type="number" id="m-idur" value="100" min="0" max="100"></div></div><div class="form-group"><label>Descricao</label><input type="text" id="m-idesc" placeholder="Descricao..."></div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>`;
+    window._pickWeapon=function(k){
+      const cur=document.getElementById('m-iwpn').value;
+      const next=cur===k?'':k;
+      document.getElementById('m-iwpn').value=next;
+      document.querySelectorAll('.weapon-pick-btn').forEach(b=>b.classList.toggle('active',b.dataset.wpn===next));
+    };
+    window._toggleWpnPicker=function(){
+      const cat=document.getElementById('m-icat').value;
+      const wrap=document.getElementById('m-wpn-wrap');
+      if(wrap)wrap.style.display=cat==='arma'?'':'none';
+      if(cat!=='arma')document.getElementById('m-iwpn').value='';
+    };
   } else if(type==='mount'){
     const m=editId?mounts.find(x=>x.id===editId):null;
     title.textContent=m?'Editar Montaria':'Nova Montaria';
@@ -8144,7 +8173,7 @@ function saveAch(){const t=document.getElementById('m-atitle').value.trim(),tp=d
 
 function saveMember(){const n=document.getElementById('m-mname').value.trim();if(!n)return;const tp=document.querySelector('input[name="mem-type"]:checked')?.value||'aliado';const iconKeys=['sword','layers','bow','shield','heart','key'];groupMembers.push({id:nextMemberId++,name:n,type:tp,gold:parseInt(document.getElementById('m-mgold').value)||0,iconKey:iconKeys[Math.floor(Math.random()*iconKeys.length)],desc:document.getElementById('m-mdesc').value.trim()});renderGroup();closeModal();toast(`${n} adicionado ao grupo`)}
 
-function saveItem(){const n=document.getElementById('m-iname').value.trim();if(!n)return;const cat=document.getElementById('m-icat').value,iks=ICON_MAP[cat],ni={id:nextId++,name:n,cat,rarity:document.getElementById('m-irarity').value,qty:parseInt(document.getElementById('m-iqty').value)||1,weight:parseFloat(document.getElementById('m-iweight').value)||1,value:parseInt(document.getElementById('m-ivalue').value)||0,durability:parseInt(document.getElementById('m-idur').value)||100,gw:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igw')?.value)||1)),gh:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igh')?.value)||1)),iconKey:iks[Math.floor(Math.random()*iks.length)],desc:document.getElementById('m-idesc').value.trim()||'Sem descricao.'};inventory.push(ni);if(typeof addLogRow==='function')try{addLogRow(ni)}catch(_){}renderGrid();if(typeof renderDashLists==='function')renderDashLists();if(typeof renderInvTab==='function')renderInvTab();closeModal();toast(`${n} adicionado ao inventario`)}
+function saveItem(){const n=document.getElementById('m-iname').value.trim();if(!n)return;const cat=document.getElementById('m-icat').value,iks=ICON_MAP[cat],wpn=document.getElementById('m-iwpn')?.value||'',ni={id:nextId++,name:n,cat,rarity:document.getElementById('m-irarity').value,qty:parseInt(document.getElementById('m-iqty').value)||1,weight:parseFloat(document.getElementById('m-iweight').value)||1,value:parseInt(document.getElementById('m-ivalue').value)||0,durability:parseInt(document.getElementById('m-idur').value)||100,gw:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igw')?.value)||1)),gh:Math.max(1,Math.min(4,parseInt(document.getElementById('m-igh')?.value)||1)),iconKey:iks[Math.floor(Math.random()*iks.length)],iconWpn:cat==='arma'&&WEAPON_SVGS[wpn]?wpn:'',desc:document.getElementById('m-idesc').value.trim()||'Sem descricao.'};inventory.push(ni);if(typeof addLogRow==='function')try{addLogRow(ni)}catch(_){}renderGrid();if(typeof renderDashLists==='function')renderDashLists();if(typeof renderInvTab==='function')renderInvTab();closeModal();toast(`${n} adicionado ao inventario`)}
 
 // ═══ MONTARIAS ═══
 const MOUNT_ICONS={

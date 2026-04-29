@@ -11949,6 +11949,8 @@ function buildCell(i){
     cell.draggable=false;
     cell.addEventListener('pointerdown',e=>{
       if(e.button!==0&&e.pointerType==='mouse')return;
+      // Capture pointer so subsequent move/up events fire on this element regardless of cursor target.
+      try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}
       const startX=e.clientX,startY=e.clientY;
       let started=false;
       const onMove=ev=>{
@@ -11957,6 +11959,7 @@ function buildCell(i){
           started=true;
           document.removeEventListener('pointermove',onMove);
           document.removeEventListener('pointerup',onUp);
+          try{e.currentTarget.releasePointerCapture(e.pointerId)}catch(_){}
           _invDragStart(ev,i,item,cell);
         }
       };

@@ -7242,6 +7242,40 @@ function _wpnTrimSrc(src){
 }
 function setIconVariant(){/* noop */}
 window.setIconVariant=setIconVariant;
+// applyFit: lógica de weapon-test.html pra fit + auto-rotate item SVG
+function _applyWpnFit(img,iw,ih,t){
+  if(!img||!t)return;
+  const _scl=0.96;
+  const _overlayLandscape=iw>=ih;
+  const contentLandscape=t.ratio>=1;
+  const _cellSquare=iw===ih;
+  // Auto-rotate 90° apenas se cell não-quadrada E orient content ≠ overlay
+  // (caso SVG não tenha sido pre-rotacionado via rotVariants)
+  const totalRot=(!_cellSquare&&contentLandscape!==_overlayLandscape)?90:0;
+  const _contentLong=Math.max(t.ratio,1/t.ratio);
+  let _ew_cells,_eh_cells;
+  if(totalRot===0){
+    _ew_cells=iw;_eh_cells=ih;
+  }else{
+    if(contentLandscape){
+      _ew_cells=Math.min(ih,iw*_contentLong);
+      _eh_cells=_ew_cells/_contentLong;
+    }else{
+      _eh_cells=Math.min(iw,ih*_contentLong);
+      _ew_cells=_eh_cells/_contentLong;
+    }
+  }
+  const _ew_pct=(100*_ew_cells/iw);
+  const _eh_pct=(100*_eh_cells/ih);
+  Object.assign(img.style,{
+    position:'absolute',left:'50%',top:'50%',
+    width:_ew_pct+'%',height:_eh_pct+'%',
+    objectFit:'contain',
+    transform:`translate(-50%,-50%) scale(${_scl}) rotate(${totalRot}deg)`,
+    transformOrigin:'center center'
+  });
+}
+window._applyWpnFit=_applyWpnFit;
 // Placeholder SVG inline (data-uri) usado quando o ícone de arma não existe
 const _WPN_PLACEHOLDER='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="%23c8f542" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22" stroke-dasharray="3 4" opacity=".6"/><path d="M22 30l8 8 14-14" opacity=".7"/></svg>');
 document.addEventListener('error',function(e){
@@ -11965,78 +11999,33 @@ function buildCell(i){
       const _wpnImg=cell.querySelector('img.item-icon-svg');
       if(_wpnImg){
         _wpnImg.style.setProperty('--_rot',_rotDeg+'deg');
-        if(isMulti){
-          // Element fills overlay. Pre-rotate image 90° internally if content orientation mismatches
-          // overlay (e.g. landscape bow in portrait cells) so content shape ≈ cell shape; no distortion, no crop.
-          const _scl=0.96;
-          const _overlayLandscape=iw>=ih;
-          _wpnImg.style.setProperty('position','absolute','important');
-          _wpnImg.style.setProperty('left','50%','important');
-          _wpnImg.style.setProperty('top','50%','important');
-          _wpnImg.style.setProperty('width','100%','important');
-          _wpnImg.style.setProperty('height','100%','important');
-          _wpnImg.style.setProperty('object-fit','contain','important');
-          _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${_rotDeg}deg)`,'important');
-          _wpnImg.style.setProperty('transform-origin','center center','important');
-          _wpnTrimSrc(wpnSrc).then(t=>{
-            if(!t||!_wpnImg.isConnected)return;
-            const contentLandscape=t.ratio>=1;
-            const _cellSquare=iw===ih;
-            const totalRot=(!_cellSquare&&contentLandscape!==_overlayLandscape)?90:0;
-            const _contentLong=Math.max(t.ratio,1/t.ratio);
-            // Element pre-rotation sized so post-rotation content fits inside overlay (no overflow).
-            let _ew_cells,_eh_cells;
-            if(totalRot===0){
-              // No autoRot. Element = overlay shape. object-fit:contain handles fit.
-              _ew_cells=iw;
-              _eh_cells=ih;
-            }else{
-              // autoRot 90°. Pre-rot pre-computed so post-rot fits overlay.
-              // For landscape content rotated to fit portrait overlay:
-              //   pre-rot width = min(overlay-h, overlay-w × contentLong) cells
-              //   pre-rot height = pre-rot width / contentLong
-              // For portrait content rotated to fit landscape overlay (mirror).
-              const _ow=iw,_oh=ih;
-              if(contentLandscape){
-                _ew_cells=Math.min(_oh,_ow*_contentLong);
-                _eh_cells=_ew_cells/_contentLong;
-              }else{
-                _eh_cells=Math.min(_ow,_oh*_contentLong);
-                _ew_cells=_eh_cells/_contentLong;
-              }
-            }
-            const _ew_pct=(100*_ew_cells/iw);
-            const _eh_pct=(100*_eh_cells/ih);
-            _wpnImg.style.setProperty('width',_ew_pct+'%','important');
-            _wpnImg.style.setProperty('height',_eh_pct+'%','important');
-            _wpnImg.style.setProperty('object-fit','contain','important');
-            _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${totalRot}deg)`,'important');
-            _wpnImg.src=t.url;
-          });
-        }else{
-          // Single-cell: same trim+contain logic as multi but in 1×1 frame.
-          const _scl=0.96;
-          const _overlayLandscape=true; // 1×1 treated landscape
-          _wpnImg.style.setProperty('position','absolute','important');
-          _wpnImg.style.setProperty('left','50%','important');
-          _wpnImg.style.setProperty('top','50%','important');
-          _wpnImg.style.setProperty('width','100%','important');
-          _wpnImg.style.setProperty('height','100%','important');
-          _wpnImg.style.setProperty('object-fit','contain','important');
-          _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${_rotDeg}deg)`,'important');
-          _wpnImg.style.setProperty('transform-origin','center center','important');
-          _wpnTrimSrc(wpnSrc).then(t=>{
-            if(!t||!_wpnImg.isConnected)return;
-            // Single-cell: visual rotates with user rot through all 4 cardinal angles.
-            const totalRot=_rotDeg;
+        // Estado inicial: posicionamento + rot user (caso trim já estiver cached/sync)
+        _wpnImg.style.setProperty('position','absolute','important');
+        _wpnImg.style.setProperty('left','50%','important');
+        _wpnImg.style.setProperty('top','50%','important');
+        _wpnImg.style.setProperty('width','100%','important');
+        _wpnImg.style.setProperty('height','100%','important');
+        _wpnImg.style.setProperty('object-fit','contain','important');
+        _wpnImg.style.setProperty('transform-origin','center center','important');
+        _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(0.96) rotate(${isMulti?0:_rotDeg}deg)`,'important');
+        // Aplica fit final via weapon-test.html applyFit logic após trim resolve
+        _wpnTrimSrc(wpnSrc).then(t=>{
+          if(!t||!_wpnImg.isConnected)return;
+          if(isMulti){
+            // Multi-cell: SVG já pre-rotacionado via rotVariants. applyFit auto-rotaciona
+            // só se mismatch overlay×content (fallback quando rotVariant não existe).
+            _applyWpnFit(_wpnImg,iw,ih,t);
+          }else{
+            // 1×1: rotação user direta (sem pre-rot SVG já que single-cell não tem variants)
+            const _scl=0.96;
             const _contentLong=Math.max(t.ratio,1/t.ratio);
             _wpnImg.style.setProperty('width',(100*_contentLong)+'%','important');
             _wpnImg.style.setProperty('height','100%','important');
             _wpnImg.style.setProperty('object-fit','contain','important');
-            _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${totalRot}deg)`,'important');
-            _wpnImg.src=t.url;
-          });
-        }
+            _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${_rotDeg}deg)`,'important');
+          }
+          _wpnImg.src=t.url;
+        });
       }
     }
     if(wpnEntry){

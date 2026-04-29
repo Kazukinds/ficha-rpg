@@ -125,6 +125,21 @@ body[data-perf-low] *,body[data-perf-low] *::before,body[data-perf-low] *::after
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
 }
 body[data-perf-low] .xp-fill::before,body[data-perf-low] .save-toast-bar-fill::after{animation:none!important}
+/* ═══ CÍRCULOS — proteção global contra ovalização ═══
+   Força aspect-ratio:1/1 + flex-shrink:0 em elementos circulares comuns.
+   Evita stretch de align-items + flex-shrink que distorce em portrait/grid. */
+.xp-gear,.attr-gear,.size-gear,.dual-gear,.veh-cfg-btn,
+.profile-avatar,.topbar-profile-btn,.topbar-icon-btn,
+.item-rotate-btn,.item-equip-mark,.item-gear-float,
+.rarity-dot,.skill-icon-btn,.skill-use,.skill-del,
+.pwa-install-btn,.save-toast-close,.toast-close,.modal-close,
+.register-close,.biblio-reader-close,.biblio-subbtn,
+.update-banner-close,.account-badge,.account-avatar,
+.eo-color,.eo-dot,.cselect-arrow,.notif-close,.sidebar-gear-desktop{
+  aspect-ratio:1/1!important;
+  flex-shrink:0!important;
+  flex-grow:0!important;
+}
 /* Scrollbar invisível globalmente (rolagem continua funcionando) */
 *{scrollbar-width:none;-ms-overflow-style:none}
 ::-webkit-scrollbar{width:0!important;height:0!important;display:none!important;background:transparent}

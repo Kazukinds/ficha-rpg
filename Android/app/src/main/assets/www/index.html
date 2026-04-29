@@ -20480,7 +20480,28 @@ window.otaCheckAndInstall=async function(manual){
   }
   setSub('Nova versão '+rel.tag_name+' disponível');
   _otaShowPrompt(rel,apk);
+  _otaShowBanner(rel,cur,apk);
 };
+// Banner persistente na main screen (até user fechar ou atualizar)
+function _otaShowBanner(rel,cur,apk){
+  const banner=document.getElementById('update-banner');
+  if(!banner)return;
+  const curEl=document.getElementById('ub-cur-ver');
+  const newEl=document.getElementById('ub-new-ver');
+  if(curEl)curEl.textContent='v'+(cur&&cur.name||'—');
+  if(newEl)newEl.textContent=rel.tag_name;
+  // Override botão Atualizar pra rodar OTA Android (não SW reload)
+  const btn=document.getElementById('ub-update');
+  if(btn){
+    const newBtn=btn.cloneNode(true);btn.parentNode.replaceChild(newBtn,btn);
+    newBtn.addEventListener('click',()=>{
+      banner.classList.remove('show');
+      _otaShowPrompt(rel,apk);
+    });
+  }
+  banner.classList.add('show');
+}
+window._otaShowBanner=_otaShowBanner;
 function _otaShowPrompt(rel,apk){
   let pop=document.getElementById('ota-modal');
   if(!pop){

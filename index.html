@@ -20388,16 +20388,16 @@ function _nativeVersion(){
   const [name,code]=EclipseNative.appVersion().split('|');
   return {name,code:parseInt(code)||0};
 }
-async function _fetchLatestRelease(){
+async function _fetchLatestRelease(skipCache){
   // PRIMÁRIO: redirect HTML (sem rate-limit)
-  // GET github.com/{repo}/releases/latest → 302 → /releases/tag/vX.Y.Z
-  // Final URL contém tag. Cache localStorage 30min pra reduzir trafego.
   const CACHE_KEY='eclipse_ota_cache';
-  const CACHE_TTL=30*60*1000;
-  try{
-    const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
-    if(cached&&Date.now()-cached.at<CACHE_TTL)return cached.rel;
-  }catch(_){}
+  const CACHE_TTL=5*60*1000; // 5min (era 30min — atualização nova demora a aparecer)
+  if(!skipCache){
+    try{
+      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+      if(cached&&Date.now()-cached.at<CACHE_TTL)return cached.rel;
+    }catch(_){}
+  }
   // Estratégia 1: redirect (sempre funciona, sem auth)
   try{
     const r=await fetch(`https://github.com/${OTA_REPO}/releases/latest`,{cache:'no-store',redirect:'follow'});
@@ -20449,7 +20449,8 @@ window.otaCheckAndInstall=async function(manual){
   }
   setSub('Verificando...');
   const cur=_nativeVersion();
-  const rel=await _fetchLatestRelease();
+  // Manual = bypass cache pra forçar nova checagem
+  const rel=await _fetchLatestRelease(!!manual);
   if(!rel){setSub('Atual: '+cur.name+' (github offline)');return}
   const latestCode=_parseVersionCode(rel.tag_name);
   const curCode=_parseVersionCode(cur.name)||cur.code;

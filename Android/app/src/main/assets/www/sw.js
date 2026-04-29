@@ -1,5 +1,5 @@
 /* Ficha Eclipse — service worker */
-const VERSION = 'v178';
+const VERSION = 'v2.0.1';
 const CACHE = 'ficha-eclipse-' + VERSION;
 const ASSETS = [
   './',
@@ -40,32 +40,15 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
-  const isDoc = req.mode === 'navigate' || req.destination === 'document';
-  const isAsset = ['script', 'style', 'worker'].includes(req.destination);
-
-  if (isDoc || isAsset) {
-    e.respondWith(
-      fetch(req).then(resp => {
-        if (resp && resp.status === 200 && resp.type === 'basic') {
-          const clone = resp.clone();
-          caches.open(CACHE).then(c => c.put(req, clone));
-        }
-        return resp;
-      }).catch(() => caches.match(req).then(c => c || caches.match('./index.html')))
-    );
-    return;
-  }
-
+  // Network-first for everything same-origin so updated files (HTML, SVG, JS, CSS) always reflect changes.
+  // Cache acts only as offline fallback.
   e.respondWith(
-    caches.match(req).then(cached => {
-      if (cached) return cached;
-      return fetch(req).then(resp => {
-        if (resp && resp.status === 200 && resp.type === 'basic') {
-          const clone = resp.clone();
-          caches.open(CACHE).then(c => c.put(req, clone));
-        }
-        return resp;
-      }).catch(() => cached);
-    })
+    fetch(req).then(resp => {
+      if (resp && resp.status === 200 && resp.type === 'basic') {
+        const clone = resp.clone();
+        caches.open(CACHE).then(c => c.put(req, clone));
+      }
+      return resp;
+    }).catch(() => caches.match(req).then(c => c || (req.mode === 'navigate' ? caches.match('./index.html') : undefined)))
   );
 });

@@ -34,6 +34,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import android.Manifest;
+import androidx.core.app.ActivityCompat;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,9 +51,11 @@ import org.json.JSONObject;
 public class MainActivity extends Activity {
 
     private static final String APP_URL = "file:///android_asset/www/index.html";
+    private static final int REQ_NOTIF_PERM = 9100;
     private WebView webView;
     private FrameLayout splash;
     private FrameLayout offline;
+    private boolean pendingOtaTrigger = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +86,36 @@ public class MainActivity extends Activity {
 
         // Carrega bundled local — funciona offline sempre
         webView.loadUrl(APP_URL);
+
+        // Background update check + notificação fora do app
+        UpdateCheckWorker.ensureChannel(this);
+        UpdateCheckWorker.schedule(this);
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQ_NOTIF_PERM);
+            }
+        }
+
+        handleOtaIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleOtaIntent(intent);
+    }
+
+    private void handleOtaIntent(Intent intent) {
+        if (intent != null && intent.getBooleanExtra(UpdateCheckWorker.EXTRA_START_OTA, false)) {
+            pendingOtaTrigger = true;
+            // Cancela notif uma vez aberta
+            android.app.NotificationManager nm = (android.app.NotificationManager)
+                    getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nm != null) nm.cancel(UpdateCheckWorker.NOTIF_ID);
+        }
     }
 
     private WebView buildWebView() {
@@ -143,6 +177,11 @@ public class MainActivity extends Activity {
                     splash.animate().alpha(0f).setDuration(350).withEndAction(() -> splash.setVisibility(View.GONE)).start();
                 }
                 offline.setVisibility(View.GONE);
+                if (pendingOtaTrigger) {
+                    pendingOtaTrigger = false;
+                    view.postDelayed(() -> view.evaluateJavascript(
+                            "window.otaCheckAndInstall&&window.otaCheckAndInstall(true)", null), 800);
+                }
             }
 
             @Override

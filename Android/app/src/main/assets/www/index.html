@@ -643,10 +643,12 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .item-gear-float{display:none}
 .item-gear-float:hover{color:var(--lime);border-color:var(--lime)}
 .item-gear-float svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
-.item-rotate-btn{position:absolute;left:50%;bottom:0;transform:translate(-50%,50%);width:20px;height:20px;border-radius:50%;background:transparent;border:none;color:rgba(190,190,195,.55);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:11;opacity:1;pointer-events:auto;transition:color .15s,opacity .15s;box-shadow:none;padding:0;font:inherit}
-.item-rotate-btn:hover,.item-rotate-btn:active{background:transparent;border:none;color:rgba(255,255,255,.95)}
+.item-rotate-btn{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%)!important;width:22px;height:22px;border-radius:50%!important;background:rgba(15,15,18,.85);border:1px solid rgba(190,190,195,.35);color:rgba(220,220,225,.75);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:11;opacity:0;pointer-events:none;transition:color .15s,opacity .18s,background .15s,border-color .15s;box-shadow:0 2px 6px rgba(0,0,0,.4);padding:0;font:inherit;animation:none!important}
+.inv-cell:hover .item-rotate-btn,.inv-cell.active .item-rotate-btn,.inv-cell.selected .item-rotate-btn,.inv-cell:focus-within .item-rotate-btn,.inv-cell.dragging .item-rotate-btn,.inv-cell:active .item-rotate-btn{opacity:1;pointer-events:auto}
+@media (hover:none){.inv-cell.occupied .item-rotate-btn,.inv-cell.multi-origin .item-rotate-btn{opacity:1;pointer-events:auto}}
+.item-rotate-btn:hover,.item-rotate-btn:active{background:rgba(127,29,29,.6);border-color:rgba(220,220,225,.8);color:#fff;transform:translateX(-50%)!important}
 .item-rotate-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.rotate-menu{position:fixed;z-index:9999;display:flex;gap:4px;padding:6px;background:rgba(15,15,18,.96);border:1px solid rgba(180,180,185,.45);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transform:translate(-50%,-110%);animation:rotmenu-in .15s ease-out}
+.rotate-menu{position:fixed;z-index:2147483647;display:flex;gap:4px;padding:6px;background:#0f0f12;border:1px solid rgba(180,180,185,.45);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.4);transform:translate(-50%,-110%);animation:rotmenu-in .15s ease-out;isolation:isolate}
 .rotate-menu button{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:6px 10px;background:rgba(40,40,46,.9);border:1px solid rgba(170,170,175,.3);color:#cfcfd2;border-radius:6px;cursor:pointer;transition:all .15s;min-width:42px}
 .rotate-menu button:hover{background:rgba(70,70,78,.95);border-color:rgba(230,230,235,.65);color:#fff;transform:translateY(-1px)}
 .rotate-menu button.active{background:var(--lime-bg-strong,rgba(132,204,22,.18));border-color:var(--lime,#84cc16);color:var(--lime,#84cc16)}
@@ -655,18 +657,23 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .filter-pill:hover{border-color:var(--border-light);color:var(--text-secondary);background:var(--bg-hover);transform:translateY(-1px)}
 .filter-pill.active{background:var(--lime-bg-strong);border-color:var(--lime-dim);color:var(--lime);box-shadow:0 0 8px rgba(var(--lime-rgb),.08)}
 .filter-pill:active{transform:translateY(0)}
-.inv-grid{--rows:10;display:grid;grid-template-columns:repeat(var(--cols,14),1fr);grid-template-rows:repeat(var(--rows,10),1fr);aspect-ratio:calc(var(--cols,14) / var(--rows,10));gap:2px;position:relative;width:100%;margin:0;box-sizing:border-box;background:rgba(255,255,255,.16);padding:2px;border-radius:10px;overflow:hidden}
-.inv-grid .inv-cell.corner-tl{border-top-left-radius:8px}
-.inv-grid .inv-cell.corner-tr{border-top-right-radius:8px}
-.inv-grid .inv-cell.corner-bl{border-bottom-left-radius:8px}
-.inv-grid .inv-cell.corner-br{border-bottom-right-radius:8px}
+.inv-grid{--rows:10;display:grid;grid-template-columns:repeat(var(--cols,14),1fr);grid-template-rows:repeat(var(--rows,10),1fr);aspect-ratio:calc(var(--cols,14) / var(--rows,10));gap:2px;position:relative;width:100%;margin:0;box-sizing:border-box;background:rgba(255,255,255,.16);padding:2px;border-radius:0;overflow:visible}
+.inv-grid,
+.inv-grid *,
+.inv-cell,
+.inv-cell *,
+.item-overlay,
+.item-overlay *,
+.inv-drag-ghost,
+.inv-drag-ghost *,
+.drag-preview{border-radius:0!important}
 .inv-selected-preview{display:none}
 .inv-grid .inv-cell{width:auto;height:auto;min-width:0;min-height:0;border-radius:0;border:none;box-sizing:border-box}
 .inv-grid::-webkit-scrollbar{width:8px}
 .inv-grid::-webkit-scrollbar-track{background:var(--bg-input);border-radius:4px}
 .inv-grid::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:4px}
 .inv-grid::-webkit-scrollbar-thumb:hover{background:var(--lime-dim)}
-.drag-preview{position:absolute;border-radius:var(--radius-xs);pointer-events:none;z-index:10;transition:left .08s,top .08s,width .08s,height .08s}
+.drag-preview{position:absolute;border-radius:0;pointer-events:none;z-index:10;transition:left .08s,top .08s,width .08s,height .08s}
 .drag-preview.valid{background:rgba(255,255,255,.05)!important;border:1px solid rgba(255,255,255,.25)!important}
 .drag-preview.invalid{background:rgba(200,60,60,.08)!important;border:1px solid rgba(200,60,60,.5)!important}
 .inv-cell{background:#1a1a1f;border:none;border-radius:0;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;transition:background .15s,box-shadow .15s;overflow:hidden}
@@ -679,9 +686,10 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .inv-cell.covered{border-radius:0!important}
 .inv-cell.multi-origin{overflow:visible;z-index:5}
 .inv-cell.covered{opacity:1;background:#1a1a1f}
-.inv-cell.multi-origin .item-overlay{background:rgba(0,0,0,.22);border-radius:0;transition:background .2s;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px)}
-.item-overlay{position:absolute;top:0;left:0;background:rgba(0,0,0,.22);border:none;border-radius:0;display:flex;align-items:center;justify-content:center;z-index:5;cursor:grab;overflow:visible;padding:0;outline:none;transition:background .2s;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px)}
-.inv-drag-ghost{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.inv-cell.multi-origin .item-overlay{background:rgba(0,0,0,.42);border-radius:0;transition:background .2s}
+.item-overlay{position:absolute;top:0;left:0;background:rgba(0,0,0,.42);border:none;border-radius:0;display:flex;align-items:center;justify-content:center;z-index:5;cursor:grab;overflow:hidden;padding:0;outline:none;transition:background .2s}
+.inv-drag-ghost{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-radius:0!important}
+.inv-drag-ghost *{border-radius:0!important}
 .inv-drag-ghost .item-rotate-btn,.inv-drag-ghost .item-ammo-badge,.inv-drag-ghost .item-equip-mark,.inv-drag-ghost .item-gear-float,.inv-drag-ghost .item-reload-ring,.inv-drag-ghost .rarity-dot{display:none!important}
 .item-overlay:hover{border-color:transparent}
 .inv-cell.occupied:hover,.inv-cell.covered:hover,.inv-cell.multi-origin:hover{animation:none;box-shadow:none;background:#1a1a1f}
@@ -702,8 +710,14 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .inv-cell.inv-drag-origin .rarity-dot,
 .inv-cell.inv-drag-origin .item-qty,
 .inv-cell.inv-drag-origin .item-equip-mark,
-.inv-cell.inv-drag-origin .item-gear-float{visibility:hidden}
+.inv-cell.inv-drag-origin .item-gear-float{visibility:hidden;pointer-events:none}
 .inv-drag-ghost{will-change:left,top,width,height,transform,opacity}
+@keyframes inv-shake-nofit{0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px)}45%{transform:translateX(-4px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+@keyframes inv-extra-pulse{0%,100%{background:#1a1a1f}50%{background:#26262d}}
+@keyframes inv-extra-pulse-warn{0%,100%{background:rgba(127,29,29,.25)}50%{background:rgba(127,29,29,.45)}}
+.inv-grid.show-extra-pulse .inv-cell.extra-zone{animation:inv-extra-pulse 1.8s ease-in-out 2}
+.inv-grid.show-extra-pulse .inv-cell.extra-zone.has-extra-item{animation:inv-extra-pulse-warn 1.4s ease-in-out 2}
+.inv-drag-ghost.shake-nofit,.inv-cell.shake-nofit .item-overlay,.inv-cell.shake-nofit:not(.multi-origin) .item-icon-svg,.inv-cell.shake-nofit:not(.multi-origin) .item-custom-img{animation:inv-shake-nofit .35s cubic-bezier(.36,.07,.19,.97)!important}
 .inv-drag-ghost.snap{transition:left .12s cubic-bezier(.2,.8,.2,1),top .12s cubic-bezier(.2,.8,.2,1),width .12s cubic-bezier(.2,.8,.2,1),height .12s cubic-bezier(.2,.8,.2,1)}
 .inv-drag-ghost.cancel-out{opacity:0;pointer-events:none}
 .inv-drag-ghost.place-in{opacity:0;pointer-events:none}
@@ -740,9 +754,8 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .item-icon-svg{width:72%;height:72%;object-fit:contain;pointer-events:none;filter:none;transition:transform .45s cubic-bezier(.34,1.56,.64,1);will-change:transform}
 .item-overlay .item-icon-svg{width:100%;height:100%;object-fit:contain}
 @property --_rot{syntax:'<angle>';inherits:false;initial-value:0deg}
-.inv-cell img[src*="icons/weapons/"]{transform-origin:center;animation:none!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.85)) drop-shadow(0 1px 2px rgba(0,0,0,.6));transition:transform .32s cubic-bezier(.34,1.4,.6,1),--_rot .32s cubic-bezier(.34,1.4,.6,1)}
-.item-overlay[data-orient="v"] img[src*="icons/weapons/"]{position:absolute;left:50%;top:50%;width:calc(100% * var(--gh,1) / var(--gw,1) * 1.4);height:calc(100% * var(--gw,1) / var(--gh,1) * 1.4);transform:translate(-50%,-50%) rotate(var(--_rot,0deg))!important;object-fit:contain}
-.item-overlay[data-orient="h"] img[src*="icons/weapons/"]{transform:scale(1.4) rotate(var(--_rot,0deg))!important;transform-origin:center}
+.inv-cell img[src*="icons/weapons/"]{transform-origin:center;animation:none!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.85)) drop-shadow(0 1px 2px rgba(0,0,0,.6));transition:none}
+/* Sizing/rotation handled in buildCell JS; CSS hooks kept minimal. */
 .item-custom-img{width:72%;height:72%;object-fit:contain;pointer-events:none;filter:none;border-radius:4px}
 .item-overlay .item-custom-img{width:100%;height:100%;transform:scale(1.05)}
 /* Glow magenta de equipado removido — só mantém o badge mãozinha */
@@ -904,7 +917,35 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .re4-item-detail .rid-name{font-size:13px;font-weight:800;color:var(--text-primary);letter-spacing:.2px;line-height:1.1}
 .re4-item-detail .rid-rarity-tag{font-size:9px;font-weight:800;letter-spacing:1px;color:var(--lime)}
 .re4-item-detail .rid-subtitle{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
-.re4-item-detail .rid-stat-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.re4-item-detail .rid-stat-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s,padding-left .15s;border-radius:4px}
+.re4-item-detail .rid-stat-row:hover{background:rgba(255,255,255,.05);padding-left:4px}
+.re4-item-detail .rid-stat-row:hover .rid-stat-icon{color:var(--lime)}
+.stat-edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;animation:stEdFade .15s ease-out}
+.stat-edit-box{background:var(--bg-card,#1a1a1f);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:12px;padding:18px;min-width:260px;max-width:340px;box-shadow:0 12px 40px rgba(0,0,0,.7);animation:stEdSlide .2s cubic-bezier(.34,1.4,.6,1)}
+.stat-edit-title{font-size:13px;font-weight:700;color:var(--text-primary,#fff);margin-bottom:12px;letter-spacing:.4px}
+.stat-edit-input{width:100%;padding:10px 12px;background:var(--bg-input,#0c0c0e);border:1px solid var(--border,rgba(255,255,255,.15));border-radius:8px;color:var(--text-primary,#fff);font-family:'JetBrains Mono',monospace;font-size:14px;outline:none;transition:border-color .15s}
+.stat-edit-input:focus{border-color:var(--lime,#84cc16)}
+.stat-edit-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.stat-edit-btn{padding:8px 16px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.stat-edit-btn.cancel{background:transparent;border-color:var(--border,rgba(255,255,255,.15));color:var(--text-dim,#888)}
+.stat-edit-btn.cancel:hover{border-color:var(--text-secondary,#aaa);color:var(--text-secondary,#aaa)}
+.stat-edit-btn.ok{background:var(--lime,#84cc16);color:#0a0a0d}
+.stat-edit-btn.ok:hover{filter:brightness(1.1)}
+.stat-edit-opts{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.stat-edit-opt{padding:10px 12px;background:var(--bg-input,#0c0c0e);border:1px solid var(--border,rgba(255,255,255,.12));border-radius:8px;color:var(--text-secondary,#ccc);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:8px}
+.stat-edit-opt:hover{border-color:var(--text-secondary,#aaa);color:var(--text-primary,#fff);background:rgba(255,255,255,.04)}
+.stat-edit-opt.active{background:color-mix(in srgb,var(--lime,#84cc16) 14%,transparent);border-color:var(--lime,#84cc16);color:var(--lime,#84cc16)}
+.stat-edit-opt.active::before{content:"✓";font-weight:900;color:var(--lime,#84cc16);margin-right:auto;order:2;margin-left:auto}
+.stat-edit-dice{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.stat-edit-dice .stat-edit-input{text-align:center;font-weight:700;font-size:16px}
+.stat-edit-step{width:42px;height:42px;flex-shrink:0;background:var(--bg-input,#0c0c0e);border:1px solid var(--border,rgba(255,255,255,.15));border-radius:8px;color:var(--text-primary,#fff);font-family:inherit;font-size:20px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.stat-edit-step:hover{border-color:var(--lime,#84cc16);color:var(--lime,#84cc16)}
+.stat-edit-step:active{transform:scale(.94)}
+.stat-edit-opts.dice-opts{flex-direction:row;flex-wrap:wrap;max-height:none}
+.stat-edit-opts.dice-opts .stat-edit-opt{flex:1 0 calc(33.33% - 4px);justify-content:center;text-align:center;padding:8px 6px;font-size:12px}
+.stat-edit-opts.dice-opts .stat-edit-opt.active::before{display:none}
+@keyframes stEdFade{from{opacity:0}to{opacity:1}}
+@keyframes stEdSlide{from{opacity:0;transform:translateY(-10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .re4-item-detail .rid-stat-row:last-child{border-bottom:none}
 .re4-item-detail .rid-stat-icon{width:14px;height:14px;color:var(--text-dim);flex-shrink:0}
 .re4-item-detail .rid-stat-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2}
@@ -990,9 +1031,12 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .re4-case-frame .inv-grid{margin:14px 14px 4px 14px;width:calc(100% - 28px)}
 .re4-case-bottom{display:flex;align-items:center;justify-content:center;padding:0;margin-top:-2px}
 .re4-expand-btn{display:inline-flex;align-items:center;justify-content:center;width:64px;height:28px;padding:6px 18px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,transform .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:5}
+@keyframes lock-shake{0%{transform:translateX(-50%) translateY(-50%) scale(.4);opacity:0}15%{transform:translateX(-50%) translateY(-50%) scale(1.1);opacity:1}25%{transform:translateX(calc(-50% - 4px)) translateY(-50%) scale(1)}40%{transform:translateX(calc(-50% + 4px)) translateY(-50%) scale(1)}55%{transform:translateX(calc(-50% - 3px)) translateY(-50%) scale(1)}70%{transform:translateX(calc(-50% + 2px)) translateY(-50%) scale(1)}85%{transform:translateX(-50%) translateY(-50%) scale(1);opacity:1}100%{transform:translateX(-50%) translateY(-50%) scale(.6);opacity:0}}
+.re4-expand-btn.locked-shake::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='10' width='16' height='11' rx='2'/><path d='M8 10V7a4 4 0 0 1 8 0v3'/><circle cx='12' cy='15.5' r='1.4' fill='%23ef4444'/></svg>") no-repeat center/contain;pointer-events:none;animation:lock-shake .7s cubic-bezier(.36,.07,.19,.97);z-index:10}
+.re4-expand-btn.locked-shake svg{opacity:0}
 .re4-expand-btn:hover{opacity:1;color:var(--text-secondary)}
 .re4-expand-btn:active{transform:translateY(1px)}
-.re4-expand-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;transition:transform .25s var(--ease-spring,cubic-bezier(.34,1.56,.64,1))}
+.re4-expand-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;transition:transform .25s var(--ease-spring,cubic-bezier(.34,1.56,.64,1)),opacity .2s ease}
 .re4-expand-btn.open svg{transform:rotate(180deg)}
 .re4-case-frame::-webkit-scrollbar{width:8px;height:8px}
 .re4-case-frame::-webkit-scrollbar-track{background:transparent}
@@ -6207,7 +6251,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
     <!-- ═══ DASHBOARD ═══ -->
     <section class="tab-content active" id="tab-dashboard">
       <div class="summary-bar">
-        <div class="summary-block"><div class="summary-label">Inventário</div><div class="summary-value"><span class="unit">ITM</span><span id="sum-items">0</span></div><div class="summary-sub"><span class="dot" style="background:var(--lime)"></span><span style="color:var(--text-dim)">Capacidade &middot; <span id="sum-weight">0</span> kg</span></div></div>
+        <div class="summary-block"><div class="summary-label">Inventário</div><div class="summary-value"><span class="unit">ITM</span><span id="sum-items">0</span></div><div class="summary-sub"><span class="dot" style="background:var(--lime)"></span><span style="color:var(--text-dim)">Capacidade &middot; <span id="sum-weight">0</span>/15</span></div></div>
         <div class="summary-block"><div class="summary-label" id="sum-currency-label">Crédito</div><div class="summary-value medium" style="color:var(--yellow)"><span class="unit" id="sum-currency-sym">C$</span><span id="sum-gold">0</span></div><div class="summary-sub"><span class="dot" style="background:var(--yellow)"></span><span style="color:var(--text-dim)">Saldo total</span></div></div>
         <div class="summary-progress-row" id="sum-progress"></div>
       </div>
@@ -6439,12 +6483,12 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
             </div>
           </div>
           <aside class="equip-slots" id="equip-slots" aria-label="Slots de equipamento">
-            <button class="equip-slot" data-slot="cabeca" title="Cabeça"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3H4z"/><path d="M4 17h16v3H4z"/><path d="M9 11V9M15 11V9"/></svg><span class="equip-slot-lbl">Cabeça</span></button>
-            <button class="equip-slot" data-slot="rosto" title="Rosto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11c0-3 4-5 9-5s9 2 9 5v2c0 4-4 7-9 7s-9-3-9-7z"/><circle cx="9" cy="12" r="1.3" fill="currentColor"/><circle cx="15" cy="12" r="1.3" fill="currentColor"/></svg><span class="equip-slot-lbl">Rosto</span></button>
-            <button class="equip-slot" data-slot="pescoco" title="Pescoço"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c2 5 5 8 8 8s6-3 8-8"/><path d="M12 13l-2 4h4z"/><circle cx="12" cy="19" r="2"/></svg><span class="equip-slot-lbl">Pescoço</span></button>
-            <button class="equip-slot" data-slot="torso" title="Torso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4v6c0 5-4 9-9 10-5-1-9-5-9-10V7z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg><span class="equip-slot-lbl">Torso</span></button>
-            <button class="equip-slot" data-slot="pernas" title="Pernas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v6l-2 12h-3l-1-9h-1l-1 9H6L4 9z"/><path d="M7 9h10"/></svg><span class="equip-slot-lbl">Pernas</span></button>
-            <button class="equip-slot" data-slot="pes" title="Pés"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h7v9c0 2 2 3 3 4l1 2v3H6z"/><path d="M6 17h11"/><path d="M9 6h2"/></svg><span class="equip-slot-lbl">Pés</span></button>
+            <button class="equip-slot" data-slot="cabeca" title="Cabeça"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13a9 9 0 0 1 18 0v4a2 2 0 0 1-2 2h-1v-3a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v3H5a2 2 0 0 1-2-2z"/><path d="M9 16h6"/></svg><span class="equip-slot-lbl">Cabeça</span></button>
+            <button class="equip-slot" data-slot="rosto" title="Rosto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 3-2 5-2s3 1 5 1 3-1 5-1 3 2 5 2"/><circle cx="7" cy="13" r="2.6"/><circle cx="17" cy="13" r="2.6"/><path d="M9.5 13.5h5"/></svg><span class="equip-slot-lbl">Rosto</span></button>
+            <button class="equip-slot" data-slot="pescoco" title="Pescoço"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4c1 6 4 9 7 9s6-3 7-9"/><path d="M12 13v3"/><path d="M9 18l3 3 3-3-3-2z" fill="currentColor" fill-opacity=".3"/></svg><span class="equip-slot-lbl">Pescoço</span></button>
+            <button class="equip-slot" data-slot="torso" title="Torso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v8c0 4.5 3.5 8 8 9 4.5-1 8-4.5 8-9V5z"/><path d="M9 9l3 2 3-2"/><path d="M12 11v6"/></svg><span class="equip-slot-lbl">Torso</span></button>
+            <button class="equip-slot" data-slot="pernas" title="Pernas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1 7-2 11h-3l-1-9h-2l-1 9H5L4 10z"/><path d="M5 9h14"/><path d="M11 11h2"/></svg><span class="equip-slot-lbl">Pernas</span></button>
+            <button class="equip-slot" data-slot="pes" title="Pés"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h6v8c0 1.5 1 2.5 2.5 3.5l3 2c1 .8 1.5 1.5 1.5 2.5v1H5z"/><path d="M5 17h13"/><path d="M5 13h6"/><path d="M14 17v3"/></svg><span class="equip-slot-lbl">Pés</span></button>
           </aside>
           <div class="re4-right">
             <aside class="re4-item-detail empty" id="re4-item-detail">
@@ -7077,6 +7121,34 @@ let _iconVariant='white';
 const _ICON_AVAIL={melee:{black:false,color:false},firearms:{black:false,color:false}};
 function _resolveVariant(){return 'white'}
 function _themeWpnSrc(src){return src}
+const _wpnTrimCache=new Map();
+const _wpnTrimPending=new Map();
+function _wpnTrimSrc(src){
+  if(!src)return Promise.resolve(null);
+  if(_wpnTrimCache.has(src))return Promise.resolve(_wpnTrimCache.get(src));
+  if(_wpnTrimPending.has(src))return _wpnTrimPending.get(src);
+  const p=fetch(src).then(r=>r.text()).then(text=>{
+    const doc=new DOMParser().parseFromString(text,'image/svg+xml');
+    const svg=doc.documentElement;
+    const wrap=document.createElement('div');
+    wrap.style.cssText='position:absolute;visibility:hidden;left:-99999px;top:0';
+    wrap.appendChild(svg);document.body.appendChild(wrap);
+    let bb;try{bb=svg.getBBox()}catch(_){bb=null}
+    document.body.removeChild(wrap);
+    if(!bb||!bb.width||!bb.height){_wpnTrimCache.set(src,null);return null}
+    const pad=Math.max(bb.width,bb.height)*0.04;
+    const vbX=bb.x-pad,vbY=bb.y-pad,vbW=bb.width+pad*2,vbH=bb.height+pad*2;
+    svg.setAttribute('viewBox',`${vbX} ${vbY} ${vbW} ${vbH}`);
+    svg.removeAttribute('width');svg.removeAttribute('height');
+    svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    const xml=new XMLSerializer().serializeToString(svg);
+    const url='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml)));
+    const out={url,ratio:vbW/vbH};
+    _wpnTrimCache.set(src,out);return out;
+  }).catch(()=>{_wpnTrimCache.set(src,null);return null});
+  _wpnTrimPending.set(src,p);
+  return p;
+}
 function setIconVariant(){/* noop */}
 window.setIconVariant=setIconVariant;
 // Placeholder SVG inline (data-uri) usado quando o ícone de arma não existe
@@ -7086,20 +7158,113 @@ document.addEventListener('error',function(e){
   if(t&&t.tagName==='IMG'&&/icons\/weapons\//.test(t.src||'')){t.src=_WPN_PLACEHOLDER;t.classList.add('wpn-placeholder')}
 },true);
 const WEAPON_SVGS={
-  'ak-47-type-01':{file:'icons/weapons/firearms/ak-47-type-01.svg',label:"Ak 47 Type 01",type:'fogo',sub:'heavy'},
-  'ak-47-type-02':{file:'icons/weapons/firearms/ak-47-type-02.svg',label:"Ak 47 Type 02",type:'fogo',sub:'heavy'},
-  'ak-47-type-03':{file:'icons/weapons/firearms/ak-47-type-03.svg',label:"Ak 47 Type 03",type:'fogo',sub:'heavy'},
-  'assault-rifle-01':{file:'icons/weapons/firearms/assault-rifle-01.svg',label:"Assault Rifle 01",type:'fogo',sub:'heavy'},
-  'assault-rifle-02':{file:'icons/weapons/firearms/assault-rifle-02.svg',label:"Assault Rifle 02",type:'fogo',sub:'heavy'},
-  'assault-rifle-03':{file:'icons/weapons/firearms/assault-rifle-03.svg',label:"Assault Rifle 03",type:'fogo',sub:'heavy'},
-  'assault-rifle-04':{file:'icons/weapons/firearms/assault-rifle-04.svg',label:"Assault Rifle 04",type:'fogo',sub:'heavy'},
-  'assault-rifle-05':{file:'icons/weapons/firearms/assault-rifle-05.svg',label:"Assault Rifle 05",type:'fogo',sub:'heavy'},
-  'dragunov':{file:'icons/weapons/firearms/dragunov.svg',label:"Dragunov",type:'fogo',sub:'sniper'},
-  'm4-22':{file:'icons/weapons/firearms/m4-22.svg',label:"M4 22",type:'fogo',sub:'heavy'},
-  'pp71':{file:'icons/weapons/firearms/pp71.svg',label:"Pp71",type:'fogo',sub:'granada'},
+  'assault-rifle-04':{file:'icons/weapons/firearms/assault-rifle-04.svg',label:"Assault Rifle 04",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:30,rotVariants:{0:'assault-rifle-04',90:'assault-rifle-04-r90',180:'assault-rifle-04-r180','-90':'assault-rifle-04-rm90'}},
+  'assault-rifle-04-r90':{file:'icons/weapons/firearms/assault-rifle-04-r90.svg',label:"Assault Rifle 04 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:30,hidden:true},
+  'assault-rifle-04-r180':{file:'icons/weapons/firearms/assault-rifle-04-r180.svg',label:"Assault Rifle 04 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:30,hidden:true},
+  'assault-rifle-04-rm90':{file:'icons/weapons/firearms/assault-rifle-04-rm90.svg',label:"Assault Rifle 04 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:30,hidden:true},
+  'knife':{file:'icons/weapons/melee/knife.svg',label:"Faca",type:'branca',sub:'lamina',gw:5,gh:1,dmg:'1d4',crit:'19-20',range:'Adjacente',rotVariants:{0:'knife',90:'knife-r90',180:'knife-r180','-90':'knife-rm90'}},
+  'knife-r90':{file:'icons/weapons/melee/knife-r90.svg',label:"Faca (90°)",type:'branca',sub:'lamina',gw:1,gh:5,dmg:'1d4',crit:'19-20',range:'Adjacente',hidden:true},
+  'knife-r180':{file:'icons/weapons/melee/knife-r180.svg',label:"Faca (180°)",type:'branca',sub:'lamina',gw:5,gh:1,dmg:'1d4',crit:'19-20',range:'Adjacente',hidden:true},
+  'knife-rm90':{file:'icons/weapons/melee/knife-rm90.svg',label:"Faca (-90°)",type:'branca',sub:'lamina',gw:1,gh:5,dmg:'1d4',crit:'19-20',range:'Adjacente',hidden:true},
+  'colt-revolver':{file:'icons/weapons/firearms/colt-revolver.svg',label:"Colt Revolver",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,rotVariants:{0:'colt-revolver',90:'colt-revolver-r90',180:'colt-revolver-r180','-90':'colt-revolver-rm90'}},
+  'colt-revolver-r90':{file:'icons/weapons/firearms/colt-revolver-r90.svg',label:"Colt Revolver (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'colt-revolver-r180':{file:'icons/weapons/firearms/colt-revolver-r180.svg',label:"Colt Revolver (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'colt-revolver-rm90':{file:'icons/weapons/firearms/colt-revolver-rm90.svg',label:"Colt Revolver (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'revolver':{file:'icons/weapons/firearms/revolver.svg',label:"Revolver",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,rotVariants:{0:'revolver',90:'revolver-r90',180:'revolver-r180','-90':'revolver-rm90'}},
+  'revolver-r90':{file:'icons/weapons/firearms/revolver-r90.svg',label:"Revolver (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'revolver-r180':{file:'icons/weapons/firearms/revolver-r180.svg',label:"Revolver (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'revolver-rm90':{file:'icons/weapons/firearms/revolver-rm90.svg',label:"Revolver (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Curto',ammoMax:6,hidden:true},
+  'm4-22-pistol':{file:'icons/weapons/firearms/m4-22-pistol.svg',label:"M4-22 Pistol",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Médio',ammoMax:22,rotVariants:{0:'m4-22-pistol',90:'m4-22-pistol-r90',180:'m4-22-pistol-r180','-90':'m4-22-pistol-rm90'}},
+  'm4-22-pistol-r90':{file:'icons/weapons/firearms/m4-22-pistol-r90.svg',label:"M4-22 Pistol (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Médio',ammoMax:22,hidden:true},
+  'm4-22-pistol-r180':{file:'icons/weapons/firearms/m4-22-pistol-r180.svg',label:"M4-22 Pistol (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d8',crit:'19-20',range:'Médio',ammoMax:22,hidden:true},
+  'm4-22-pistol-rm90':{file:'icons/weapons/firearms/m4-22-pistol-rm90.svg',label:"M4-22 Pistol (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d8',crit:'19-20',range:'Médio',ammoMax:22,hidden:true},
+  'pistol-01':{file:'icons/weapons/firearms/pistol-01.svg',label:"Beretta 92",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-01',90:'pistol-01-r90',180:'pistol-01-r180','-90':'pistol-01-rm90'}},
+  'pistol-01-r90':{file:'icons/weapons/firearms/pistol-01-r90.svg',label:"Beretta 92 (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-01-r180':{file:'icons/weapons/firearms/pistol-01-r180.svg',label:"Beretta 92 (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-01-rm90':{file:'icons/weapons/firearms/pistol-01-rm90.svg',label:"Beretta 92 (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-02':{file:'icons/weapons/firearms/pistol-02.svg',label:"Glock 17",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-02',90:'pistol-02-r90',180:'pistol-02-r180','-90':'pistol-02-rm90'}},
+  'pistol-02-r90':{file:'icons/weapons/firearms/pistol-02-r90.svg',label:"Glock 17 (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-02-r180':{file:'icons/weapons/firearms/pistol-02-r180.svg',label:"Glock 17 (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-02-rm90':{file:'icons/weapons/firearms/pistol-02-rm90.svg',label:"Glock 17 (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-03':{file:'icons/weapons/firearms/pistol-03.svg',label:"Sig Sauer P226",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-03',90:'pistol-03-r90',180:'pistol-03-r180','-90':'pistol-03-rm90'}},
+  'pistol-03-r90':{file:'icons/weapons/firearms/pistol-03-r90.svg',label:"Sig Sauer P226 (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-03-r180':{file:'icons/weapons/firearms/pistol-03-r180.svg',label:"Sig Sauer P226 (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-03-rm90':{file:'icons/weapons/firearms/pistol-03-rm90.svg',label:"Sig Sauer P226 (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-04':{file:'icons/weapons/firearms/pistol-04.svg',label:"Colt 1911",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-04',90:'pistol-04-r90',180:'pistol-04-r180','-90':'pistol-04-rm90'}},
+  'pistol-04-r90':{file:'icons/weapons/firearms/pistol-04-r90.svg',label:"Colt 1911 (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-04-r180':{file:'icons/weapons/firearms/pistol-04-r180.svg',label:"Colt 1911 (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-04-rm90':{file:'icons/weapons/firearms/pistol-04-rm90.svg',label:"Colt 1911 (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-05':{file:'icons/weapons/firearms/pistol-05.svg',label:"HK USP",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-05',90:'pistol-05-r90',180:'pistol-05-r180','-90':'pistol-05-rm90'}},
+  'pistol-05-r90':{file:'icons/weapons/firearms/pistol-05-r90.svg',label:"HK USP (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-05-r180':{file:'icons/weapons/firearms/pistol-05-r180.svg',label:"HK USP (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-05-rm90':{file:'icons/weapons/firearms/pistol-05-rm90.svg',label:"HK USP (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-06':{file:'icons/weapons/firearms/pistol-06.svg',label:"Walther PPK",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-06',90:'pistol-06-r90',180:'pistol-06-r180','-90':'pistol-06-rm90'}},
+  'pistol-06-r90':{file:'icons/weapons/firearms/pistol-06-r90.svg',label:"Walther PPK (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-06-r180':{file:'icons/weapons/firearms/pistol-06-r180.svg',label:"Walther PPK (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-06-rm90':{file:'icons/weapons/firearms/pistol-06-rm90.svg',label:"Walther PPK (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-07':{file:'icons/weapons/firearms/pistol-07.svg',label:"CZ 75",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-07',90:'pistol-07-r90',180:'pistol-07-r180','-90':'pistol-07-rm90'}},
+  'pistol-07-r90':{file:'icons/weapons/firearms/pistol-07-r90.svg',label:"CZ 75 (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-07-r180':{file:'icons/weapons/firearms/pistol-07-r180.svg',label:"CZ 75 (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-07-rm90':{file:'icons/weapons/firearms/pistol-07-rm90.svg',label:"CZ 75 (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-08':{file:'icons/weapons/firearms/pistol-08.svg',label:"Desert Eagle",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,rotVariants:{0:'pistol-08',90:'pistol-08-r90',180:'pistol-08-r180','-90':'pistol-08-rm90'}},
+  'pistol-08-r90':{file:'icons/weapons/firearms/pistol-08-r90.svg',label:"Desert Eagle (90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-08-r180':{file:'icons/weapons/firearms/pistol-08-r180.svg',label:"Desert Eagle (180°)",type:'fogo',sub:'pistola',gw:3,gh:1,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'pistol-08-rm90':{file:'icons/weapons/firearms/pistol-08-rm90.svg',label:"Desert Eagle (-90°)",type:'fogo',sub:'pistola',gw:1,gh:3,dmg:'1d6',crit:'19-20',range:'Curto',ammoMax:12,hidden:true},
+  'benalli-m4':{file:'icons/weapons/firearms/benalli-m4.svg',label:"Benalli M4",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,rotVariants:{0:'benalli-m4',90:'benalli-m4-r90',180:'benalli-m4-r180','-90':'benalli-m4-rm90'}},
+  'benalli-m4-r90':{file:'icons/weapons/firearms/benalli-m4-r90.svg',label:"Benalli M4 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'benalli-m4-r180':{file:'icons/weapons/firearms/benalli-m4-r180.svg',label:"Benalli M4 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'benalli-m4-rm90':{file:'icons/weapons/firearms/benalli-m4-rm90.svg',label:"Benalli M4 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'm240':{file:'icons/weapons/firearms/m240.svg',label:"M240",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,rotVariants:{0:'m240',90:'m240-r90',180:'m240-r180','-90':'m240-rm90'}},
+  'm240-r90':{file:'icons/weapons/firearms/m240-r90.svg',label:"M240 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'm240-r180':{file:'icons/weapons/firearms/m240-r180.svg',label:"M240 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'm240-rm90':{file:'icons/weapons/firearms/m240-rm90.svg',label:"M240 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'machine-gun':{file:'icons/weapons/firearms/machine-gun.svg',label:"Machine Gun",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,rotVariants:{0:'machine-gun',90:'machine-gun-r90',180:'machine-gun-r180','-90':'machine-gun-rm90'}},
+  'machine-gun-r90':{file:'icons/weapons/firearms/machine-gun-r90.svg',label:"Machine Gun (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'machine-gun-r180':{file:'icons/weapons/firearms/machine-gun-r180.svg',label:"Machine Gun (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'machine-gun-rm90':{file:'icons/weapons/firearms/machine-gun-rm90.svg',label:"Machine Gun (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'1d10',crit:'19-20',range:'Longo',ammoMax:100,hidden:true},
+  'rpg':{file:'icons/weapons/firearms/rpg.svg',label:"RPG",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'4d8',crit:'19-20',range:'Médio',ammoMax:1,rotVariants:{0:'rpg',90:'rpg-r90',180:'rpg-r180','-90':'rpg-rm90'}},
+  'rpg-r90':{file:'icons/weapons/firearms/rpg-r90.svg',label:"RPG (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'4d8',crit:'19-20',range:'Médio',ammoMax:1,hidden:true},
+  'rpg-r180':{file:'icons/weapons/firearms/rpg-r180.svg',label:"RPG (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'4d8',crit:'19-20',range:'Médio',ammoMax:1,hidden:true},
+  'rpg-rm90':{file:'icons/weapons/firearms/rpg-rm90.svg',label:"RPG (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'4d8',crit:'19-20',range:'Médio',ammoMax:1,hidden:true},
+  'shotgun-01':{file:'icons/weapons/firearms/shotgun-01.svg',label:"Shotgun 01",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,rotVariants:{0:'shotgun-01',90:'shotgun-01-r90',180:'shotgun-01-r180','-90':'shotgun-01-rm90'}},
+  'shotgun-01-r90':{file:'icons/weapons/firearms/shotgun-01-r90.svg',label:"Shotgun 01 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-01-r180':{file:'icons/weapons/firearms/shotgun-01-r180.svg',label:"Shotgun 01 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-01-rm90':{file:'icons/weapons/firearms/shotgun-01-rm90.svg',label:"Shotgun 01 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-02':{file:'icons/weapons/firearms/shotgun-02.svg',label:"Shotgun 02",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,rotVariants:{0:'shotgun-02',90:'shotgun-02-r90',180:'shotgun-02-r180','-90':'shotgun-02-rm90'}},
+  'shotgun-02-r90':{file:'icons/weapons/firearms/shotgun-02-r90.svg',label:"Shotgun 02 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-02-r180':{file:'icons/weapons/firearms/shotgun-02-r180.svg',label:"Shotgun 02 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-02-rm90':{file:'icons/weapons/firearms/shotgun-02-rm90.svg',label:"Shotgun 02 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-03':{file:'icons/weapons/firearms/shotgun-03.svg',label:"Shotgun 03",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,rotVariants:{0:'shotgun-03',90:'shotgun-03-r90',180:'shotgun-03-r180','-90':'shotgun-03-rm90'}},
+  'shotgun-03-r90':{file:'icons/weapons/firearms/shotgun-03-r90.svg',label:"Shotgun 03 (90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-03-r180':{file:'icons/weapons/firearms/shotgun-03-r180.svg',label:"Shotgun 03 (180°)",type:'fogo',sub:'heavy',gw:3,gh:1,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'shotgun-03-rm90':{file:'icons/weapons/firearms/shotgun-03-rm90.svg',label:"Shotgun 03 (-90°)",type:'fogo',sub:'heavy',gw:1,gh:3,dmg:'2d6',crit:'19-20',range:'Médio',ammoMax:8,hidden:true},
+  'a-308-caliber':{file:'icons/weapons/firearms/ammo/308-caliber.svg',label:"308 Caliber",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-32-auto':{file:'icons/weapons/firearms/ammo/32-auto.svg',label:"32 Auto",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-376-caliber':{file:'icons/weapons/firearms/ammo/376-caliber.svg',label:"376 Caliber",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-38x55':{file:'icons/weapons/firearms/ammo/38x55.svg',label:"38x55",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-404-jeffery':{file:'icons/weapons/firearms/ammo/404-jeffery.svg',label:"404 Jeffery",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-44-rem-mag':{file:'icons/weapons/firearms/ammo/44-rem-mag.svg',label:"44 Rem Mag",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-450-bushmaster':{file:'icons/weapons/firearms/ammo/450-bushmaster.svg',label:"450 Bushmaster",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-45gap':{file:'icons/weapons/firearms/ammo/45gap.svg',label:"45 GAP",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-4buck':{file:'icons/weapons/firearms/ammo/4buck.svg',label:"4 Buck",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-50bmg':{file:'icons/weapons/firearms/ammo/50bmg.svg',label:"50 BMG",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-762x32':{file:'icons/weapons/firearms/ammo/762x32.svg',label:"7.62x32",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-762x54r':{file:'icons/weapons/firearms/ammo/762x54r.svg',label:"7.62x54R",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-8mm-kurt':{file:'icons/weapons/firearms/ammo/8mm-kurt.svg',label:"8mm Kurt",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-bb-shot':{file:'icons/weapons/firearms/ammo/bb-shot.svg',label:"BB Shot",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-bird-shot':{file:'icons/weapons/firearms/ammo/bird-shot.svg',label:"Bird Shot",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-m962':{file:'icons/weapons/firearms/ammo/m962.svg',label:"M962",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-rpg-rocket':{file:'icons/weapons/firearms/ammo/rpg-rocket.svg',label:"RPG Rocket",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-slug':{file:'icons/weapons/firearms/ammo/slug.svg',label:"Slug",type:'fogo',sub:'municao',gw:1,gh:1}
 };
+// Pre-warm trim cache so subsequent renders use trimmed SVG synchronously (no flash).
+if(typeof requestIdleCallback==='function'){
+  requestIdleCallback(()=>{Object.values(WEAPON_SVGS).forEach(e=>{try{_wpnTrimSrc(e.file)}catch(_){}})},{timeout:2000});
+}else{
+  setTimeout(()=>{Object.values(WEAPON_SVGS).forEach(e=>{try{_wpnTrimSrc(e.file)}catch(_){}})},800);
+}
 const WEAPON_TYPE_LABELS={fogo:'Armas de Fogo',branca:'Armas Brancas'};
-const WEAPON_SUB_LABELS={fogo:{pistola:'Pistola',heavy:'Heavy',sniper:'Sniper',granada:'Granada',municao:'Munição'},branca:{lamina:'Lâmina',contundente:'Contundente',lanca:'Lança'}};
+const WEAPON_SUB_LABELS={fogo:{pistola:'Pistola',heavy:'Heavy',sniper:'Sniper',granada:'Granada',municao:'Munição'},branca:{lamina:'Lâmina',contundente:'Contundente',lanca:'Lança',arco:'Arco'}};
 const WEAPON_SUB_SIZE={
   pistola:'leve',
   heavy:'shotgunPadrao',
@@ -7108,7 +7273,8 @@ const WEAPON_SUB_SIZE={
   municao:'mini',
   lamina:'faca',
   contundente:'media',
-  lanca:'rifle'
+  lanca:'rifle',
+  arco:'pesadaPlus'
 };
 const WEAPON_SIZE_OVERRIDES={
   pistolaKnife:'faca',pistolaM422Pistol:'media',
@@ -10770,9 +10936,21 @@ document.querySelectorAll('.sidebar-btn[data-tab]').forEach(b=>{b.addEventListen
 
 
 // ═══ DASHBOARD LISTS ═══
+function _wpnBaseEntry(key){
+  if(!key)return null;
+  const e=WEAPON_SVGS[key];
+  if(!e)return null;
+  if(e.rotVariants)return e;
+  // key may be a hidden rotation variant; find base via reverse lookup
+  for(const k in WEAPON_SVGS){
+    const v=WEAPON_SVGS[k];
+    if(v.rotVariants&&Object.values(v.rotVariants).includes(key))return v;
+  }
+  return e;
+}
 function _dashWeaponWidget(prim,sec){
   if(!prim){return `<div class="dash-wpn-empty">Nenhuma arma equipada</div>`}
-  const wpn=prim.iconWpn&&WEAPON_SVGS[prim.iconWpn];
+  const wpn=prim.iconWpn&&_wpnBaseEntry(prim.iconWpn);
   const src=wpn?_themeWpnSrc(wpn.file):'';
   const isFire=wpn&&wpn.type==='fogo'&&wpn.sub!=='municao';
   const dur=Math.max(0,Math.min(100,prim.durability??100));
@@ -10788,7 +10966,7 @@ function _dashWeaponWidget(prim,sec){
   const trackPath=`M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${extA>180?1:0} 1 ${xT.toFixed(2)} ${yT.toFixed(2)}`;
   const fillPath=arcA>0.5?`M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${arcA>180?1:0} 1 ${xF.toFixed(2)} ${yF.toFixed(2)}`:'';
   const cur=isFire?(prim.ammo??prim.qty):null,max=isFire?(prim.ammoMax??prim.qty):null;
-  const secWpn=sec&&sec.iconWpn&&WEAPON_SVGS[sec.iconWpn];
+  const secWpn=sec&&sec.iconWpn&&_wpnBaseEntry(sec.iconWpn);
   const secSrc=secWpn?_themeWpnSrc(secWpn.file):'';
   return `<div class="dash-wpn-widget">
     <svg class="dash-wpn-arc" viewBox="0 0 200 200">
@@ -10832,7 +11010,7 @@ function renderInvTab(){
   statsEl.innerHTML=cats.map(cat=>{
     const items=inventory.filter(i=>i.cat===cat);
     const qty=items.reduce((s,i)=>s+i.qty,0);
-    const weight=items.reduce((s,i)=>s+(i.weight*i.qty),0).toFixed(1);
+    const weight=_calcInvWeight(items);
     const meta=INV_CAT_META[cat];
     return `<div class="stat-block" data-c="${meta.c}" onclick="invSetFilter('${cat}')" style="cursor:pointer">
       <div class="stat-block-head">
@@ -10862,7 +11040,7 @@ function renderInvTab(){
       <div class="inv-card-icon">${i.iconWpn&&WEAPON_SVGS[i.iconWpn]?`<img src="${WEAPON_SVGS[i.iconWpn].file}" style="width:80%;height:80%;object-fit:contain" draggable="false">`:gi(i.iconKey)}</div>
       <div class="inv-card-info">
         <div class="inv-card-name">${_esc(i.name)}</div>
-        <div class="inv-card-meta"><span class="cat">${_esc(CATEGORY_LABELS[i.cat]||'')}</span><span class="rarity">${_esc(RL[i.rarity]||i.rarity||'')}</span>${i.value?`<span>${_clampInt(i.value,0,99999999,0)} cr</span>`:''}${i.weight?`<span>${_clampFloat(i.weight,0,9999,0)}kg</span>`:''}</div>
+        <div class="inv-card-meta"><span class="cat">${_esc(CATEGORY_LABELS[i.cat]||'')}</span><span class="rarity">${_esc(RL[i.rarity]||i.rarity||'')}</span>${i.value?`<span>${_clampInt(i.value,0,99999999,0)} cr</span>`:''}${i.weight?`<span>P${_clampInt(i.weight,0,9999,0)}</span>`:''}</div>
       </div>
       <div class="inv-card-dur"><div class="inv-card-dur-bar"><div class="inv-card-dur-fill" style="width:${dur}%;--d-c:${durC}"></div></div><span class="inv-card-dur-lbl">${dur}%</span></div>
       <div class="inv-card-qty"><span class="inv-card-qty-num">${i.qty}</span><span class="inv-card-qty-lbl">qty</span></div>
@@ -10884,9 +11062,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderInvTab();
 });
 
+function _calcInvWeight(items){
+  let w=0,zeroQty=0;
+  for(const i of items){const q=i.qty||1;if((i.weight||0)>0)w+=i.weight*q;else zeroQty+=q}
+  return w+Math.floor(zeroQty/6);
+}
+const INV_WEIGHT_CAP=15;
 function renderSummary(){
   const totalItems=inventory.reduce((s,i)=>s+i.qty,0);
-  const totalWeight=inventory.reduce((s,i)=>s+(i.weight*i.qty),0).toFixed(1);
+  const totalWeight=_calcInvWeight(inventory);
   const potions=inventory.filter(i=>i.cat==='consumivel').reduce((s,i)=>s+i.qty,0);
   const siEl=document.getElementById('sum-items');if(siEl)siEl.textContent=totalItems;
   const swEl=document.getElementById('sum-weight');if(swEl)swEl.textContent=totalWeight;
@@ -11241,6 +11425,8 @@ function initGridSlots(){
     const w=it.gw||1,h=it.gh||1;
     let placed=false;
     if(it.posIdx!=null&&it.posIdx<GRID_SIZE&&canPlace(it.posIdx,w,h)){placeItem(it.posIdx,it.id,w,h);placed=true}
+    // Item posIdx beyond current grid (collapsed area) — keep hidden, preserve posIdx.
+    else if(it.posIdx!=null&&it.posIdx>=GRID_SIZE){placed=true}
     if(!placed){
       for(let idx=0;idx<GRID_SIZE;idx++){
         if(canPlace(idx,w,h)){placeItem(idx,it.id,w,h);it.posIdx=idx;placed=true;break}
@@ -11273,28 +11459,50 @@ function clearItemSlots(idx,w,h){
 function rotateItem(id){
   const it=inventory.find(x=>x.id===id);if(!it)return;
   const oldRot=it.rot||0;
-  let newRot;
-  if(oldRot===0)newRot=90;
-  else if(oldRot===90)newRot=180;
-  else if(oldRot===180)newRot=-90;
-  else newRot=0;
+  const cwOf=r=>{if(r===0)return 90;if(r===90)return 180;if(r===180)return -90;return 0};
+  let newRot=cwOf(oldRot);
+  const _wEnt=it.iconWpn&&WEAPON_SVGS[it.iconWpn];
+  if(it.gw==null&&_wEnt&&_wEnt.gw)it.gw=_wEnt.gw;
+  if(it.gh==null&&_wEnt&&_wEnt.gh)it.gh=_wEnt.gh;
   const oldW=it.gw||1,oldH=it.gh||1;
   const oldVert=(oldRot===90||oldRot===-90);
-  const newVert=(newRot===90||newRot===-90);
-  const swap=(oldW!==oldH)&&(oldVert!==newVert);
+  let newVert=(newRot===90||newRot===-90);
+  let swap=(oldW!==oldH)&&(oldVert!==newVert);
+  if(swap&&it.posIdx!=null){
+    const tw=oldH,th=oldW;
+    let canFit=canPlaceIgnoring(it.posIdx,tw,th,id);
+    if(!canFit){let f=-1;for(let i=0;i<GRID_SIZE;i++){if(canPlaceIgnoring(i,tw,th,id)){f=i;break}}canFit=(f>=0)}
+    if(!canFit){
+      newRot=cwOf(newRot);
+      newVert=(newRot===90||newRot===-90);
+      swap=(oldW!==oldH)&&(oldVert!==newVert);
+    }
+  }
   const newW=swap?oldH:oldW;
   const newH=swap?oldW:oldH;
+  const dur=320;
+  const ease='cubic-bezier(.34,1.4,.6,1)';
   document.querySelectorAll(`.inv-cell[data-item-id="${id}"] img.item-icon-svg`).forEach(img=>{
-    img.style.setProperty('--_rot',newRot+'deg');
     const overlay=img.closest('.item-overlay');
     const orient=overlay?overlay.dataset.orient:null;
-    let tx;
-    if(orient==='v')tx=`translate(-50%,-50%) rotate(${newRot}deg)`;
-    else if(orient==='h')tx=`scale(1.4) rotate(${newRot}deg)`;
-    else tx=`rotate(${newRot}deg)`;
-    img.style.setProperty('transform',tx,'important');
+    if(overlay){
+      overlay.style.transformOrigin='center center';
+      overlay.style.transition=`transform ${dur}ms ${ease}`;
+      const prev=parseFloat(overlay.dataset._spinDeg||'0')||0;
+      const delta=((newRot-oldRot+540)%360)-180;
+      const next=prev+delta;
+      overlay.dataset._spinDeg=String(next);
+      overlay.style.transform=`rotate(${next}deg)`;
+    }else{
+      img.style.transition=`transform ${dur}ms ${ease}`;
+      img.style.setProperty('--_rot',newRot+'deg');
+      let tx;
+      if(orient==='v')tx=`translate(-50%,-50%) rotate(${newRot}deg)`;
+      else if(orient==='h')tx=`scale(1.18) rotate(${newRot}deg)`;
+      else tx=`rotate(${newRot}deg)`;
+      img.style.setProperty('transform',tx,'important');
+    }
   });
-  const dur=320;
   setTimeout(()=>{
     if(swap&&it.posIdx!=null){
       clearItemSlots(it.posIdx,oldW,oldH);
@@ -11304,22 +11512,42 @@ function rotateItem(id){
         for(let i=0;i<GRID_SIZE;i++){if(canPlaceIgnoring(i,newW,newH,id)){found=i;break}}
         if(found<0){
           placeItem(it.posIdx,id,oldW,oldH);
-          it.rot=newRot;
           renderGrid();
-          if(typeof saveGame==='function')try{saveGame()}catch(_){}
-          toast&&toast('Sem espaço para girar quadro');
+          requestAnimationFrame(()=>{
+            document.querySelectorAll(`.inv-cell[data-item-id="${id}"]`).forEach(c=>{
+              c.classList.add('shake-nofit');
+              setTimeout(()=>c.classList.remove('shake-nofit'),400);
+            });
+          });
           return;
         }
         targetIdx=found;
       }
       it.gw=newW;it.gh=newH;it.posIdx=targetIdx;
       placeItem(targetIdx,id,newW,newH);
+    } else if(swap){
+      it.gw=newW;it.gh=newH;
     }
     it.rot=newRot;
+    // Switch iconWpn to rotation variant if available.
+    const _curEnt=it.iconWpn&&WEAPON_SVGS[it.iconWpn];
+    const _baseKey=_curEnt&&_curEnt.rotVariants?it.iconWpn:_findBaseRotKey(it.iconWpn);
+    if(_baseKey){
+      const _baseEnt=WEAPON_SVGS[_baseKey];
+      const _v=_baseEnt&&_baseEnt.rotVariants&&_baseEnt.rotVariants[newRot];
+      if(_v&&WEAPON_SVGS[_v])it.iconWpn=_v;
+    }
     renderGrid();
     if(typeof saveGame==='function')try{saveGame()}catch(_){}
   },dur);
-  toast&&toast(`${newRot}°`);
+}
+function _findBaseRotKey(curKey){
+  if(!curKey)return null;
+  for(const k in WEAPON_SVGS){
+    const v=WEAPON_SVGS[k];
+    if(v.rotVariants&&Object.values(v.rotVariants).includes(curKey))return k;
+  }
+  return null;
 }
 function _doRotate(id,fromRot,toRot,done){done&&done();return}
 function _animRotate(id,fromRot,toRot,done,newW,newH){
@@ -11357,7 +11585,7 @@ function setItemRotation(id,target){
     const orient=overlay?overlay.dataset.orient:null;
     let tx;
     if(orient==='v')tx=`translate(-50%,-50%) rotate(${target}deg)`;
-    else if(orient==='h')tx=`scale(1.4) rotate(${target}deg)`;
+    else if(orient==='h')tx=`scale(1.18) rotate(${target}deg)`;
     else tx=`rotate(${target}deg)`;
     img.style.setProperty('transform',tx,'important');
   });
@@ -11368,7 +11596,7 @@ function setItemRotation(id,target){
       if(!canPlaceIgnoring(targetIdx,newW,newH,id)){
         let found=-1;
         for(let i=0;i<GRID_SIZE;i++){if(canPlaceIgnoring(i,newW,newH,id)){found=i;break}}
-        if(found<0){placeItem(it.posIdx,id,oldW,oldH);it.rot=target;renderGrid();if(typeof saveGame==='function')try{saveGame()}catch(_){};toast&&toast('Sem espaço');return}
+        if(found<0){placeItem(it.posIdx,id,oldW,oldH);renderGrid();requestAnimationFrame(()=>{document.querySelectorAll(`.inv-cell[data-item-id="${id}"]`).forEach(c=>{c.classList.add('shake-nofit');setTimeout(()=>c.classList.remove('shake-nofit'),400)})});return}
         targetIdx=found;
       }
       it.gw=newW;it.gh=newH;it.posIdx=targetIdx;
@@ -11378,7 +11606,6 @@ function setItemRotation(id,target){
     renderGrid();
     if(typeof saveGame==='function')try{saveGame()}catch(_){}
   },320);
-  toast&&toast(`${target}°`);
 }
 window.setItemRotation=setItemRotation;
 function closeRotateMenu(){document.getElementById('rotate-menu')?.remove()}
@@ -11408,6 +11635,75 @@ function _rotMenuOutside(e){
   if(!e.target.closest('.rotate-menu'))closeRotateMenu();
 }
 window.openRotateMenu=openRotateMenu;
+function _editItemStat(id,field,label,type,current){
+  const it=inventory.find(i=>i.id===id);if(!it)return;
+  document.getElementById('stat-edit-modal')?.remove();
+  const wrap=document.createElement('div');
+  wrap.id='stat-edit-modal';
+  wrap.className='stat-edit-overlay';
+  let inputHTML='';
+  const isSelect=type.startsWith('select:');
+  const isDice=type==='dice';
+  if(isSelect){
+    const opts=type.slice(7).split(',');
+    inputHTML=`<input type="hidden" id="_stEdInput" value="${String(current).replace(/"/g,'&quot;')}"><div class="stat-edit-opts">${opts.map(o=>`<button type="button" class="stat-edit-opt${String(current)===o?' active':''}" data-val="${o}">${o}</button>`).join('')}</div>`;
+  }else if(isDice){
+    const steps=['0','1','1d2','1d4','1d6','1d8','1d10','1d12','2d8','2d10','2d12','4d8','4d10','4d12','8d8','8d10','8d12','16'];
+    const cur=String(current||'1d6');
+    inputHTML=`<div class="stat-edit-dice"><button type="button" class="stat-edit-step" data-dir="-1">−</button><input id="_stEdInput" class="stat-edit-input stat-edit-dice-input" type="text" value="${cur.replace(/"/g,'&quot;')}"><button type="button" class="stat-edit-step" data-dir="1">+</button></div>`;
+  }else if(type==='int'){
+    inputHTML=`<input id="_stEdInput" class="stat-edit-input" type="number" step="1" value="${current}">`;
+  }else if(type==='textarea'){
+    const _cv=String(current||'');
+    inputHTML=`<textarea id="_stEdInput" class="stat-edit-input" rows="6" placeholder="Digite a descrição..." style="resize:vertical;min-height:120px;font-family:inherit">${_cv.replace(/</g,'&lt;')}</textarea>`;
+  }else if(type==='float'){
+    inputHTML=`<input id="_stEdInput" class="stat-edit-input" type="number" step="0.1" value="${current}">`;
+  }else{
+    inputHTML=`<input id="_stEdInput" class="stat-edit-input" type="text" value="${String(current).replace(/"/g,'&quot;')}">`;
+  }
+  wrap.innerHTML=`<div class="stat-edit-box"><div class="stat-edit-title">${label}</div>${inputHTML}<div class="stat-edit-actions"><button class="stat-edit-btn cancel" type="button">Cancelar</button><button class="stat-edit-btn ok" type="button">OK</button></div></div>`;
+  document.body.appendChild(wrap);
+  const inp=wrap.querySelector('#_stEdInput');
+  if(isSelect||isDice){
+    wrap.querySelectorAll('.stat-edit-opt').forEach(b=>{
+      b.addEventListener('click',()=>{
+        wrap.querySelectorAll('.stat-edit-opt').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        inp.value=b.dataset.val;
+      });
+    });
+  }
+  if(isDice){
+    const steps=['0','1','1d2','1d4','1d6','1d8','1d10','1d12','2d8','2d10','2d12','4d8','4d10','4d12','8d8','8d10','8d12','16'];
+    wrap.querySelectorAll('.stat-edit-step').forEach(b=>{
+      b.addEventListener('click',()=>{
+        const dir=parseInt(b.dataset.dir,10);
+        const idx=steps.indexOf(inp.value);
+        const ni=idx<0?(dir>0?0:steps.length-1):Math.max(0,Math.min(steps.length-1,idx+dir));
+        inp.value=steps[ni];
+        wrap.querySelectorAll('.stat-edit-opt').forEach(x=>x.classList.toggle('active',x.dataset.val===steps[ni]));
+      });
+    });
+  }
+  if(!isSelect&&!isDice)setTimeout(()=>{inp.focus();if(inp.select)inp.select()},20)
+  const close=()=>wrap.remove();
+  const save=()=>{
+    let v=inp.value;
+    if(type==='int'){const n=parseInt(v,10);if(isNaN(n)){close();return}it[field]=n}
+    else if(type==='float'){const n=parseFloat(v);if(isNaN(n)){close();return}it[field]=n}
+    else it[field]=v;
+    if(field==='durability')it.durability=Math.max(0,Math.min(100,it[field]));
+    if(field==='qty')it.qty=Math.max(1,it[field]);
+    if(typeof saveGame==='function')try{saveGame()}catch(_){}
+    close();
+    if(typeof selectInvItem==='function')selectInvItem(id);
+  };
+  wrap.querySelector('.cancel').addEventListener('click',close);
+  wrap.querySelector('.ok').addEventListener('click',save);
+  wrap.addEventListener('click',e=>{if(e.target===wrap)close()});
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();save()}else if(e.key==='Escape'){close()}});
+}
+window._editItemStat=_editItemStat;
 
 let dragItemId=null,dragPreview=null,dragFromIdx=null;
 let selectedItemId=null;
@@ -11489,7 +11785,9 @@ function buildCell(i){
       if(cIt&&cIt.id===selectedItemId){cell.classList.add('selected-item');cell.classList.add('selected')}
     }
   } else if(item){
-    const iw=item.gw||1,ih=item.gh||1;
+    const _wEntry=item.iconWpn&&WEAPON_SVGS[item.iconWpn];
+    const iw=(item.gw!=null?item.gw:(_wEntry&&_wEntry.gw))||1;
+    const ih=(item.gh!=null?item.gh:(_wEntry&&_wEntry.gh))||1;
     const isMulti=iw>1||ih>1;
     cell.classList.add('occupied');cell.draggable=true;cell.dataset.itemId=item.id;
     if(item.id===selectedItemId)cell.classList.add('selected-item');
@@ -11498,24 +11796,35 @@ function buildCell(i){
 
     const wpnEntry=item.iconWpn&&WEAPON_SVGS[item.iconWpn];
     const wpnSrc=wpnEntry?_themeWpnSrc((item.qty>1&&wpnEntry.filePlus)?wpnEntry.filePlus:wpnEntry.file):'';
-    const _rotDeg=(item.rot||0);
-    const wpnRot=wpnEntry?` style="--_rot:${_rotDeg}deg;transform:rotate(var(--_rot,0deg));width:100%;height:100%;transform-origin:center"`:'';
+    // If trim cache already populated, use trimmed URL synchronously to avoid flash.
+    const _wpnSrcCached=wpnSrc&&_wpnTrimCache.get(wpnSrc);
+    const wpnSrcInitial=_wpnSrcCached?_wpnSrcCached.url:wpnSrc;
+    if(wpnEntry&&item.rot==null)item.rot=0;
+    // Force cardinal angles only.
+    let _rotDeg=Math.round((item.rot||0)/90)*90;
+    if(_rotDeg!==(item.rot||0))item.rot=_rotDeg;
+    const _vw=(wpnEntry&&wpnEntry.gw)||iw,_vh=(wpnEntry&&wpnEntry.gh)||ih;
+    const _ratio=Math.max(_vw,_vh)/Math.min(_vw,_vh);
+    const _wpnScl=wpnEntry?Math.max(1,_ratio*0.95):1;
+    const wpnRot=wpnEntry?` style="width:100%;height:100%;object-fit:contain;display:block"`:'';
     const iconHTML=item.customImage
       ?`<img class="item-custom-img" src="${item.customImage}" alt="${item.name}" draggable="false">`
       :(wpnEntry
-        ?`<img class="item-icon-svg" src="${wpnSrc}" alt="${wpnEntry.label}" draggable="false"${wpnRot}>`
+        ?`<img class="item-icon-svg" src="${wpnSrcInitial}" alt="${wpnEntry.label}" draggable="false"${wpnRot}>`
         :`<span class="item-icon" style="color:var(--rarity-${item.rarity})">${gi(item.iconKey)}</span>`);
     // Badge munição (firearms)
     const _isFireItem=wpnEntry&&wpnEntry.type==='fogo'&&wpnEntry.sub!=='municao';
     let ammoBadge='';
     if(_isFireItem){
-      const cur=item.ammo??item.ammoMax??0;
+      const _baseEnt=_wpnBaseEntry(item.iconWpn)||wpnEntry;
+      if(item.ammoMax==null&&_baseEnt.ammoMax)item.ammoMax=_baseEnt.ammoMax;
+      const maxMag=item.ammoMax||_baseEnt.ammoMax||0;
+      const cur=item.ammo??0;
       const reserve=item.ammoReserve??0;
-      const maxMag=item.ammoMax??wpnEntry.ammoMax??cur;
       let stateCls='';
       if(cur===0)stateCls=' empty';
       else if(maxMag>0&&cur/maxMag<=0.3)stateCls=' low';
-      ammoBadge=`<span class="item-ammo-badge${stateCls}"><span class="ammo-cur">${cur}</span><span class="ammo-sep">/</span><span class="ammo-max">${reserve}</span></span>`;
+      ammoBadge=`<span class="item-ammo-badge${stateCls}" title="Munição carregada / capacidade do pente · reserva: ${reserve}"><span class="ammo-cur">${cur}</span><span class="ammo-sep">/</span><span class="ammo-max">${maxMag}</span></span>`;
     }
     const equipMark=item.equipped?`<span class="item-equip-mark" title="Equipado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span>`:'';
     const reloadRing=item._reloading?`<div class="item-reload-ring" data-reload-ring><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x="2" y="2" width="96" height="96" rx="6" pathLength="100" style="--_dash:100;--_dur:${item._reloadMs||1000}ms"/></svg></div>`:'';
@@ -11527,41 +11836,107 @@ function buildCell(i){
       overlay.dataset.orient=iw>=ih?'h':'v';
       overlay.style.setProperty('--gw',iw);
       overlay.style.setProperty('--gh',ih);
-      overlay.style.width=`calc(${iw*100}% + ${(iw-1)*2}px + 2px)`;
-      overlay.style.height=`calc(${ih*100}% + ${(ih-1)*2}px + 2px)`;
-      overlay.style.left='-1px';
-      overlay.style.top='-1px';
+      // Initial size via % calc, refined via JS measurement after layout (avoids fractional cell rounding).
+      overlay.style.width=`calc(${iw*100}% + ${(iw-1)*2}px)`;
+      overlay.style.height=`calc(${ih*100}% + ${(ih-1)*2}px)`;
+      overlay.style.left='0';
+      overlay.style.top='0';
       overlay.innerHTML=`<div class="rarity-dot" style="background:var(--rarity-${item.rarity});--dot-glow:var(--rarity-${item.rarity})"></div>${iconHTML}${item.qty>1?`<span class="item-qty">${item.qty}</span>`:''}${ammoBadge}${equipMark}${gearBtn}${reloadRing}${rotateBtn}`;
       cell.appendChild(overlay);
+      // Refine: measure first/last cell rects, set overlay to exact pixel span.
+      requestAnimationFrame(()=>{
+        const grid=cell.parentElement;if(!grid)return;
+        const lastIdx=i+(ih-1)*gridCols+(iw-1);
+        const lastCell=grid.querySelector(`.inv-cell[data-index="${lastIdx}"]`);
+        if(!lastCell)return;
+        const fR=cell.getBoundingClientRect(),lR=lastCell.getBoundingClientRect();
+        overlay.style.width=(lR.right-fR.left)+'px';
+        overlay.style.height=(lR.bottom-fR.top)+'px';
+      });
     } else {
       cell.innerHTML=`<div class="rarity-dot" style="background:var(--rarity-${item.rarity});--dot-glow:var(--rarity-${item.rarity})"></div>${iconHTML}${item.qty>1?`<span class="item-qty">${item.qty}</span>`:''}${ammoBadge}${equipMark}${gearBtn}${reloadRing}${rotateBtn}`;
     }
     if(wpnEntry){
       const _wpnImg=cell.querySelector('img.item-icon-svg');
       if(_wpnImg){
-        const _orient=isMulti?(iw>=ih?'h':'v'):null;
-        let _tx;
-        if(_orient==='v')_tx=`translate(-50%,-50%) rotate(${_rotDeg}deg)`;
-        else if(_orient==='h')_tx=`scale(1.4) rotate(${_rotDeg}deg)`;
-        else _tx=`rotate(${_rotDeg}deg)`;
-        _wpnImg.style.setProperty('transform',_tx,'important');
+        _wpnImg.style.setProperty('--_rot',_rotDeg+'deg');
+        if(isMulti){
+          // Element fills overlay. Pre-rotate image 90° internally if content orientation mismatches
+          // overlay (e.g. landscape bow in portrait cells) so content shape ≈ cell shape; no distortion, no crop.
+          const _scl=0.96;
+          const _overlayLandscape=iw>=ih;
+          _wpnImg.style.setProperty('position','absolute','important');
+          _wpnImg.style.setProperty('left','50%','important');
+          _wpnImg.style.setProperty('top','50%','important');
+          _wpnImg.style.setProperty('width','100%','important');
+          _wpnImg.style.setProperty('height','100%','important');
+          _wpnImg.style.setProperty('object-fit','contain','important');
+          _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${_rotDeg}deg)`,'important');
+          _wpnImg.style.setProperty('transform-origin','center center','important');
+          _wpnTrimSrc(wpnSrc).then(t=>{
+            if(!t||!_wpnImg.isConnected)return;
+            const contentLandscape=t.ratio>=1;
+            const _cellSquare=iw===ih;
+            const totalRot=(!_cellSquare&&contentLandscape!==_overlayLandscape)?90:0;
+            const _contentLong=Math.max(t.ratio,1/t.ratio);
+            // Element pre-rotation sized so post-rotation content fits inside overlay (no overflow).
+            let _ew_cells,_eh_cells;
+            if(totalRot===0){
+              // No autoRot. Element = overlay shape. object-fit:contain handles fit.
+              _ew_cells=iw;
+              _eh_cells=ih;
+            }else{
+              // autoRot 90°. Pre-rot pre-computed so post-rot fits overlay.
+              // For landscape content rotated to fit portrait overlay:
+              //   pre-rot width = min(overlay-h, overlay-w × contentLong) cells
+              //   pre-rot height = pre-rot width / contentLong
+              // For portrait content rotated to fit landscape overlay (mirror).
+              const _ow=iw,_oh=ih;
+              if(contentLandscape){
+                _ew_cells=Math.min(_oh,_ow*_contentLong);
+                _eh_cells=_ew_cells/_contentLong;
+              }else{
+                _eh_cells=Math.min(_ow,_oh*_contentLong);
+                _ew_cells=_eh_cells/_contentLong;
+              }
+            }
+            const _ew_pct=(100*_ew_cells/iw);
+            const _eh_pct=(100*_eh_cells/ih);
+            _wpnImg.style.setProperty('width',_ew_pct+'%','important');
+            _wpnImg.style.setProperty('height',_eh_pct+'%','important');
+            _wpnImg.style.setProperty('object-fit','contain','important');
+            _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${totalRot}deg)`,'important');
+            _wpnImg.src=t.url;
+          });
+        }else{
+          // Single-cell: same trim+contain logic as multi but in 1×1 frame.
+          const _scl=0.96;
+          const _overlayLandscape=true; // 1×1 treated landscape
+          _wpnImg.style.setProperty('position','absolute','important');
+          _wpnImg.style.setProperty('left','50%','important');
+          _wpnImg.style.setProperty('top','50%','important');
+          _wpnImg.style.setProperty('width','100%','important');
+          _wpnImg.style.setProperty('height','100%','important');
+          _wpnImg.style.setProperty('object-fit','contain','important');
+          _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${_rotDeg}deg)`,'important');
+          _wpnImg.style.setProperty('transform-origin','center center','important');
+          _wpnTrimSrc(wpnSrc).then(t=>{
+            if(!t||!_wpnImg.isConnected)return;
+            // Single-cell: visual rotates with user rot through all 4 cardinal angles.
+            const totalRot=_rotDeg;
+            const _contentLong=Math.max(t.ratio,1/t.ratio);
+            _wpnImg.style.setProperty('width',(100*_contentLong)+'%','important');
+            _wpnImg.style.setProperty('height','100%','important');
+            _wpnImg.style.setProperty('object-fit','contain','important');
+            _wpnImg.style.setProperty('transform',`translate(-50%,-50%) scale(${_scl}) rotate(${totalRot}deg)`,'important');
+            _wpnImg.src=t.url;
+          });
+        }
       }
     }
     if(wpnEntry){
       const rBtn=cell.querySelector('[data-rotate-btn]');
       if(rBtn){
-        let holdT=null;
-        cell.addEventListener('pointerdown',ev=>{
-          if(ev.target.closest('[data-rotate-btn]'))return;
-          clearTimeout(holdT);
-          const sx=ev.clientX,sy=ev.clientY;
-          holdT=setTimeout(()=>{openRotateMenu(item.id,{x:sx,y:sy})},700);
-          const onMv=mv=>{if(Math.abs(mv.clientX-sx)+Math.abs(mv.clientY-sy)>6){clearTimeout(holdT);cleanup()}};
-          const cleanup=()=>{clearTimeout(holdT);document.removeEventListener('pointermove',onMv);document.removeEventListener('pointerup',cleanup);document.removeEventListener('pointercancel',cleanup)};
-          document.addEventListener('pointermove',onMv);
-          document.addEventListener('pointerup',cleanup,{once:true});
-          document.addEventListener('pointercancel',cleanup,{once:true});
-        });
         rBtn.addEventListener('pointerdown',ev=>{ev.stopPropagation()});
         rBtn.addEventListener('click',ev=>{
           ev.stopPropagation();ev.preventDefault();
@@ -11650,7 +12025,18 @@ function _invDragMove(e){
     if(p)p.remove();
   };
   if(!cell||!g||!cell.parentElement||cell.parentElement.id!=='inv-grid'){followFree();return}
-  const idx=parseInt(cell.dataset.index);
+  // Compute target top-left cell from ghost top-left position (cursor - offX/offY).
+  // Map ghost top-left to grid cell using first cell rect.
+  const firstC=g.querySelector('.inv-cell[data-index="0"]');
+  let idx=parseInt(cell.dataset.index);
+  if(firstC){
+    const fcR=firstC.getBoundingClientRect();
+    const cellW=fcR.width+2,cellH=fcR.height+2; // include gap
+    const ghostLeft=e.clientX-offX,ghostTop=e.clientY-offY;
+    const col=Math.max(0,Math.min(gridCols-sw,Math.round((ghostLeft-fcR.left)/cellW)));
+    const row=Math.max(0,Math.min(gridRows-sh,Math.round((ghostTop-fcR.top)/cellH)));
+    idx=row*gridCols+col;
+  }
   if(!Number.isFinite(idx)){followFree();return}
   // Drop na própria origem = sempre válido (no-op)
   const valid=(idx===_invDrag.fromIdx)||canPlaceIgnoring(idx,sw,sh,id);
@@ -11675,7 +12061,7 @@ function _invDragMove(e){
 function _invDragEnd(e){
   document.removeEventListener('pointermove',_invDragMove);
   if(!_invDrag)return;
-  const {id,fromIdx,sw,sh,ghost,origin}=_invDrag;
+  const {id,fromIdx,sw,sh,ghost,origin,offX,offY}=_invDrag;
   const el=document.elementFromPoint(e.clientX,e.clientY);
   const cell=el&&el.closest('.inv-cell');
   const g=document.getElementById('inv-grid');
@@ -11685,8 +12071,63 @@ function _invDragEnd(e){
     insideMain=e.clientX>=gR.left&&e.clientX<=gR.right&&e.clientY>=gR.top&&e.clientY<=gR.bottom&&cell&&cell.parentElement&&cell.parentElement.id==='inv-grid';
   }
   let placed=false;
+  let ammoConsumed=false;
+  let ammoIncompatible=false;
   if(insideMain){
-    const idx=parseInt(cell.dataset.index);
+    const draggedIt=inventory.find(x=>x.id===id);
+    const draggedWpn=draggedIt&&draggedIt.iconWpn&&WEAPON_SVGS[draggedIt.iconWpn];
+    // If dragged item is ammo, check if dropped on a compatible weapon.
+    if(draggedWpn&&draggedWpn.sub==='municao'&&cell){
+      const targetItemId=cell.dataset.itemId;
+      const targetItem=targetItemId?inventory.find(x=>x.id==targetItemId):null;
+      const targetWpn=targetItem&&targetItem.iconWpn&&WEAPON_SVGS[targetItem.iconWpn];
+      if(targetWpn&&targetWpn.type==='fogo'&&targetWpn.sub!=='municao'){
+        // Universal compatibility: any ammo works on any firearm.
+        // Auto-init ammoMax on weapon if missing.
+        if(targetItem.ammoMax==null&&targetWpn.ammoMax)targetItem.ammoMax=targetWpn.ammoMax;
+        const mag=targetItem.ammoMax||targetWpn.ammoMax||0;
+        const cur=targetItem.ammo??0;
+        const reserveMax=mag*5; // cap reserve at 5× mag capacity
+        const reserveCur=targetItem.ammoReserve||0;
+        const ammoQty=draggedIt.qty||1;
+        // Fill mag first, then reserve. Excess stays in ammo box.
+        let consumed=0;
+        const magNeed=Math.max(0,mag-cur);
+        const fillMag=Math.min(magNeed,ammoQty);
+        if(fillMag>0){targetItem.ammo=cur+fillMag;consumed+=fillMag}
+        const remaining=ammoQty-consumed;
+        const reserveNeed=Math.max(0,reserveMax-reserveCur);
+        const fillReserve=Math.min(reserveNeed,remaining);
+        if(fillReserve>0){targetItem.ammoReserve=reserveCur+fillReserve;consumed+=fillReserve}
+        if(consumed>0){
+          draggedIt.qty=ammoQty-consumed;
+          if(draggedIt.qty<=0){
+            const ammoIdx=inventory.indexOf(draggedIt);
+            if(ammoIdx>=0)inventory.splice(ammoIdx,1);
+            clearItemSlots(fromIdx,sw,sh);
+          }
+          ammoConsumed=true;
+          placed=true;
+          if(typeof saveGame==='function')try{saveGame()}catch(_){}
+        }else{
+          // Weapon already full + reserve maxed → treat as incompat (shake).
+          ammoIncompatible=true;
+        }
+      }
+    }
+  }
+  if(insideMain&&!ammoConsumed&&!ammoIncompatible){
+    // Compute top-left footprint cell from ghost position.
+    const firstC=g.querySelector('.inv-cell[data-index="0"]');
+    let idx=parseInt(cell.dataset.index);
+    if(firstC){
+      const fcR=firstC.getBoundingClientRect();
+      const cellW=fcR.width+2,cellH=fcR.height+2;
+      const ghostLeft=e.clientX-offX,ghostTop=e.clientY-offY;
+      const col=Math.max(0,Math.min(gridCols-sw,Math.round((ghostLeft-fcR.left)/cellW)));
+      const row=Math.max(0,Math.min(gridRows-sh,Math.round((ghostTop-fcR.top)/cellH)));
+      idx=row*gridCols+col;
+    }
     const it=inventory.find(x=>x.id===id);
     if(idx===fromIdx){
       placed=true;
@@ -11712,9 +12153,13 @@ function _invDragEnd(e){
     setTimeout(()=>ghost.remove(),200);
     if(typeof renderGrid==='function')renderGrid();
     else renderGridFromSlots();
+  } else if(ammoIncompatible){
+    // Wrong ammo type — shake longer + brighter to indicate incompatibility.
+    ghost.classList.add('shake-nofit');
+    setTimeout(()=>{ghost.classList.add('cancel-out');setTimeout(()=>ghost.remove(),300)},450);
   } else {
-    ghost.classList.add('cancel-out');
-    setTimeout(()=>ghost.remove(),300);
+    ghost.classList.add('shake-nofit');
+    setTimeout(()=>{ghost.classList.add('cancel-out');setTimeout(()=>ghost.remove(),300)},350);
   }
   setTimeout(()=>{_invDragMoved=false},50);
 }
@@ -11753,7 +12198,44 @@ window._expandCase=function(){
   const a=unlockArea();
   if(a._baseRows==null)a._baseRows=a.rows;
   const STEP=3,MAX_ROWS=a._baseRows+STEP;
-  a.rows=a.rows>=MAX_ROWS?a._baseRows:MAX_ROWS;
+  const expanding=a.rows<MAX_ROWS;
+  if(!expanding){
+    // Collapsing: refuse if any item occupies row >= baseRows. Show padlock shake animation.
+    const blocking=inventory.find(it=>{
+      if(it.posIdx==null)return false;
+      const h=it.gh||1;
+      const lastRow=Math.floor(it.posIdx/a.cols)+h-1;
+      return lastRow>=a._baseRows;
+    });
+    if(blocking){
+      const btn=document.querySelector('.re4-expand-btn');
+      if(btn){
+        btn.classList.add('locked-shake');
+        setTimeout(()=>btn.classList.remove('locked-shake'),700);
+      }
+      const _g=document.getElementById('inv-grid');
+      if(_g){
+        // Mark cells in extra-zone with item, then trigger pulse class. Clean up after animation.
+        _g.querySelectorAll('.inv-cell').forEach(c=>{
+          const idx=parseInt(c.dataset.index);
+          if(!Number.isFinite(idx))return;
+          const row=Math.floor(idx/a.cols);
+          if(row>=a._baseRows){
+            c.classList.add('extra-zone');
+            const slotVal=gridSlots[idx];
+            if(slotVal&&slotVal!==null)c.classList.add('has-extra-item');
+          }
+        });
+        _g.classList.add('show-extra-pulse');
+        setTimeout(()=>{
+          _g.classList.remove('show-extra-pulse');
+          _g.querySelectorAll('.inv-cell.extra-zone').forEach(c=>{c.classList.remove('extra-zone');c.classList.remove('has-extra-item')});
+        },3000);
+      }
+      return;
+    }
+  }
+  a.rows=expanding?MAX_ROWS:a._baseRows;
   a.total=a.cols*a.rows;
   gridRows=a.rows;GRID_SIZE=a.cols*a.rows;
   renderGrid();
@@ -12077,14 +12559,20 @@ function renderItemDetail(){
   const it=selectedItemId!==null?inventory.find(i=>i.id===selectedItemId):null;
   el.classList.toggle('empty',!it);
   if(!it){el.innerHTML='<div class="rid-empty">Selecione um item</div>';return}
-  const wpn=it.iconWpn&&WEAPON_SVGS[it.iconWpn]?WEAPON_SVGS[it.iconWpn]:null;
+  const wpn=it.iconWpn?_wpnBaseEntry(it.iconWpn):null;
   const iconHTML=it.customImage?`<img src="${it.customImage}" alt="${it.name}" style="filter:none">`:(wpn?`<img src="${wpn.file}" alt="${wpn.label}">`:(SVG[it.iconKey]||SVG.sword||'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>'));
   const rarLabel=({common:'Comum',uncommon:'Incomum',rare:'Raro',epic:'Épico',legendary:'Lendário'})[it.rarity]||'Comum';
   const dur=Math.max(0,Math.min(100,it.durability||100));
   const isWeapon=it.cat==='arma';
   const dmg=it.damage||(isWeapon?(wpn?.dmg||'1d6'):'—');
   const crit=it.crit||(isWeapon?(wpn?.crit||'19-20'):'—');
-  const _rangeMap={lamina:'Adjacente',contundente:'Adjacente',lanca:'Perto',pistola:'Curto',heavy:'Médio',sniper:'Longo',granada:'Médio',municao:'—'};
+  const _DICE_STEPS=['0','1','1d2','1d4','1d6','1d8','1d10','1d12','2d8','2d10','2d12','4d8','4d10','4d12','8d8','8d10','8d12','16'];
+  const _baseDmg=isWeapon?(wpn?.dmg||'1d6'):'';
+  const _idxCur=_DICE_STEPS.indexOf(String(dmg));
+  const _idxBase=_DICE_STEPS.indexOf(String(_baseDmg));
+  const _dmgSteps=(_idxCur>=0&&_idxBase>=0)?(_idxCur-_idxBase):0;
+  const _dmgStepStr=isWeapon&&_dmgSteps!==0?`<span class="rid-stat-step" style="color:${_dmgSteps>0?'var(--lime)':'#ff5c5c'};font-size:9px;font-weight:700;margin-left:5px;letter-spacing:.3px" title="Passos a partir do dano base ${_baseDmg}">${_dmgSteps>0?'+':''}${_dmgSteps}p</span>`:'';
+  const _rangeMap={lamina:'Adjacente',contundente:'Adjacente',lanca:'Curto',pistola:'Curto',heavy:'Médio',sniper:'Longo',granada:'Médio',municao:'—',arco:'Longo'};
   const range=it.range||(isWeapon?(wpn?.range||(wpn?_rangeMap[wpn.sub]||'Adjacente':'Adjacente')):'—');
   const weight=it.weight||1;
   const qty=it.qty||1;
@@ -12094,7 +12582,7 @@ function renderItemDetail(){
   const _pct=(v,max)=>Math.max(2,Math.min(100,(v/max)*100));
   const dmgNum=parseInt(String(dmg).match(/\d+/)?.[0])||0;
   const critPct=_pct(parseInt(String(crit).match(/\d+/)?.[0])||50,100);
-  const rangeMap={Adjacente:10,Perto:25,Curto:40,Médio:60,Longo:90};
+  const rangeMap={Adjacente:10,Curto:40,Médio:60,Longo:90};
   const rangeNum=rangeMap[range]||30;
   const ico={
     dano:'<svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
@@ -12107,9 +12595,9 @@ function renderItemDetail(){
   const memories=it.memories||[];
   el.innerHTML=`
     <div class="rid-tabs">
-      <button class="rid-tab active" data-tab="info" onclick="_switchDetailTab(this,'info')">Informações</button>
-      <button class="rid-tab" data-tab="mods" onclick="_switchDetailTab(this,'mods')">Mods</button>
-      <button class="rid-tab" data-tab="skins" onclick="_switchDetailTab(this,'skins')">Skins</button>
+      <button class="rid-tab active" data-tab="info" onclick="_switchDetailTab(this,'info')">Info</button>
+      <button class="rid-tab" data-tab="mods" onclick="_switchDetailTab(this,'mods')">Acessórios</button>
+      <button class="rid-tab" data-tab="skins" onclick="_switchDetailTab(this,'skins')">Descrição</button>
     </div>
     <div class="rid-tab-content active" data-tab="info">
       <div class="rid-title-row">
@@ -12117,15 +12605,15 @@ function renderItemDetail(){
         <div class="rid-rarity-tag" style="color:var(--rarity-${it.rarity},var(--lime))">${rarLabel.toUpperCase()}</div>
       </div>
       <div class="rid-subtitle">${catLabel} · Nível ${lvl}</div>
-      <div class="rid-stat-row"><div class="rid-stat-icon">${ico.dano}</div><div class="rid-stat-name">Dano</div><div class="rid-stat-bar" style="--v:${_pct(dmgNum,200)}%"></div><div class="rid-stat-num">${dmg}</div></div>
-      <div class="rid-stat-row"><div class="rid-stat-icon">${ico.alcance}</div><div class="rid-stat-name">Alcance</div><div class="rid-stat-bar" style="--v:${_pct(rangeNum,100)}%"></div><div class="rid-stat-num">${range}</div></div>
-      <div class="rid-stat-row"><div class="rid-stat-icon">${ico.crit}</div><div class="rid-stat-name">Crítico</div><div class="rid-stat-bar" style="--v:${critPct}%"></div><div class="rid-stat-num">${crit}</div></div>
-      <div class="rid-stat-row"><div class="rid-stat-icon">${ico.peso}</div><div class="rid-stat-name">Peso</div><div class="rid-stat-bar" style="--v:${_pct(weight,10)}%"></div><div class="rid-stat-num">${weight} kg</div></div>
-      <div class="rid-stat-row"><div class="rid-stat-icon">${ico.qty}</div><div class="rid-stat-name">Qtd</div><div class="rid-stat-bar" style="--v:${_pct(qty,99)}%"></div><div class="rid-stat-num">${qty}</div></div>
-      <div class="rid-stat-row"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 8v6M4 12h6m4 0h6"/></svg></div><div class="rid-stat-name">Durab.</div><div class="rid-stat-bar" style="--v:${dur}%"></div><div class="rid-stat-num">${dur}/100</div></div>
-      ${(()=>{const _w=it.iconWpn&&WEAPON_SVGS[it.iconWpn];const _f=_w&&_w.type==='fogo'&&_w.sub!=='municao';if(!_f)return '';const cur=it.ammo??it.ammoMax??0,mag=it.ammoMax??cur,res=_ammoReserveFor(it);const aType=_ammoTypeOf(it)||'?';const canReload=cur<mag&&res>0&&!it._reloading;return `<div class="rid-stat-row"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div class="rid-stat-name">Munição</div><div class="rid-stat-bar" style="--v:${_pct(cur,mag||1)}%"></div><div class="rid-stat-num">${cur}/${mag} <span style="color:var(--text-dim);font-weight:500" title="Reserva ${aType}">·${res}</span></div></div><button class="modal-btn primary" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;${canReload?'':'opacity:.5;pointer-events:none'}" onclick="_reloadWeapon(${it.id})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>${it._reloading?'Recarregando...':'Recarregar'}</button>`})()}
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'damage','Dano','dice','${String(dmg).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.dano}</div><div class="rid-stat-name">Dano</div><div class="rid-stat-bar" style="--v:${_pct(dmgNum,200)}%"></div><div class="rid-stat-num">${dmg}${_dmgStepStr}</div></div>
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'range','Alcance','select:Adjacente,Curto,Médio,Longo','${String(range).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.alcance}</div><div class="rid-stat-name">Alcance</div><div class="rid-stat-bar" style="--v:${_pct(rangeNum,100)}%"></div><div class="rid-stat-num">${range}</div></div>
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'crit','Crítico','str','${String(crit).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.crit}</div><div class="rid-stat-name">Crítico</div><div class="rid-stat-bar" style="--v:${critPct}%"></div><div class="rid-stat-num">${crit}</div></div>
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'weight','Peso','int',${weight})"><div class="rid-stat-icon">${ico.peso}</div><div class="rid-stat-name">Peso</div><div class="rid-stat-bar" style="--v:${_pct(weight,10)}%"></div><div class="rid-stat-num">${weight}</div></div>
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'qty','Quantidade','int',${qty})"><div class="rid-stat-icon">${ico.qty}</div><div class="rid-stat-name">Qtd</div><div class="rid-stat-bar" style="--v:${_pct(qty,99)}%"></div><div class="rid-stat-num">${qty}</div></div>
+      <div class="rid-stat-row" onclick="_editItemStat(${it.id},'durability','Durabilidade (0-100)','int',${dur})"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 8v6M4 12h6m4 0h6"/></svg></div><div class="rid-stat-name">Durab.</div><div class="rid-stat-bar" style="--v:${dur}%"></div><div class="rid-stat-num">${dur}/100</div></div>
+      ${(()=>{const _w=it.iconWpn&&_wpnBaseEntry(it.iconWpn);const _f=_w&&_w.type==='fogo'&&_w.sub!=='municao';if(!_f)return '';if(it.ammoMax==null&&_w.ammoMax)it.ammoMax=_w.ammoMax;const mag=it.ammoMax||_w.ammoMax||0,cur=it.ammo??0,res=_ammoReserveFor(it);const aType=_ammoTypeOf(it)||'?';const canReload=cur<mag&&res>0&&!it._reloading;return `<div class="rid-stat-row" onclick="_showAmmoInfo(${it.id})" style="cursor:pointer"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div class="rid-stat-name">Munição</div><div class="rid-stat-bar" style="--v:${_pct(cur,mag||1)}%"></div><div class="rid-stat-num">${cur}/${mag} <span style="color:var(--text-dim);font-weight:500" title="Reserva ${aType}">·${res}</span></div></div><button class="modal-btn primary" style="width:100%;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;${canReload?'':'opacity:.5;pointer-events:none'}" onclick="_reloadWeapon(${it.id})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>${it._reloading?'Recarregando...':'Recarregar'}</button>`})()}
       ${it.desc&&it.desc!=='Sem descricao.'?`<div class="rid-desc-italic">${it.desc}</div>`:''}
-      <button class="modal-btn danger" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="if(confirm('Excluir ${it.name.replace(/'/g,'&#39;')}?'))dropItem(${it.id})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Excluir</button>
+      <button class="modal-btn danger" style="width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="_confirmDropItem(${it.id})"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Excluir</button>
     </div>
     <div class="rid-tab-content" data-tab="mods">
       <div class="rid-subtitle" style="margin-bottom:6px">Acessórios</div>
@@ -12147,7 +12635,8 @@ function renderItemDetail(){
       ${memories.length>0?`<div class="rid-subtitle" style="margin:10px 0 6px">Memórias</div>`+memories.map(m=>`<div class="rid-memory"><div class="rid-mem-when">${m.when||''}</div><div class="rid-mem-text">${m.text||m}</div></div>`).join(''):''}
     </div>
     <div class="rid-tab-content" data-tab="skins">
-      <div class="rid-subtitle" style="margin:14px 0;text-align:center">Sem skins disponíveis</div>
+      <div class="rid-subtitle" style="margin:10px 0 6px">Descrição</div>
+      <div class="rid-desc-edit" onclick="_editItemStat(${it.id},'desc','Descrição','textarea','${(it.desc&&it.desc!=='Sem descricao.'?String(it.desc):'').replace(/'/g,'&#39;').replace(/\n/g,'\\n')}')" style="padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);border-radius:6px;cursor:pointer;font-size:12px;color:${it.desc&&it.desc!=='Sem descricao.'?'var(--text-primary)':'var(--text-dim)'};line-height:1.5;white-space:pre-wrap;min-height:60px">${it.desc&&it.desc!=='Sem descricao.'?String(it.desc).replace(/</g,'&lt;'):'Toque para adicionar descrição...'}</div>
     </div>`;
 }
 window._switchDetailTab=function(btn,tab){
@@ -12155,15 +12644,58 @@ window._switchDetailTab=function(btn,tab){
   card.querySelectorAll('.rid-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   card.querySelectorAll('.rid-tab-content').forEach(c=>c.classList.toggle('active',c.dataset.tab===tab));
 };
+const MOD_SLOT_OPTIONS={
+  cano:{label:'Cano',emoji:'⚙',options:['Curto','Padrão','Longo','Pesado','Ventilado','Match-grade']},
+  mira:{label:'Mira',emoji:'◎',options:['Iron Sights','Red Dot','Holográfica','ACOG','Sniper Scope','Termal','Reflex']},
+  coronha:{label:'Coronha',emoji:'▭',options:['Padrão','Plegável','Tática','Ajustável','Sem coronha']},
+  carregador:{label:'Carregador',emoji:'▤',options:['10 rd','20 rd','30 rd','50 rd','Drum 100 rd','Estendido']},
+  silenciador:{label:'Silenciador',emoji:'⌬',options:['Compacto','Padrão','Pesado','Subsônico','Flash hider']},
+  laser:{label:'Laser',emoji:'✦',options:['Vermelho','Verde','Infravermelho','Combo lanterna']}
+};
 window._modSlotClick=function(id,slot){
   const it=inventory.find(x=>x.id===id);if(!it)return;
   it.mods=it.mods||{};
-  const name=prompt(`Acessório para ${slot}:`,it.mods[slot]?.name||'');
-  if(name===null)return;
-  if(name.trim())it.mods[slot]={name:name.trim()};
-  else delete it.mods[slot];
-  if(typeof saveGame==='function')try{saveGame()}catch(_){}
-  renderItemDetail();
+  const cfg=MOD_SLOT_OPTIONS[slot];if(!cfg)return;
+  const cur=it.mods[slot]?.name||'';
+  document.getElementById('mod-slot-modal')?.remove();
+  const wrap=document.createElement('div');
+  wrap.id='mod-slot-modal';
+  wrap.className='stat-edit-overlay';
+  wrap.innerHTML=`<div class="stat-edit-box">
+    <div class="stat-edit-title">${cfg.label}</div>
+    <div class="stat-edit-opts" style="margin-bottom:10px">${cfg.options.map(o=>`<button type="button" class="stat-edit-opt${cur===o?' active':''}" data-val="${o.replace(/"/g,'&quot;')}">${o}</button>`).join('')}</div>
+    <input id="_modCustom" class="stat-edit-input" type="text" placeholder="Custom..." value="${(cur&&!cfg.options.includes(cur))?cur.replace(/"/g,'&quot;'):''}">
+    <div class="stat-edit-actions">
+      ${cur?'<button class="stat-edit-btn cancel" data-act="remove" style="margin-right:auto;color:#ff5050;border-color:rgba(255,80,80,.3)">Remover</button>':''}
+      <button class="stat-edit-btn cancel" data-act="cancel">Cancelar</button>
+      <button class="stat-edit-btn ok" data-act="ok">OK</button>
+    </div>
+  </div>`;
+  document.body.appendChild(wrap);
+  let pick=cur;
+  wrap.querySelectorAll('.stat-edit-opt').forEach(b=>{
+    b.addEventListener('click',()=>{
+      wrap.querySelectorAll('.stat-edit-opt').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      pick=b.dataset.val;
+      wrap.querySelector('#_modCustom').value='';
+    });
+  });
+  wrap.querySelector('#_modCustom').addEventListener('input',e=>{
+    if(e.target.value){wrap.querySelectorAll('.stat-edit-opt').forEach(x=>x.classList.remove('active'));pick=e.target.value}
+  });
+  const close=()=>wrap.remove();
+  wrap.querySelector('[data-act="cancel"]').addEventListener('click',close);
+  wrap.querySelector('[data-act="remove"]')?.addEventListener('click',()=>{delete it.mods[slot];if(typeof saveGame==='function')try{saveGame()}catch(_){}close();renderItemDetail()});
+  wrap.querySelector('[data-act="ok"]').addEventListener('click',()=>{
+    const custom=wrap.querySelector('#_modCustom').value.trim();
+    const final=custom||pick;
+    if(final)it.mods[slot]={name:final};
+    else delete it.mods[slot];
+    if(typeof saveGame==='function')try{saveGame()}catch(_){}
+    close();renderItemDetail();
+  });
+  wrap.addEventListener('click',e=>{if(e.target===wrap)close()});
 };
 window._modSlotRemove=function(id,slot){
   const it=inventory.find(x=>x.id===id);if(!it||!it.mods)return;
@@ -12211,13 +12743,45 @@ document.getElementById('inv-search')?.addEventListener('input',renderGrid);
 
 function useItem(id){const it=inventory.find(i=>i.id===id);if(!it)return;if(it.cat==='consumivel'){it.qty--;try{window.sfx&&sfx.heal()}catch(_){}if(it.qty<=0){inventory=inventory.filter(i=>i.id!==id);toast(`Usou o ultimo ${it.name}`)}else toast(`Usou ${it.name} (${it.qty} restantes)`)}else{it.equipped=!it.equipped;try{window.sfx&&sfx.tick()}catch(_){}toast(it.equipped?`Equipou ${it.name}`:`Desequipou ${it.name}`);if(typeof saveGame==='function')try{saveGame()}catch(_){}}renderGrid();renderDashLists();try{renderItemDetail()}catch(_){}}
 function dropItem(id){const it=inventory.find(i=>i.id===id);if(!it)return;inventory=inventory.filter(i=>i.id!==id);try{window.sfx&&sfx.whoosh()}catch(_){}toast(`Descartou ${it.name}`);renderGrid();renderDashLists();clearDetail()}
+function _itemIconHtml(it){if(!it)return'';const wpn=it.iconWpn&&typeof WEAPON_SVGS!=='undefined'&&WEAPON_SVGS[it.iconWpn]?WEAPON_SVGS[it.iconWpn]:null;if(it.customImage)return`<img src="${it.customImage}" alt="" style="width:100%;height:100%;object-fit:contain;filter:none">`;if(wpn)return`<img src="${wpn.file}" alt="" style="width:100%;height:100%;object-fit:contain">`;return(typeof SVG!=='undefined'&&(SVG[it.iconKey]||SVG.sword))||'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>'}
+async function _confirmDropItem(id){const it=inventory.find(i=>i.id===id);if(!it)return;const ok=await appConfirm(`Descartar <b>${it.name}</b>? Esta ação não pode ser desfeita.`,{title:'Excluir item?',okLabel:'Excluir',cancelLabel:'Cancelar',danger:true,iconHtml:_itemIconHtml(it)});if(ok)dropItem(id)}
 async function clearInventory(){if(!inventory.length){toast('Inventário vazio');return}const ok=await (typeof appConfirm==='function'?appConfirm('Todos os itens serão removidos. Esta ação não pode ser desfeita.',{title:'Limpar inventário?',okLabel:'Limpar',cancelLabel:'Cancelar',danger:true}):Promise.resolve(confirm('Limpar inventário? Todos itens serão removidos.')));if(!ok)return;inventory=[];try{renderGrid()}catch(_){}try{renderDashLists()}catch(_){}try{clearDetail()}catch(_){}toast('Inventário limpo')}
+// Caliber mapping: weapon key OR ammo key → caliber identifier. Compatible if same caliber.
+const _CALIBER={
+  // Pistols
+  'pistol-01':'9mm','pistol-02':'9mm','pistol-03':'9mm','pistol-05':'9mm','pistol-07':'9mm',
+  'pistol-04':'.45acp','pistol-06':'.380','pistol-08':'.50ae',
+  'm4-22-pistol':'.22',
+  // Revolvers
+  'colt-revolver':'.45acp','revolver':'.44mag',
+  // Heavy
+  'benalli-m4':'12ga','shotgun-01':'12ga','shotgun-02':'12ga','shotgun-03':'12ga',
+  'm240':'7.62x54','machine-gun':'7.62x54',
+  'rpg':'rpg-rocket',
+  // Assault
+  'assault-rifle-04':'7.62x32',
+  // Ammo (caliber identity)
+  'a-32-auto':'9mm','a-308-caliber':'7.62x54','a-376-caliber':'.50ae','a-38x55':'.38',
+  'a-404-jeffery':'7.62x54','a-44-rem-mag':'.44mag','a-450-bushmaster':'.45acp',
+  'a-45gap':'.45acp','a-4buck':'12ga','a-50bmg':'.50bmg','a-762x32':'7.62x32',
+  'a-762x54r':'7.62x54','a-8mm-kurt':'.380','a-bb-shot':'12ga','a-bird-shot':'12ga',
+  'a-m962':'7.62x32','a-rpg-rocket':'rpg-rocket','a-slug':'12ga'
+};
+function _wpnCaliber(key){
+  if(!key)return null;
+  if(_CALIBER[key])return _CALIBER[key];
+  // Variant key (e.g. 'pistol-02-r90') → strip rotation suffix to find base.
+  const baseKey=key.replace(/-r(90|180|m90|-90)$/,'').replace(/-rm90$/,'');
+  if(_CALIBER[baseKey])return _CALIBER[baseKey];
+  return null;
+}
 function _ammoTypeOf(it){
   if(!it)return null;
   if(it.ammoType)return it.ammoType;
+  const cal=_wpnCaliber(it.iconWpn);
+  if(cal)return cal;
   const w=it.iconWpn&&WEAPON_SVGS[it.iconWpn];
   if(!w)return null;
-  // Fallback por sub do tipo de arma (mesmo sub = mesmo tipo de munição)
   if(w.sub==='municao')return it.ammoType||w.label||it.iconWpn;
   return w.sub||null;
 }
@@ -12231,33 +12795,29 @@ function _findAmmoItems(weapon){
   });
 }
 function _ammoReserveFor(weapon){
-  return _findAmmoItems(weapon).reduce((s,a)=>s+(a.qty||0),0);
+  // Reserve stored directly on weapon item (populated by drag-drop ammo consumption).
+  return weapon&&weapon.ammoReserve||0;
 }
 function _consumeAmmoFrom(weapon,n){
-  let need=n;
-  const pool=_findAmmoItems(weapon);
-  for(const a of pool){
-    if(need<=0)break;
-    const take=Math.min(a.qty||0,need);
-    a.qty=(a.qty||0)-take;
-    need-=take;
-    if(a.qty<=0){
-      const idx=inventory.indexOf(a);
-      if(idx>=0)inventory.splice(idx,1);
-    }
-  }
-  return n-need;
+  if(!weapon)return 0;
+  const have=weapon.ammoReserve||0;
+  const take=Math.min(have,n);
+  weapon.ammoReserve=have-take;
+  return take;
 }
 function _reloadWeapon(id){
   const it=inventory.find(i=>i.id===id);if(!it)return;
-  const w=it.iconWpn&&WEAPON_SVGS[it.iconWpn];
+  const w=it.iconWpn&&_wpnBaseEntry(it.iconWpn);
   if(!w||w.type!=='fogo'||w.sub==='municao')return;
   if(it._reloading)return;
-  const mag=it.ammoMax??(it.ammo||0);
-  const cur=it.ammo??mag;
+  // Auto-init ammoMax from base entry if missing on item.
+  if(it.ammoMax==null&&w.ammoMax)it.ammoMax=w.ammoMax;
+  const mag=it.ammoMax||w.ammoMax||0;
+  const cur=it.ammo??0;
   const res=_ammoReserveFor(it);
+  if(mag<=0){toast('Arma sem capacidade de munição','info');return}
   if(cur>=mag){toast('Carregador cheio','info');return}
-  if(res<=0){toast(`Sem munição compatível (${_ammoTypeOf(it)||'?'})`,'info');return}
+  if(res<=0){toast('Sem munição na reserva','info');return}
   const need=mag-cur;
   const take=Math.min(need,res);
   const dur=900+Math.min(1100,take*40);
@@ -12275,6 +12835,58 @@ function _reloadWeapon(id){
   },dur);
 }
 window._reloadWeapon=_reloadWeapon;
+function _showAmmoInfo(id){
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  const w=it.iconWpn&&_wpnBaseEntry(it.iconWpn);if(!w)return;
+  const cal=_wpnCaliber(it.iconWpn)||w.sub||'?';
+  const mag=it.ammoMax||w.ammoMax||0;
+  const cur=it.ammo??0;
+  const res=it.ammoReserve||0;
+  // Inventory ammo qty per type
+  const ammoInvQty={};
+  inventory.forEach(x=>{
+    const xw=x.iconWpn&&WEAPON_SVGS[x.iconWpn];
+    if(xw&&xw.sub==='municao')ammoInvQty[x.iconWpn]=(ammoInvQty[x.iconWpn]||0)+(x.qty||0);
+  });
+  const weaponCal=_wpnCaliber(it.iconWpn);
+  const ammoList=Object.entries(WEAPON_SVGS).filter(([k,v])=>{
+    if(v.sub!=='municao'||v.hidden)return false;
+    if(!weaponCal)return true;
+    return _wpnCaliber(k)===weaponCal;
+  }).sort(([,a],[,b])=>a.label.localeCompare(b.label));
+  document.getElementById('ammo-info-modal')?.remove();
+  const wrap=document.createElement('div');
+  wrap.id='ammo-info-modal';
+  wrap.className='stat-edit-overlay';
+  wrap.innerHTML=`<div class="stat-edit-box" style="max-width:520px;width:92vw">
+    <div class="stat-edit-title" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+      <span>${w.label}</span>
+      <button class="stat-edit-btn cancel" type="button" style="padding:4px 8px;font-size:11px" data-close>×</button>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-dim);padding:8px 10px;background:var(--bg-input);border-radius:6px;margin-bottom:12px;border:1px solid var(--border)">
+      <div>Calibre <b style="color:var(--lime);font-family:monospace">${cal}</b></div>
+      <div>Pente <b style="color:var(--text-secondary)">${cur}/${mag}</b></div>
+      <div>Reserva <b style="color:var(--text-secondary)">${res}</b></div>
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Munições compatíveis (${ammoList.length})</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;max-height:340px;overflow-y:auto;padding:2px">${ammoList.map(([k,v])=>{
+      const inv=ammoInvQty[k]||0;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;${inv>0?'border-color:color-mix(in srgb,var(--lime) 35%,var(--border))':''}">
+        <img src="${v.file}" style="width:24px;height:24px;object-fit:contain;flex-shrink:0">
+        <div style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0">
+          <span style="font-size:11px;color:var(--text-secondary);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v.label}</span>
+          <span style="font-size:9px;font-family:monospace;color:${inv>0?'var(--lime)':'var(--text-dim)'}">${inv>0?`x${inv}`:'—'}</span>
+        </div>
+      </div>`;
+    }).join('')}</div>
+    <div style="font-size:10px;color:var(--text-dim);margin-top:10px;text-align:center;padding:6px;background:rgba(127,29,29,.08);border-radius:4px;border:1px dashed rgba(127,29,29,.25)">Arraste qualquer munição do inventário até a arma para carregar.</div>
+  </div>`;
+  document.body.appendChild(wrap);
+  const close=()=>wrap.remove();
+  wrap.querySelector('[data-close]').addEventListener('click',close);
+  wrap.addEventListener('click',e=>{if(e.target===wrap)close()});
+}
+window._showAmmoInfo=_showAmmoInfo;
 window._ammoReserveFor=_ammoReserveFor;
 window._ammoTypeOf=_ammoTypeOf;
 
@@ -13467,7 +14079,7 @@ window._buildWpnPicker=function(){
     const tabs=subKeys.map((s,i)=>`<button type="button" class="weapon-sub-tab${i===0?' active':''}" data-sub="${type}-${s}" onclick="window._pickWpnSub('${type}','${s}')">${subs[s]}</button>`).join('');
     const PER_PAGE=12;
     const panes=subKeys.map((s,i)=>{
-      const list=Object.entries(WEAPON_SVGS).filter(([,v])=>v.type===type&&v.sub===s);
+      const list=Object.entries(WEAPON_SVGS).filter(([,v])=>v.type===type&&v.sub===s&&!v.hidden);
       if(!list.length){
         return`<div class="weapon-sub-pane${i===0?' active':''}" data-pane="${type}-${s}" data-total="0"><div style="font-size:11px;color:var(--text-dim);padding:8px">Vazio</div></div>`;
       }
@@ -13770,12 +14382,24 @@ function saveWeapon(){
     weight:parseFloat(document.getElementById('m-wweight').value)||1,
     value:parseInt(document.getElementById('m-wvalue').value)||0,
     durability:100,
-    gw:Math.max(1,Math.min(8,parseInt(document.getElementById('m-wgw').value)||2)),
-    gh:Math.max(1,Math.min(8,parseInt(document.getElementById('m-wgh').value)||1)),
+    gw:Math.max(1,Math.min(8,parseInt(document.getElementById('m-wgw').value)||WEAPON_SVGS[wpn].gw||2)),
+    gh:Math.max(1,Math.min(8,parseInt(document.getElementById('m-wgh').value)||WEAPON_SVGS[wpn].gh||1)),
     iconKey:'sword',
     iconWpn:wpn,
     desc:document.getElementById('m-wdesc').value.trim()||'Sem descrição.'
   };
+  // Init weapon stats from entry defaults.
+  const _we=WEAPON_SVGS[wpn];
+  if(_we){
+    if(_we.dmg)ni.damage=_we.dmg;
+    if(_we.crit)ni.crit=_we.crit;
+    if(_we.range)ni.range=_we.range;
+    if(_we.type==='fogo'&&_we.sub!=='municao'&&_we.ammoMax){
+      ni.ammoMax=_we.ammoMax;
+      ni.ammo=_we.ammoMax;
+      ni.ammoReserve=0;
+    }
+  }
   inventory.push(ni);
   if(typeof addLogRow==='function')try{addLogRow(ni)}catch(_){}
   renderGrid();
@@ -14013,9 +14637,9 @@ function appConfirm(message,opts){
       ov.className='app-confirm-overlay';
       document.body.appendChild(ov);
     }
-    const iconSvg=danger
+    const iconSvg=opts.iconHtml||(danger
       ? '<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-      : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+      : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>');
     ov.innerHTML=`<div class="app-confirm-box ${danger?'danger':''}" role="dialog" aria-modal="true" aria-labelledby="app-confirm-title">
       <div class="app-confirm-head">
         <div class="app-confirm-icon">${iconSvg}</div>
@@ -17772,6 +18396,30 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v2.0',date:'2026-04-29',title:'Sistema de armas + munição + inventário polido',items:[
+    {tag:'feat',text:'Catálogo completo de armas: 9 pistolas (Beretta 92, Glock 17, Sig P226, Colt 1911, HK USP, Walther PPK, CZ 75, Desert Eagle, M4-22), 2 revólveres (Colt + padrão), 1 rifle (Assault Rifle 04), 7 heavy (Benalli M4, M240, Machine Gun, RPG, Shotgun 01-03), 1 melee (Faca)'},
+    {tag:'feat',text:'18 munições com SVG: 308, 32 Auto, 376, 38x55, 404 Jeffery, 44 Rem Mag, 450 Bushmaster, 45 GAP, 4 Buck, 50 BMG, 7.62×32, 7.62×54R, 8mm Kurt, BB Shot, Bird Shot, M962, RPG Rocket, Slug'},
+    {tag:'feat',text:'Cada arma tem 4 SVGs pré-rotacionados (0°/90°/180°/-90°) — rotação swappa iconWpn pra variant correspondente, rendering perfeito em qualquer ângulo'},
+    {tag:'feat',text:'Sistema de calibre (_CALIBER): mapeia armas e munições por caliber identifier (9mm, .45acp, .380, .50ae, .44mag, .22, 12ga, 7.62×32, 7.62×54, rpg-rocket)'},
+    {tag:'feat',text:'Drag-drop munição em arma: enche pente primeiro, depois reserva (cap 5×mag), excesso permanece na caixa. Mismatch shake animation'},
+    {tag:'feat',text:'Modal munição clicável: mostra calibre, pente, reserva, lista compatíveis com qty no inventário (border verde nas que possui)'},
+    {tag:'feat',text:'Auto-init ammoMax: armas existentes sem ammoMax pegam do wpnEntry automaticamente'},
+    {tag:'feat',text:'SVG trim runtime: getBBox + viewBox=bbox tight, cache + pre-warm (requestIdleCallback)'},
+    {tag:'feat',text:'Damage steps display: badge +Np (verde positivo, vermelho negativo) no detail panel mostrando passos do dano base'},
+    {tag:'feat',text:'Service Worker network-first universal — atualizações refletem sem limpar cache'},
+    {tag:'change',text:'Inventário: posIdx persiste em zona expandida quando colapsa (item oculto, reaparece ao expandir)'},
+    {tag:'change',text:'Botão expand: cadeado vermelho tremendo + pulse vermelho nas cells com item bloqueando colapso'},
+    {tag:'change',text:'Drag preview/ghost cantos quadrados (border-radius:0)'},
+    {tag:'change',text:'Toasts de rotação removidos (90°/0° não notifica mais)'},
+    {tag:'change',text:'Rotação só via botão circular embaixo do item (long-press removido pra não conflitar com drag)'},
+    {tag:'fix',text:'Drag de items grandes: top-left footprint calculado corretamente (não cell sob cursor)'},
+    {tag:'fix',text:'Overlay alinhado por px exatos via getBoundingClientRect (sem fração 1px do CSS Grid)'},
+    {tag:'fix',text:'Dashboard usa _wpnBaseEntry: weapon mostra sempre rotação 0° na widget independente de variant em uso'},
+    {tag:'fix',text:'Single-cell weapons rotacionam visualmente nos 4 ângulos cardinais'},
+    {tag:'fix',text:'Item rotation: refuse + shake quando não cabe em nenhum slot (antes silenciava)'},
+    {tag:'feat',text:'SVGs slots de vestuário redesenhados: capacete viseira, óculos, amuleto, peitoral, calça, bota'},
+    {tag:'feat',text:'weapon-test.html: ferramenta de teste com 5 categorias (Assault, Pistol, Revolver, Heavy, Melee, Ammo) + filtro landscape/portrait + 3 escalas de cell'}
+  ]},
   {version:'v1.0',date:'2026-04-29',title:'Reset de versão — Revisão completa: tema único, calendário, pastas no dashboard',items:[
     {tag:'feat',text:'Novo calendário de RPG (calendario.html) com mês/agenda, eventos tipados, atalhos de teclado e import/export JSON'},
     {tag:'feat',text:'Quick Access bar no dashboard: pasta de salvamentos, biblioteca, calendário e atualizador OTA visíveis direto na home'},

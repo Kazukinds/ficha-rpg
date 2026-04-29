@@ -101,6 +101,30 @@ textarea,input,[contenteditable="true"],
     scroll-behavior:auto !important;
   }
 }
+/* ═══ MOBILE PERF — desliga blurs/anims caras em tela pequena ═══ */
+@media (max-width:520px),(pointer:coarse){
+  /* backdrop-filter é caríssimo no GPU mobile */
+  *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  /* infinite ambient anims gastam frame budget contínuo */
+  .pwa-install-btn,.tab-soon-ico,.save-toast-bar-fill::after,.save-toast-icon .sti-badge,
+  .item-ammo-badge.empty,.xp-fill::before,.inv-cell.multi-origin:hover .item-overlay,
+  .inv-cell.multi-origin.selected-item .item-overlay,
+  .inv-cell.occupied:not(.multi-origin):hover,
+  .inv-cell.occupied:not(.multi-origin).selected-item{animation:none!important}
+  /* status icons só animam quando user toca */
+  .status-icon.st-vit:hover,.status-icon.st-esf:hover,.status-icon.st-foc:hover,
+  .status-icon.st-det:hover,.status-icon.st-neu:hover,.status-icon.st-cor:hover{animation:none!important}
+  /* shadows pesadas → versão simples */
+  .eo-card-front,.eo-card-back{box-shadow:0 8px 24px rgba(0,0,0,.5)!important}
+  /* will-change só aplica enquanto transformando — limpa fora */
+  .xp-fill,.attr-stat-fill,.status-fill{will-change:auto!important}
+}
+/* ═══ LOW-END DEVICE — flag setada por JS via hardwareConcurrency ═══ */
+body[data-perf-low] *,body[data-perf-low] *::before,body[data-perf-low] *::after{
+  animation-iteration-count:1!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body[data-perf-low] .xp-fill::before,body[data-perf-low] .save-toast-bar-fill::after{animation:none!important}
 /* Scrollbar invisível globalmente (rolagem continua funcionando) */
 *{scrollbar-width:none;-ms-overflow-style:none}
 ::-webkit-scrollbar{width:0!important;height:0!important;display:none!important;background:transparent}
@@ -6091,6 +6115,21 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 </style>
 </head>
 <body class="app-fade-in">
+<script>
+(function(){try{
+  var hc=navigator.hardwareConcurrency||4;
+  var mem=navigator.deviceMemory||4;
+  var coarse=window.matchMedia('(pointer:coarse)').matches;
+  var narrow=window.innerWidth<=520;
+  // low-end: <=4 cores OU <=2GB RAM OU mobile narrow
+  if(hc<=4||mem<=2||(coarse&&narrow)){document.body.setAttribute('data-perf-low','')}
+  // pause anims quando aba escondida (economiza bateria + frame budget)
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden')document.body.style.animationPlayState='paused';
+    else document.body.style.animationPlayState='';
+  });
+}catch(_){}})();
+</script>
 <noscript><div style="position:fixed;inset:0;background:#0a0a0b;color:#e4e4e7;display:flex;align-items:center;justify-content:center;padding:24px;font-family:system-ui,sans-serif;text-align:center;z-index:99999"><div><h1 style="color:#bef264;margin:0 0 12px;font-size:22px">JavaScript necessário</h1><p style="margin:0;font-size:14px;line-height:1.6;max-width:380px">Ficha Eclipse precisa de JavaScript ativado para funcionar. Habilite nas configurações do navegador e recarregue.</p></div></div></noscript>
 <div class="eclipse-onboard" id="eclipse-onboard" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Eclipse">
   <div class="eo-bg"></div>

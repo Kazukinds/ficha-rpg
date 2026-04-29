@@ -20356,11 +20356,44 @@ function _nativeVersion(){
   return {name,code:parseInt(code)||0};
 }
 async function _fetchLatestRelease(){
+  // PRIMÁRIO: redirect HTML (sem rate-limit)
+  // GET github.com/{repo}/releases/latest → 302 → /releases/tag/vX.Y.Z
+  // Final URL contém tag. Cache localStorage 30min pra reduzir trafego.
+  const CACHE_KEY='eclipse_ota_cache';
+  const CACHE_TTL=30*60*1000;
+  try{
+    const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+    if(cached&&Date.now()-cached.at<CACHE_TTL)return cached.rel;
+  }catch(_){}
+  // Estratégia 1: redirect (sempre funciona, sem auth)
+  try{
+    const r=await fetch(`https://github.com/${OTA_REPO}/releases/latest`,{cache:'no-store',redirect:'follow'});
+    if(r.ok&&r.url){
+      const m=r.url.match(/\/releases\/tag\/([^\/?#]+)/);
+      if(m){
+        const tag=decodeURIComponent(m[1]);
+        // APK direto via /releases/latest/download/Eclipse.apk (estável)
+        const rel={
+          tag_name:tag,
+          name:'Eclipse '+tag,
+          body:'Atualização disponível',
+          assets:[{name:'Eclipse.apk',browser_download_url:`https://github.com/${OTA_REPO}/releases/latest/download/Eclipse.apk`}]
+        };
+        try{localStorage.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rel}))}catch(_){}
+        return rel;
+      }
+    }
+  }catch(e){console.warn('redirect fail',e)}
+  // Estratégia 2: fallback API (60/hr rate limit, mas mais info)
   try{
     const r=await fetch(`https://api.github.com/repos/${OTA_REPO}/releases/latest`,{cache:'no-store'});
-    if(!r.ok)return null;
-    return await r.json();
-  }catch(e){console.warn('fetch release fail',e);return null}
+    if(r.ok){
+      const rel=await r.json();
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rel}))}catch(_){}
+      return rel;
+    }
+  }catch(e){console.warn('api fail',e)}
+  return null;
 }
 function _parseVersionCode(tag){
   // Tag format: v2.0.7 ou 2.0.7 → versionCode = major*10000 + minor*100 + patch

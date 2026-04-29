@@ -5906,19 +5906,18 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .eo-actions-row{display:flex;gap:12px;justify-content:center;align-items:center}
 .eo-btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text-secondary)}
 .eo-btn-secondary:hover{border-color:var(--border-light);color:var(--text-primary)}
-/* Versão vertical do cartão — sig area ocupa bottom da card-l */
-.eo-card.eo-vertical{aspect-ratio:.72/1;width:min(300px,82vw);max-height:60vh}
-.eo-card.eo-vertical .eo-card-front{grid-template-columns:1fr!important;grid-template-rows:32% 68%}
-.eo-card.eo-vertical .eo-card-l{padding:12px 16px 10px;gap:6px;min-height:0;overflow:hidden;display:flex;flex-direction:column}
-.eo-card.eo-vertical .eo-card-r{min-height:0}
-.eo-card.eo-vertical .eo-card-brand{font-size:17px;margin-bottom:2px;flex:0 0 auto}
-.eo-card.eo-vertical .eo-card-row{font-size:10.5px;padding-bottom:6px;letter-spacing:.5px;flex:0 0 auto}
-.eo-card.eo-vertical .eo-card-sig{min-height:0;font-size:10px;padding-bottom:6px;flex:1 1 auto;display:flex;flex-direction:column}
-.eo-card.eo-vertical .eo-card-sig img{height:auto;max-height:100%;flex:1 1 auto;margin-top:4px}
-.eo-card.eo-vertical[data-signing] .eo-card-sig{min-height:120px;position:relative;flex:1 1 auto}
-.eo-card.eo-vertical[data-signing] .eo-sig-canvas{top:16px!important;bottom:4px!important;left:0!important;right:0!important;position:absolute!important}
-.eo-card.eo-vertical .eo-card-r::after{background:repeating-linear-gradient(195deg,transparent 0 36px,rgba(255,255,255,.18) 36px 38px,transparent 38px 72px)}
-@media(max-width:520px) and (orientation:portrait){.eo-card{aspect-ratio:.72/1;width:min(300px,82vw);max-height:60vh}.eo-card .eo-card-front{grid-template-columns:1fr!important;grid-template-rows:32% 68%}.eo-card .eo-card-l{padding:12px 16px 10px;gap:6px;min-height:0;overflow:hidden;display:flex;flex-direction:column}.eo-card .eo-card-r{min-height:0}.eo-card .eo-card-brand{font-size:17px;margin-bottom:2px;flex:0 0 auto}.eo-card .eo-card-row{font-size:10.5px;padding-bottom:6px;letter-spacing:.5px;flex:0 0 auto}.eo-card .eo-card-sig{min-height:0;font-size:10px;padding-bottom:6px;flex:1 1 auto;display:flex;flex-direction:column}.eo-card .eo-card-sig img{height:auto;max-height:100%;flex:1 1 auto;margin-top:4px}.eo-card[data-signing] .eo-card-sig{min-height:120px;position:relative;flex:1 1 auto}.eo-card[data-signing] .eo-sig-canvas{top:16px!important;bottom:4px!important;left:0!important;right:0!important;position:absolute!important}}
+/* Versão vertical do cartão — esconde mosaico, card-l = full, sig grande */
+.eo-card.eo-vertical{aspect-ratio:.72/1;width:min(300px,82vw);max-height:55vh}
+.eo-card.eo-vertical .eo-card-front{grid-template-columns:1fr!important;grid-template-rows:1fr!important;display:block!important}
+.eo-card.eo-vertical .eo-card-r{display:none!important}
+.eo-card.eo-vertical .eo-card-l{padding:14px 18px 12px;gap:8px;min-height:0;height:100%;overflow:hidden;display:flex;flex-direction:column}
+.eo-card.eo-vertical .eo-card-brand{font-size:18px;margin-bottom:4px;flex:0 0 auto}
+.eo-card.eo-vertical .eo-card-row{font-size:11px;padding-bottom:7px;letter-spacing:.5px;flex:0 0 auto}
+.eo-card.eo-vertical .eo-card-sig{min-height:0;font-size:10.5px;padding-bottom:6px;flex:1 1 auto;display:flex;flex-direction:column;border-bottom:none}
+.eo-card.eo-vertical .eo-card-sig img{height:auto;max-height:calc(100% - 14px);flex:1 1 auto;margin-top:4px;width:100%;object-position:center}
+.eo-card.eo-vertical[data-signing] .eo-card-sig{min-height:140px;position:relative;flex:1 1 auto;border:1px dashed color-mix(in srgb,var(--eo-card-fg,#fff) 30%,transparent);border-radius:6px;padding:18px 6px 6px;margin-top:4px}
+.eo-card.eo-vertical[data-signing] .eo-sig-canvas{top:18px!important;bottom:4px!important;left:4px!important;right:4px!important;position:absolute!important;touch-action:none!important}
+@media(max-width:520px) and (orientation:portrait){.eo-card{aspect-ratio:.72/1;width:min(300px,82vw);max-height:55vh}.eo-card .eo-card-front{grid-template-columns:1fr!important;grid-template-rows:1fr!important;display:block!important}.eo-card .eo-card-r{display:none!important}.eo-card .eo-card-l{padding:14px 18px 12px;gap:8px;min-height:0;height:100%;overflow:hidden;display:flex;flex-direction:column}.eo-card .eo-card-brand{font-size:18px;margin-bottom:4px;flex:0 0 auto}.eo-card .eo-card-row{font-size:11px;padding-bottom:7px;letter-spacing:.5px;flex:0 0 auto}.eo-card .eo-card-sig{min-height:0;font-size:10.5px;padding-bottom:6px;flex:1 1 auto;display:flex;flex-direction:column;border-bottom:none}.eo-card .eo-card-sig img{height:auto;max-height:calc(100% - 14px);flex:1 1 auto;margin-top:4px;width:100%;object-position:center}.eo-card[data-signing] .eo-card-sig{min-height:140px;position:relative;flex:1 1 auto;border:1px dashed color-mix(in srgb,var(--eo-card-fg,#fff) 30%,transparent);border-radius:6px;padding:18px 6px 6px;margin-top:4px}.eo-card[data-signing] .eo-sig-canvas{top:18px!important;bottom:4px!important;left:4px!important;right:4px!important;position:absolute!important;touch-action:none!important}}
 .eo-card[data-signing] .eo-card-sig{min-height:108px;padding-bottom:6px}
 .eo-card[data-signing] .eo-card-sig img{display:none!important}
 .eo-card-sig img[hidden]{display:none!important}
@@ -20663,7 +20662,28 @@ setTimeout(()=>{if(_hasNative())otaCheckAndInstall(false)},4000);
     $('#eo-variations').addEventListener('click',e=>{const b=e.target.closest('.eo-var');if(!b)return;$$('.eo-var').forEach(c=>c.removeAttribute('data-sel'));b.setAttribute('data-sel','');selectVariation(+b.dataset.v)});
     root.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const n=+b.dataset.go;if(n===2&&!state.name){const nm=$('#eo-prev-name');if(nm){nm.focus();const r=document.createRange();r.selectNodeContents(nm);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r);nm.classList.add('eo-shake');setTimeout(()=>nm.classList.remove('eo-shake'),500)}b.classList.remove('eo-recoil');void b.offsetWidth;b.classList.add('eo-recoil');setTimeout(()=>b.classList.remove('eo-recoil'),700);let msgEl=$('#eo-name-msg');if(!msgEl){msgEl=document.createElement('div');msgEl.id='eo-name-msg';msgEl.className='eo-name-msg';msgEl.textContent='Escreva seu nome no cartão antes de continuar';b.parentNode.insertBefore(msgEl,b);}msgEl.classList.remove('dismiss');void msgEl.offsetWidth;msgEl.classList.add('show');clearTimeout(msgEl._t);msgEl._t=setTimeout(()=>{msgEl.classList.remove('show');msgEl.classList.add('dismiss');setTimeout(()=>{},620)},3500);return}if(n>1&&!state.sig&&state.name){state.sig=autoSig(state.name);state.autoSig=true}setStep(n);syncPreview()});
     /* signature wiring */
-    const cv=$('#eo-sig-canvas');if(cv){sigCv=cv;sigCtx=cv.getContext('2d');fitSigCanvas();cv.style.touchAction='none';cv.style.pointerEvents='auto';cv.style.zIndex='100';cv.addEventListener('pointerdown',e=>{e.stopPropagation();sigDown(e)},{passive:false});cv.addEventListener('pointermove',sigMove,{passive:false});cv.addEventListener('pointerup',sigUp);cv.addEventListener('pointercancel',sigUp);cv.addEventListener('mousedown',e=>{e.stopPropagation();sigDown(e)});cv.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();const t=e.touches[0];sigDown({clientX:t.clientX,clientY:t.clientY,pointerId:0,preventDefault:()=>{},stopPropagation:()=>{}})},{passive:false});cv.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];sigMove({clientX:t.clientX,clientY:t.clientY,getCoalescedEvents:null,preventDefault:()=>{},stopPropagation:()=>{}})},{passive:false});cv.addEventListener('touchend',sigUp);window.addEventListener('pointermove',sigMove,{passive:false});window.addEventListener('pointerup',sigUp);window.addEventListener('pointercancel',sigUp);setTimeout(fitSigCanvas,100);setTimeout(fitSigCanvas,400);setTimeout(fitSigCanvas,800)}
+    const cv=$('#eo-sig-canvas');if(cv){
+      sigCv=cv;sigCtx=cv.getContext('2d');fitSigCanvas();
+      cv.style.touchAction='none';cv.style.pointerEvents='auto';cv.style.zIndex='100';
+      const sigParent=cv.closest('.eo-card-sig');if(sigParent)sigParent.style.touchAction='none';
+      // POINTER-ONLY (pointer events unificam mouse/touch/pen). Removidos handlers
+      // touch* duplicados que causavam double-fire/conflito state em Android WebView.
+      cv.addEventListener('pointerdown',e=>{
+        if(e.button!==0&&e.pointerType==='mouse')return;
+        e.stopPropagation();
+        if(e.cancelable)e.preventDefault();
+        try{cv.setPointerCapture(e.pointerId)}catch(_){}
+        sigDown(e);
+      },{passive:false});
+      cv.addEventListener('pointermove',e=>{if(e.cancelable)e.preventDefault();sigMove(e)},{passive:false});
+      cv.addEventListener('pointerup',e=>{try{cv.releasePointerCapture(e.pointerId)}catch(_){}sigUp(e)});
+      cv.addEventListener('pointercancel',sigUp);
+      cv.addEventListener('lostpointercapture',sigUp);
+      // Backstop fallback no document — caso pointer escape canvas mid-stroke
+      document.addEventListener('pointerup',sigUp);
+      document.addEventListener('pointercancel',sigUp);
+      setTimeout(fitSigCanvas,100);setTimeout(fitSigCanvas,400);setTimeout(fitSigCanvas,800);
+    }
     /* dblclick texto → cycle font; click único na assinatura (img/label, não canvas) → cycle sig font */
     function cycleTextFont(){state.font=(state.font+1)%FONTS.length;syncPreview()}
     function cycleSigFont(){state.sigFont=(state.sigFont+1)%SIG_FONTS.length;if(state.autoSig&&state.name)state.sig=autoSig(state.name);syncPreview()}

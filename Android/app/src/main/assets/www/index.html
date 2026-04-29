@@ -20347,10 +20347,10 @@ async function _fetchLatestRelease(){
   }catch(e){console.warn('fetch release fail',e);return null}
 }
 function _parseVersionCode(tag){
-  // Tag format: v3.1 ou 3.1 → versionCode = major*1000+minor*10
-  const m=String(tag||'').replace(/^v/,'').match(/(\d+)(?:\.(\d+))?/);
+  // Tag format: v2.0.7 ou 2.0.7 → versionCode = major*10000 + minor*100 + patch
+  const m=String(tag||'').replace(/^v/,'').match(/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);
   if(!m)return 0;
-  return parseInt(m[1])*1000+parseInt(m[2]||'0')*10;
+  return parseInt(m[1])*10000+parseInt(m[2]||'0')*100+parseInt(m[3]||'0');
 }
 function _findApkAsset(release){
   const assets=(release&&release.assets)||[];

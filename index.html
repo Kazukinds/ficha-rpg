@@ -6594,7 +6594,33 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
           <div class="item-list" id="dash-weapons"></div>
           <div class="item-list" id="dash-consumables"></div>
         </div>
-        <div class="card"><div class="card-header"><div class="card-title">Evolução</div><div class="toggle-pills"><button class="toggle-pill active" data-mode="xp">XP</button><button class="toggle-pill" data-mode="credito">Crédito</button></div></div><div class="chart-area"><canvas class="chart-canvas" id="lineChart"></canvas></div><div class="chart-time-pills"><span style="font-size:11px;color:var(--text-dim)" id="chart-info">Sem dados</span></div></div>
+        <div class="card" id="evolucao-card"><div class="card-header"><div class="card-title" id="evolucao-title">Evolução</div><div class="toggle-pills"><button class="toggle-pill active" data-mode="xp">XP</button><button class="toggle-pill" data-mode="credito">Crédito</button></div></div><div class="chart-area"><canvas class="chart-canvas" id="lineChart"></canvas></div><div class="chart-time-pills"><span style="font-size:11px;color:var(--text-dim)" id="chart-info">Sem dados · segure pra trocar XP/Estágio</span></div></div>
+<script>
+(function(){
+  let pressTm=null,pressed=false;
+  function start(e){
+    if(window.chartMode==='credito')return;
+    pressed=false;
+    pressTm=setTimeout(()=>{
+      pressed=true;
+      window.chartMode=window.chartMode==='estagio'?'xp':'estagio';
+      const card=document.getElementById('evolucao-card');
+      if(card){card.style.transition='transform .35s cubic-bezier(.2,.9,.2,1.05),filter .35s';card.style.transform='scale(.98)';card.style.filter='brightness(.85)';
+        setTimeout(()=>{card.style.transform='';card.style.filter=''},360);
+      }
+      const t=document.getElementById('evolucao-title');
+      if(t)t.textContent=window.chartMode==='estagio'?'Evolução · Estágio':'Evolução';
+      try{drawChart&&drawChart(true)}catch(_){}
+      try{navigator.vibrate&&navigator.vibrate(40)}catch(_){}
+    },550);
+  }
+  function cancel(){if(pressTm)clearTimeout(pressTm);pressTm=null}
+  document.addEventListener('pointerdown',e=>{const c=e.target.closest('#evolucao-card .chart-area');if(c)start(e)});
+  document.addEventListener('pointerup',cancel);
+  document.addEventListener('pointercancel',cancel);
+  document.addEventListener('pointerleave',cancel);
+})();
+</script>
         <!-- ROW 2: Status | Atributos -->
         <div class="card">
           <div class="card-header"><div class="card-title">Status</div></div>
@@ -11638,11 +11664,13 @@ function drawChart(animate){
   const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
   const w=rect.width,h=rect.height;
   const d=buildChartData();chartData=d;
-  const p=d.main,st=d.stage||null;
-  const hasStage=st&&st.length>1&&chartMode==='xp';
+  // Em modo estagio, usa stage data como linha primária; xp continua secundário
+  const p=chartMode==='estagio'&&d.stage?d.stage:d.main;
+  const st=chartMode==='estagio'?d.main:(d.stage||null);
+  const hasStage=st&&st.length>1&&(chartMode==='xp'||chartMode==='estagio');
   // XP fixo na cor Eclipse Lime (não acompanha paleta) — v10.2
-  const XP_COLOR='#c8f542';
-  const XP_RGB='200,245,66';
+  const XP_COLOR=chartMode==='estagio'?'#a78bfa':'#84cc16';
+  const XP_RGB=chartMode==='estagio'?'167,139,250':'132,204,22';
   const lineColor=chartMode==='credito'?'#fbbf24':XP_COLOR;
   const stageColor='#a78bfa';
   const isLight=document.documentElement.getAttribute('data-theme')==='light';

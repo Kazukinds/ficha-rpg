@@ -527,7 +527,11 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .dash-wpn-widget .dash-wpn-arc{position:absolute;inset:0;width:100%;height:100%}
 .dash-wpn-widget .dash-wpn-img{width:46%;height:46%;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));z-index:2;transform:translateY(-6%)}
 [data-theme="light"] .dash-wpn-widget .dash-wpn-img{filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))}
-.dash-wpn-widget .dash-wpn-sec{position:absolute;top:2%;left:2%;width:16%;height:16%;object-fit:contain;z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.dash-wpn-widget .dash-wpn-sec{position:absolute;top:2%;left:2%;width:16%;height:16%;object-fit:contain;z-index:3;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));cursor:pointer;transition:transform .15s}
+.dash-wpn-widget .dash-wpn-sec:hover{transform:scale(1.18)}
+.dash-wpn-widget .dash-wpn-img{cursor:pointer;transition:transform .18s}
+.dash-wpn-widget .dash-wpn-img:hover{transform:translateY(-6%) scale(1.05)}
+.dash-wpn-2h-tag{position:absolute;top:6%;right:6%;background:var(--magenta);color:#0a0a0c;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:.5px;z-index:3;box-shadow:0 2px 8px color-mix(in srgb,var(--magenta) 50%,transparent)}
 .dash-wpn-widget .dash-wpn-secbar{display:none}
 .dash-wpn-widget .dash-wpn-ammo{position:absolute;left:0;right:0;bottom:24%;text-align:center;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;z-index:3}
 .dash-wpn-widget .dash-wpn-ammo b{font-size:34px;font-weight:800;color:#7fc23a;text-shadow:0 0 12px color-mix(in srgb,#7fc23a 60%,transparent)}
@@ -11403,8 +11407,6 @@ function _dashWeaponWidget(prim,sec){
   const isFire=wpn&&wpn.type==='fogo'&&wpn.sub!=='municao';
   const dur=Math.max(0,Math.min(100,prim.durability??100));
   const dc=dur>=66?'#7fc23a':(dur>=33?'#facc15':'#ef4444');
-  // Arco com gap no topo: começa em 135° (sul-oeste = bottom-left) e segue clockwise por 270°,
-  // terminando em 405°≡45° (sul-leste = bottom-right). Gap = 90° centrado em 0°/360° (top).
   const cx=100,cy=100,r=78,sw=8;
   const polar=(deg)=>{const rad=(deg-90)*Math.PI/180;return[cx+r*Math.cos(rad),cy+r*Math.sin(rad)]};
   const startA=135,extA=270,arcA=extA*(dur/100);
@@ -11414,18 +11416,45 @@ function _dashWeaponWidget(prim,sec){
   const trackPath=`M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${extA>180?1:0} 1 ${xT.toFixed(2)} ${yT.toFixed(2)}`;
   const fillPath=arcA>0.5?`M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${arcA>180?1:0} 1 ${xF.toFixed(2)} ${yF.toFixed(2)}`:'';
   const cur=isFire?(prim.ammo??prim.qty):null,max=isFire?(prim.ammoMax??prim.qty):null;
-  const secWpn=sec&&sec.iconWpn&&_wpnBaseEntry(sec.iconWpn);
+  // Se primária é duas mãos, esconde secundária
+  const isTwoHand=!!prim.twoHanded;
+  const secWpn=!isTwoHand&&sec&&sec.iconWpn&&_wpnBaseEntry(sec.iconWpn);
   const secSrc=secWpn?_themeWpnSrc(secWpn.file):'';
-  return `<div class="dash-wpn-widget">
+  return `<div class="dash-wpn-widget" data-prim="${prim.id}" ${sec?`data-sec="${sec.id}"`:''}>
     <svg class="dash-wpn-arc" viewBox="0 0 200 200">
       <path d="${trackPath}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="${sw}" stroke-linecap="round"/>
       ${fillPath?`<path d="${fillPath}" fill="none" stroke="${dc}" stroke-width="${sw}" stroke-linecap="round"/>`:''}
     </svg>
-    ${secSrc?`<img class="dash-wpn-sec" src="${secSrc}" draggable="false">`:''}
-    <img class="dash-wpn-img" src="${src}" draggable="false">
+    ${secSrc?`<img class="dash-wpn-sec" src="${secSrc}" draggable="false" onclick="_cycleEquippedWeapon('sec')" title="Trocar arma secundária">`:''}
+    ${isTwoHand?`<span class="dash-wpn-2h-tag" title="Duas mãos">2H</span>`:''}
+    <img class="dash-wpn-img" src="${src}" draggable="false" onclick="_cycleEquippedWeapon('prim')" title="Trocar arma principal">
     ${isFire?`<div class="dash-wpn-ammo"><b>${cur}</b><i>/${max}</i></div>`:''}
   </div>`;
 }
+window._toggleTwoHand=function(id){
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  it.twoHanded=!it.twoHanded;
+  if(typeof saveGame==='function')try{saveGame()}catch(_){}
+  renderItemDetail();renderDashLists();
+  toast&&toast(it.twoHanded?'Arma de duas mãos':'Arma de uma mão');
+};
+window._cycleEquippedWeapon=function(slot){
+  const arms=inventory.filter(i=>i.cat==='arma');
+  if(arms.length<2){toast&&toast('Apenas '+arms.length+' arma(s) no inventário');return}
+  const eq=arms.filter(i=>i.equipped);
+  const cur=slot==='prim'?eq[0]:eq[1];
+  if(!cur){toast&&toast('Slot vazio');return}
+  // Próxima arma não equipada
+  const others=arms.filter(i=>!i.equipped);
+  if(!others.length){toast&&toast('Sem outras armas pra trocar');return}
+  cur.equipped=false;
+  others[0].equipped=true;
+  // Se nova arma é 2H, desequipa secundária
+  if(slot==='prim'&&others[0].twoHanded&&eq[1])eq[1].equipped=false;
+  if(typeof saveGame==='function')try{saveGame()}catch(_){}
+  renderDashLists();renderGrid();
+  toast&&toast('Trocou: '+others[0].name);
+};
 function renderDashLists(){
   const w=inventory.filter(i=>i.cat==='arma'),c=inventory.filter(i=>i.equipped);
   const eqArms=inventory.filter(i=>i.cat==='arma'&&i.equipped);
@@ -13152,6 +13181,7 @@ function renderItemDetail(){
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'range','Alcance','select:Adjacente,Curto,Médio,Longo','${String(range).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.alcance}</div><div class="rid-stat-name">Alcance</div><div class="rid-stat-bar" style="--v:${_pct(rangeNum,100)}%"></div><div class="rid-stat-num">${range}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'crit','Crítico','str','${String(crit).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.crit}</div><div class="rid-stat-name">Crítico</div><div class="rid-stat-bar" style="--v:${critPct}%"></div><div class="rid-stat-num">${crit}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'steps','Passos','int',${it.steps||1})"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="rid-stat-name">Passos</div><div class="rid-stat-bar" style="--v:${_pct(it.steps||1,10)}%"></div><div class="rid-stat-num">${it.steps||1}</div></div>
+      ${it.cat==='arma'?`<div class="rid-stat-row" onclick="_toggleTwoHand(${it.id})"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><path d="M6 12h12"/><path d="M3 8l3 4-3 4"/><path d="M21 8l-3 4 3 4"/></svg></div><div class="rid-stat-name">Empunh.</div><div class="rid-stat-bar" style="--v:${it.twoHanded?100:50}%"></div><div class="rid-stat-num" style="color:${it.twoHanded?'var(--magenta)':'var(--text-secondary)'}">${it.twoHanded?'2 mãos':'1 mão'}</div></div>`:''}
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'weight','Peso','int',${weight})"><div class="rid-stat-icon">${ico.peso}</div><div class="rid-stat-name">Peso</div><div class="rid-stat-bar" style="--v:${_pct(weight,10)}%"></div><div class="rid-stat-num">${weight}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'qty','Quantidade','int',${qty})"><div class="rid-stat-icon">${ico.qty}</div><div class="rid-stat-name">Qtd</div><div class="rid-stat-bar" style="--v:${_pct(qty,99)}%"></div><div class="rid-stat-num">${qty}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'durability','Durabilidade (0-100)','int',${dur})"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 8v6M4 12h6m4 0h6"/></svg></div><div class="rid-stat-name">Durab.</div><div class="rid-stat-bar" style="--v:${dur}%"></div><div class="rid-stat-num">${dur}/100</div></div>

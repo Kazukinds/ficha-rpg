@@ -6604,7 +6604,10 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
     pressTm=setTimeout(()=>{
       pressed=true;
       window._chartLongPressed=true;
-      window.chartMode=window.chartMode==='estagio'?'xp':'estagio';
+      // Write to BOTH window var AND module-scope chartMode (drawChart reads module-scope)
+      const newMode=chartMode==='estagio'?'xp':'estagio';
+      try{chartMode=newMode}catch(_){}
+      window.chartMode=newMode;
       // Garante pill XP ativo
       const card=document.getElementById('evolucao-card');
       const pill=card?.querySelector('.toggle-pill[data-mode="xp"]');

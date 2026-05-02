@@ -6611,7 +6611,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
       const pill=document.querySelector('#evolucao-card .toggle-pill[data-mode="xp"]');
       if(pill){
         pill.textContent='XP';
-        pill.style.background=window.chartMode==='estagio'?'#4d7c0f':'';
+        pill.style.background=window.chartMode==='estagio'?'#a78bfa':'';
         pill.style.color=window.chartMode==='estagio'?'#fff':'';
       }
       const t=document.getElementById('evolucao-title');
@@ -11675,10 +11675,10 @@ function drawChart(animate){
   const st=chartMode==='estagio'?d.main:(d.stage||null);
   const hasStage=st&&st.length>1&&(chartMode==='xp'||chartMode==='estagio');
   // XP fixo na cor Eclipse Lime (não acompanha paleta) — v10.2
-  const XP_COLOR=chartMode==='estagio'?'#4d7c0f':'#84cc16';
-  const XP_RGB=chartMode==='estagio'?'77,124,15':'132,204,22';
+  const XP_COLOR=chartMode==='estagio'?'#a78bfa':'#84cc16';
+  const XP_RGB=chartMode==='estagio'?'167,139,250':'132,204,22';
   const lineColor=chartMode==='credito'?'#fbbf24':XP_COLOR;
-  const stageColor='#4d7c0f';
+  const stageColor='#a78bfa';
   const isLight=document.documentElement.getAttribute('data-theme')==='light';
   const gridColor=isLight?'rgba(0,0,0,.05)':'rgba(35,35,41,.4)';
   const labelColor=isLight?'#a1a1aa':'#5a5a6e';

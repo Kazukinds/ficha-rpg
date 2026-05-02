@@ -863,6 +863,12 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .item-ammo-badge .ammo-sep{color:#666;font-weight:500;margin:0 1px;opacity:.85}
 .item-ammo-badge .ammo-max{color:#9aa0a6;font-weight:600}
 .item-ammo-badge.empty{color:#ff5c5c;border-color:rgba(255,92,92,.5)}
+/* Pulse + shake leve em arma sem munição */
+.inv-cell.ammo-empty{animation:ammoEmptyPulse 1.8s ease-in-out infinite}
+@keyframes ammoEmptyPulse{0%,100%{box-shadow:inset 0 0 0 1px rgba(255,92,92,.25),0 0 0 0 rgba(255,92,92,0)}50%{box-shadow:inset 0 0 0 1.5px rgba(255,92,92,.6),0 0 14px rgba(255,92,92,.35)}}
+.inv-cell.ammo-empty .item-icon,.inv-cell.ammo-empty .item-custom-img{animation:ammoEmptyShake 1.8s ease-in-out infinite}
+@keyframes ammoEmptyShake{0%,90%,100%{transform:translateX(0)}92%{transform:translateX(-1px)}94%{transform:translateX(1px)}96%{transform:translateX(-.5px)}98%{transform:translateX(.5px)}}
+body[data-perf-low] .inv-cell.ammo-empty,body[data-perf-low] .inv-cell.ammo-empty .item-icon,body[data-perf-low] .inv-cell.ammo-empty .item-custom-img{animation:none}
 .item-ammo-badge.empty .ammo-cur{color:#ff5c5c;text-shadow:0 0 4px rgba(255,92,92,.5),0 1px 2px rgba(0,0,0,.9)}
 .item-ammo-badge.empty .ammo-max{color:#c66}
 .item-ammo-badge.low{color:#ffb84d;border-color:rgba(255,184,77,.5)}
@@ -6939,16 +6945,6 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-main">
           <div class="profile-section profile-systems-card">
             <div class="profile-section-title">Sistemas</div>
-            <a class="profile-system-link" href="#" title="Abrir biblioteca embutida" onclick="event.preventDefault();document.querySelector('.sidebar-btn[data-tab=biblioteca]')?.click();">
-              <span class="profile-system-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5a2.5 2.5 0 0 0-2.5 2.5V4.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/></svg>
-              </span>
-              <span class="profile-system-info">
-                <span class="profile-system-name">Biblioteca</span>
-                <span class="profile-system-sub">Lore · capítulos · geradores</span>
-              </span>
-              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>
             <a class="profile-system-link" href="#" title="Salvar ficha" onclick="event.preventDefault();saveToFile();">
               <span class="profile-system-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -6966,16 +6962,6 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
               <span class="profile-system-info">
                 <span class="profile-system-name">Importar ficha</span>
                 <span class="profile-system-sub">Carrega JSON salvo</span>
-              </span>
-              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>
-            <a class="profile-system-link" href="calendario.html" title="Calendário de RPG">
-              <span class="profile-system-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
-              </span>
-              <span class="profile-system-info">
-                <span class="profile-system-name">Calendário</span>
-                <span class="profile-system-sub">Linha do tempo da campanha</span>
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
@@ -7006,26 +6992,6 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
               <span class="profile-system-info">
                 <span class="profile-system-name">Som</span>
                 <span class="profile-system-sub" id="profile-sound-sub">Ativado</span>
-              </span>
-              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>
-            <a class="profile-system-link" id="profile-ota-link" href="#" title="Atualizar app via GitHub" onclick="event.preventDefault();otaCheckAndInstall(true);">
-              <span class="profile-system-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 10 15 10"/></svg>
-              </span>
-              <span class="profile-system-info">
-                <span class="profile-system-name" id="profile-ota-name">Atualizar app</span>
-                <span class="profile-system-sub" id="profile-ota-sub">Verificar nova versão</span>
-              </span>
-              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </a>
-            <a class="profile-system-link" id="profile-folder-link" href="#" title="Pasta de armazenamento" onclick="event.preventDefault();openFolderManager();">
-              <span class="profile-system-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-              </span>
-              <span class="profile-system-info">
-                <span class="profile-system-name">Pasta de armazenamento</span>
-                <span class="profile-system-sub" id="profile-folder-sub">Documents/FichaEclipse</span>
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
@@ -12228,7 +12194,7 @@ function buildCell(i){
       const cur=item.ammo??0;
       const reserve=item.ammoReserve??0;
       let stateCls='';
-      if(cur===0)stateCls=' empty';
+      if(cur===0){stateCls=' empty';cell.classList.add('ammo-empty')}
       else if(maxMag>0&&cur/maxMag<=0.3)stateCls=' low';
       ammoBadge=`<span class="item-ammo-badge${stateCls}" title="Munição carregada / capacidade do pente · reserva: ${reserve}"><span class="ammo-cur">${cur}</span><span class="ammo-sep">/</span><span class="ammo-max">${maxMag}</span></span>`;
       item._prevAmmo=cur;

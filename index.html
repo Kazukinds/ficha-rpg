@@ -6072,6 +6072,39 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .eo-cp-btn:hover{background:rgba(255,255,255,.08);color:#fff}
 .eo-cp-btn.primary{background:#c8f542;color:#0a0a0c;border-color:#c8f542}
 .eo-cp-btn.primary:hover{background:#d4ff5a}
+/* Image config modal */
+.img-cfg-overlay{position:fixed;inset:0;background:rgba(5,5,7,.75);backdrop-filter:blur(14px);z-index:9500;display:flex;align-items:center;justify-content:center;padding:20px;animation:imgCfgIn .25s ease}
+@keyframes imgCfgIn{from{opacity:0}to{opacity:1}}
+.img-cfg-modal{width:100%;max-width:440px;background:linear-gradient(180deg,#16161c 0%,#0c0c10 100%);border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden;display:flex;flex-direction:column;animation:imgCfgPop .35s cubic-bezier(.2,.9,.2,1.05)}
+@keyframes imgCfgPop{from{transform:translateY(8px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.img-cfg-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05)}
+.img-cfg-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.img-cfg-close{width:28px;height:28px;border:0;border-radius:50%;background:rgba(255,255,255,.06);color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+.img-cfg-close:hover{background:rgba(255,255,255,.12);color:#fff}
+.img-cfg-stage{position:relative;height:240px;background:#0a0a0e;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
+.img-cfg-checker{position:absolute;inset:0;background-image:linear-gradient(45deg,#1a1a20 25%,transparent 25%),linear-gradient(-45deg,#1a1a20 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1a1a20 75%),linear-gradient(-45deg,transparent 75%,#1a1a20 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,10px 0;opacity:.4}
+.img-cfg-preview{position:relative;max-width:80%;max-height:200px;object-fit:contain;transition:transform .25s cubic-bezier(.2,.9,.2,1.05);filter:drop-shadow(0 4px 12px rgba(0,0,0,.6))}
+.img-cfg-controls{padding:14px 18px;display:flex;flex-direction:column;gap:14px}
+.img-cfg-row{display:flex;flex-direction:column;gap:6px}
+.img-cfg-row label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center}
+.img-cfg-row label span{color:#fff;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:0;text-transform:none}
+.img-cfg-rots{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:3px}
+.img-cfg-rots button{flex:1;background:transparent;border:0;color:#999;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:9px 0;border-radius:7px;cursor:pointer;transition:background .15s,color .15s}
+.img-cfg-rots button:hover{color:#fff}
+.img-cfg-rots button.active{background:#fff;color:#0a0a0c}
+.img-cfg-row input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:rgba(255,255,255,.08);border-radius:2px;outline:none;cursor:pointer}
+.img-cfg-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.img-cfg-row input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;cursor:pointer;border:0;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.img-cfg-flips{flex-direction:row!important;gap:6px}
+.img-cfg-flip-btn,.img-cfg-reset-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:#bbb;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;padding:10px;border-radius:9px;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.img-cfg-flip-btn svg,.img-cfg-reset-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.img-cfg-flip-btn:hover,.img-cfg-reset-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.img-cfg-flip-btn.active{background:#c8f542;color:#0a0a0c;border-color:#c8f542}
+.img-cfg-foot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}
+.img-cfg-btn{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#ccc;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:11px;border-radius:10px;cursor:pointer;transition:background .15s,color .15s}
+.img-cfg-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.img-cfg-btn.primary{background:#c8f542;color:#0a0a0c;border-color:#c8f542}
+.img-cfg-btn.primary:hover{background:#d4ff5a}
 .eo-patterns{display:flex;justify-content:center;gap:8px;width:min(420px,86vw);background:rgba(255,255,255,.05);border-radius:14px;padding:6px;margin:0}
 [data-theme="light"] .eo-patterns{background:#fff;box-shadow:inset 0 0 0 1px #e3e5eb}
 .eo-pat{flex:1;background:transparent;border:none;border-radius:10px;padding:10px;font-size:18px;color:var(--text-dim,#8a8a96);cursor:pointer;transition:background .2s,color .2s}
@@ -12870,28 +12903,106 @@ window._pickItemImage=function(id){
   inp.type='file';inp.accept='image/png,image/jpeg,image/webp,image/svg+xml,image/gif';
   inp.onchange=e=>{
     const f=e.target.files[0];if(!f)return;
-    if(f.size>2*1024*1024){toast('Imagem muito grande (max 2MB)');return}
+    if(f.size>4*1024*1024){toast('Imagem muito grande (max 4MB)');return}
     const r=new FileReader();
     r.onload=ev=>{
       const data=ev.target.result;
-      const img=new Image();
-      img.onload=()=>{
-        const max=320;
-        const scale=Math.min(1,max/Math.max(img.width,img.height));
-        const w=Math.round(img.width*scale),h=Math.round(img.height*scale);
-        const cv=document.createElement('canvas');cv.width=w;cv.height=h;
-        const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,w,h);
-        it.customImage=cv.toDataURL(f.type==='image/png'?'image/png':'image/webp',.85);
-        renderGrid();renderItemDetail();renderDashLists();
-        if(typeof saveGame==='function')try{saveGame()}catch(_){}
-        toast('Imagem adicionada');
-      };
-      img.onerror=()=>{it.customImage=data;renderGrid();renderItemDetail();renderDashLists();if(typeof saveGame==='function')try{saveGame()}catch(_){}toast('Imagem adicionada')};
-      img.src=data;
+      window._openImgConfig(id,data);
     };
     r.readAsDataURL(f);
   };
   inp.click();
+};
+window._openImgConfig=function(id,sourceData){
+  const it=inventory.find(x=>x.id===id);if(!it)return;
+  const src=sourceData||it.customImage;if(!src)return;
+  document.querySelectorAll('.img-cfg-overlay').forEach(o=>o.remove());
+  const ov=document.createElement('div');ov.className='img-cfg-overlay';
+  ov.innerHTML=`
+    <div class="img-cfg-modal">
+      <div class="img-cfg-head">
+        <div class="img-cfg-title">Configurar imagem</div>
+        <button class="img-cfg-close" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="img-cfg-stage">
+        <div class="img-cfg-checker"></div>
+        <img class="img-cfg-preview" id="imgCfgPrev" src="${src}" alt="">
+      </div>
+      <div class="img-cfg-controls">
+        <div class="img-cfg-row">
+          <label>Rotação</label>
+          <div class="img-cfg-rots">
+            <button type="button" data-rot="0" class="active">0°</button>
+            <button type="button" data-rot="90">90°</button>
+            <button type="button" data-rot="180">180°</button>
+            <button type="button" data-rot="-90">-90°</button>
+          </div>
+        </div>
+        <div class="img-cfg-row">
+          <label>Tamanho <span id="imgCfgScaleVal">100%</span></label>
+          <input type="range" id="imgCfgScale" min="40" max="200" value="100" step="5">
+        </div>
+        <div class="img-cfg-row img-cfg-flips">
+          <button type="button" id="imgCfgFlipH" class="img-cfg-flip-btn"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M7 8l-4 4 4 4"/><path d="M17 16l4-4-4-4"/></svg>Inverter H</button>
+          <button type="button" id="imgCfgFlipV" class="img-cfg-flip-btn"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M8 7l4-4 4 4"/><path d="M16 17l-4 4-4-4"/></svg>Inverter V</button>
+          <button type="button" id="imgCfgReset" class="img-cfg-reset-btn">Resetar</button>
+        </div>
+      </div>
+      <div class="img-cfg-foot">
+        <button type="button" class="img-cfg-btn" id="imgCfgCancel">Cancelar</button>
+        <button type="button" class="img-cfg-btn primary" id="imgCfgOk">Aplicar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  const state={rot:it._imgRot||0,scale:it._imgScale||100,flipH:it._imgFlipH||false,flipV:it._imgFlipV||false};
+  const prev=ov.querySelector('#imgCfgPrev');
+  const apply=()=>{
+    const sx=state.flipH?-1:1,sy=state.flipV?-1:1;
+    prev.style.transform=`rotate(${state.rot}deg) scale(${(state.scale/100)*sx},${(state.scale/100)*sy})`;
+    ov.querySelectorAll('[data-rot]').forEach(b=>b.classList.toggle('active',+b.dataset.rot===state.rot));
+    ov.querySelector('#imgCfgScaleVal').textContent=state.scale+'%';
+    ov.querySelector('#imgCfgFlipH').classList.toggle('active',state.flipH);
+    ov.querySelector('#imgCfgFlipV').classList.toggle('active',state.flipV);
+    ov.querySelector('#imgCfgScale').value=state.scale;
+  };
+  apply();
+  ov.querySelectorAll('[data-rot]').forEach(b=>b.addEventListener('click',()=>{state.rot=+b.dataset.rot;apply()}));
+  ov.querySelector('#imgCfgScale').addEventListener('input',e=>{state.scale=+e.target.value;apply()});
+  ov.querySelector('#imgCfgFlipH').addEventListener('click',()=>{state.flipH=!state.flipH;apply()});
+  ov.querySelector('#imgCfgFlipV').addEventListener('click',()=>{state.flipV=!state.flipV;apply()});
+  ov.querySelector('#imgCfgReset').addEventListener('click',()=>{state.rot=0;state.scale=100;state.flipH=false;state.flipV=false;apply()});
+  const close=()=>ov.remove();
+  ov.querySelector('#imgCfgCancel').addEventListener('click',close);
+  ov.querySelector('.img-cfg-close').addEventListener('click',close);
+  ov.addEventListener('click',e=>{if(e.target===ov)close()});
+  ov.querySelector('#imgCfgOk').addEventListener('click',()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=320;
+      const swap=state.rot===90||state.rot===-90;
+      const baseW=swap?img.height:img.width,baseH=swap?img.width:img.height;
+      const baseScale=Math.min(1,max/Math.max(baseW,baseH));
+      const sFinal=baseScale*(state.scale/100);
+      const W=Math.max(1,Math.round((swap?img.height:img.width)*sFinal));
+      const H=Math.max(1,Math.round((swap?img.width:img.height)*sFinal));
+      const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+      const ctx=cv.getContext('2d');
+      ctx.translate(W/2,H/2);
+      ctx.rotate(state.rot*Math.PI/180);
+      ctx.scale(state.flipH?-1:1,state.flipV?-1:1);
+      const dw=img.width*sFinal,dh=img.height*sFinal;
+      ctx.drawImage(img,-dw/2,-dh/2,dw,dh);
+      it.customImage=cv.toDataURL('image/webp',.9);
+      it._imgRot=state.rot;it._imgScale=state.scale;it._imgFlipH=state.flipH;it._imgFlipV=state.flipV;
+      try{renderGrid();renderItemDetail();renderDashLists()}catch(_){}
+      if(typeof saveGame==='function')try{saveGame()}catch(_){}
+      toast('Imagem aplicada');
+      close();
+    };
+    img.onerror=()=>{toast('Erro ao processar');close()};
+    img.src=src;
+  });
+  document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',esc)}});
 };
 window._clearItemImage=function(id){
   const it=inventory.find(x=>x.id===id);if(!it)return;
@@ -13073,6 +13184,12 @@ function openItemCtxMenu(e,id){
     return b;
   };
   pop.appendChild(mkBtn('Editar',()=>openEditItem(id)));
+  pop.appendChild(mkBtn(it.customImage?'Configurar imagem':'Adicionar imagem',()=>{
+    if(it.customImage)window._openImgConfig(id);
+    else window._pickItemImage(id);
+  }));
+  if(it.customImage)pop.appendChild(mkBtn('Trocar imagem',()=>window._pickItemImage(id)));
+  if(it.customImage)pop.appendChild(mkBtn('Remover imagem',()=>window._clearItemImage(id),true));
   if(it.cat==='consumivel')pop.appendChild(mkBtn('Usar',()=>useItem(id)));
   pop.appendChild(mkBtn('Descartar',()=>dropItem(id),true));
   document.body.appendChild(pop);

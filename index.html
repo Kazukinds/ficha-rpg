@@ -6609,10 +6609,10 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         setTimeout(()=>{card.style.transform='';card.style.filter=''},360);
       }
       const pill=document.querySelector('#evolucao-card .toggle-pill[data-mode="xp"]');
-      if(pill){
-        pill.textContent='XP';
-        pill.style.background=window.chartMode==='estagio'?'#a78bfa':'';
-        pill.style.color=window.chartMode==='estagio'?'#fff':'';
+      const slider=document.querySelector('#evolucao-card .toggle-slider');
+      if(slider&&pill&&pill.classList.contains('active')){
+        slider.style.background=window.chartMode==='estagio'?'#a78bfa':'#84cc16';
+        slider.style.boxShadow=window.chartMode==='estagio'?'0 0 8px rgba(167,139,250,.4)':'0 0 8px rgba(132,204,22,.4)';
       }
       const t=document.getElementById('evolucao-title');
       if(t)t.textContent='Evolução';
@@ -20710,7 +20710,7 @@ document.querySelectorAll('.see-all').forEach((btn,idx)=>{
 
 // ═══ TOGGLE SLIDER SYSTEM ═══
 const TOGGLE_COLORS={
-  xp:{bg:'var(--magenta)',shadow:'rgba(var(--magenta-rgb),.4)'},
+  xp:{bg:'#84cc16',shadow:'rgba(132,204,22,.4)'},
   credito:{bg:'var(--yellow)',shadow:'rgba(251,191,36,.4)'},
   tipo:{bg:'var(--magenta)',shadow:'rgba(var(--magenta-rgb),.4)'},
   raridade:{bg:'var(--purple)',shadow:'rgba(167,139,250,.4)'}

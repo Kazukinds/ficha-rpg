@@ -4442,11 +4442,11 @@ textarea{line-height:1.5}
 /* Espaçamento utilitário phi */
 
 /* ═══ INTERFACE POLISH v2 ═══ */
-/* Tab content fade-in */
-.tab-content.active{animation:tab-slide-in var(--dur-lg) var(--ease-out-expo)}
-@keyframes tab-slide-in{from{opacity:0;transform:translateY(14px) scale(.985);filter:blur(4px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
-/* Stagger dos cards dentro da aba ativa */
-.tab-content.active .card,.tab-content.active .dash-grid>*,.tab-content.active .xp-card{animation:anim-slide-up var(--dur-lg) var(--ease-out-expo) both}
+/* Tab content fade simples (sem subir/scale/blur) */
+.tab-content.active{animation:tab-fade-in .22s ease-out}
+@keyframes tab-fade-in{from{opacity:0}to{opacity:1}}
+/* Cards aparecem instantâneos — sem stagger up */
+.tab-content.active .card,.tab-content.active .dash-grid>*,.tab-content.active .xp-card{animation:none}
 .tab-content.active .dash-grid>*:nth-child(1){animation-delay:40ms}
 .tab-content.active .dash-grid>*:nth-child(2){animation-delay:90ms}
 .tab-content.active .dash-grid>*:nth-child(3){animation-delay:140ms}

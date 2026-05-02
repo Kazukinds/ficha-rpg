@@ -6026,10 +6026,34 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .eo-controls .eo-pat[data-sel],.eo-controls .eo-var[data-sel]{background:var(--text-primary,#fafafa);color:#0a0c12}
 .eo-colors{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;width:min(360px,86vw)}
 .eo-color{width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;max-width:26px!important;max-height:26px!important;flex:0 0 26px!important;aspect-ratio:1/1!important;border-radius:50%!important;border:none;cursor:pointer;background:var(--c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.12);transition:transform .2s,box-shadow .2s;padding:0!important;line-height:0!important;font-size:0!important;box-sizing:border-box!important;display:inline-block!important;align-self:center!important;flex-shrink:0!important;flex-grow:0!important;vertical-align:middle}
-.eo-color:hover{transform:scale(1.08)}
-.eo-color[data-sel]{box-shadow:inset 0 0 0 2px rgba(255,255,255,.5),0 0 0 3px var(--c)}
-[data-theme="light"] .eo-color{box-shadow:inset 0 0 0 2px rgba(0,0,0,.08)}
-[data-theme="light"] .eo-color[data-sel]{box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 0 0 3px var(--c)}
+.eo-color{position:relative;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 70%,#fff 30%) 0%,var(--c) 55%,color-mix(in srgb,var(--c) 75%,#000 25%) 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 2px rgba(0,0,0,.18),0 1px 3px rgba(0,0,0,.3)}
+.eo-color:hover{transform:scale(1.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 2px rgba(0,0,0,.18),0 4px 12px color-mix(in srgb,var(--c) 45%,transparent)}
+.eo-color[data-sel]{transform:scale(1.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 0 0 2px rgba(255,255,255,.85),0 0 0 2px var(--bg-card,#0c0c0e),0 0 0 4px var(--c),0 4px 14px color-mix(in srgb,var(--c) 50%,transparent)!important}
+[data-theme="light"] .eo-color{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 2px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.12)}
+[data-theme="light"] .eo-color[data-sel]{box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 0 0 2px #fff,0 0 0 2px #fff,0 0 0 4px var(--c),0 4px 14px color-mix(in srgb,var(--c) 35%,transparent)!important}
+.eo-color-custom{background:conic-gradient(from 0deg,#ef4444,#f59e0b,#eab308,#84cc16,#22c55e,#06b6d4,#3b82f6,#a855f7,#ec4899,#ef4444)!important;display:flex!important;align-items:center;justify-content:center;color:#fff;position:relative}
+.eo-color-custom svg{width:14px;height:14px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));position:relative;z-index:1}
+.eo-color-custom::before{content:"";position:absolute;inset:3px;border-radius:50%;background:rgba(20,20,24,.78);backdrop-filter:blur(2px)}
+.eo-color-custom svg{position:relative;z-index:2}
+/* Popover custom color picker */
+.eo-cp-pop{position:fixed;z-index:10000;background:linear-gradient(180deg,#1a1a20 0%,#0e0e12 100%);border:1px solid rgba(255,255,255,.08);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);padding:14px;width:240px;display:none;flex-direction:column;gap:10px;opacity:0;transform:translateY(-4px) scale(.96);transform-origin:top center;transition:opacity .18s,transform .22s cubic-bezier(.2,.9,.2,1.05)}
+.eo-cp-pop.open{display:flex;opacity:1;transform:none}
+.eo-cp-sat{position:relative;width:100%;height:140px;border-radius:10px;cursor:crosshair;background:linear-gradient(to top,#000 0%,transparent 100%),linear-gradient(to right,#fff 0%,transparent 100%),hsl(var(--cp-h,0) 100% 50%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.eo-cp-sat-thumb{position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.5);transform:translate(-50%,-50%);pointer-events:none}
+.eo-cp-hue{position:relative;width:100%;height:12px;border-radius:6px;background:linear-gradient(to right,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.eo-cp-hue-thumb{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.4);transform:translate(-50%,-50%);pointer-events:none}
+.eo-cp-row{display:flex;align-items:center;gap:8px}
+.eo-cp-prev{width:36px;height:36px;border-radius:8px;background:var(--cp-c,#ec4899);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 0 1px rgba(255,255,255,.06),0 4px 12px color-mix(in srgb,var(--cp-c,#ec4899) 35%,transparent);flex-shrink:0}
+.eo-cp-hex{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#e8e8ec;font-family:'JetBrains Mono','Consolas',monospace;font-size:12px;padding:8px 10px;outline:none;text-transform:uppercase;letter-spacing:.5px}
+.eo-cp-hex:focus{border-color:rgba(200,245,66,.5)}
+.eo-cp-eye{width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;flex-shrink:0}
+.eo-cp-eye:hover{background:rgba(255,255,255,.08);color:#fff}
+.eo-cp-eye svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.eo-cp-actions{display:flex;gap:6px}
+.eo-cp-btn{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#ccc;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:9px 10px;cursor:pointer;font-family:inherit;transition:background .15s,color .15s}
+.eo-cp-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.eo-cp-btn.primary{background:#c8f542;color:#0a0a0c;border-color:#c8f542}
+.eo-cp-btn.primary:hover{background:#d4ff5a}
 .eo-patterns{display:flex;justify-content:center;gap:8px;width:min(420px,86vw);background:rgba(255,255,255,.05);border-radius:14px;padding:6px;margin:0}
 [data-theme="light"] .eo-patterns{background:#fff;box-shadow:inset 0 0 0 1px #e3e5eb}
 .eo-pat{flex:1;background:transparent;border:none;border-radius:10px;padding:10px;font-size:18px;color:var(--text-dim,#8a8a96);cursor:pointer;transition:background .2s,color .2s}
@@ -6342,34 +6366,24 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="eo-ctrl-section">
           <div class="eo-ctrl-label">Cor</div>
           <div class="eo-colors" id="eo-colors">
-            <button class="eo-color" data-c="#0a0c12" style="--c:#0a0c12"></button>
-            <button class="eo-color" data-c="#1f2937" style="--c:#1f2937"></button>
-            <button class="eo-color" data-c="#374151" style="--c:#374151"></button>
-            <button class="eo-color" data-c="#f5f5f7" style="--c:#f5f5f7"></button>
-            <button class="eo-color" data-c="#4f46e5" style="--c:#4f46e5"></button>
-            <button class="eo-color" data-c="#3b82f6" style="--c:#3b82f6"></button>
-            <button class="eo-color" data-c="#0ea5e9" style="--c:#0ea5e9"></button>
-            <button class="eo-color" data-c="#06b6d4" style="--c:#06b6d4"></button>
-            <button class="eo-color" data-c="#14b8a6" style="--c:#14b8a6"></button>
-            <button class="eo-color" data-c="#10b981" style="--c:#10b981"></button>
-            <button class="eo-color" data-c="#22c55e" style="--c:#22c55e" data-sel></button>
-            <button class="eo-color" data-c="#84cc16" style="--c:#84cc16"></button>
-            <button class="eo-color" data-c="#eab308" style="--c:#eab308"></button>
-            <button class="eo-color" data-c="#fbbf24" style="--c:#fbbf24"></button>
-            <button class="eo-color" data-c="#f97316" style="--c:#f97316"></button>
-            <button class="eo-color" data-c="#ea580c" style="--c:#ea580c"></button>
+            <button class="eo-color" data-c="#ec4899" style="--c:#ec4899" data-sel title="Padrão"></button>
+            <button class="eo-color" data-c="#84cc16" style="--c:#84cc16" title="Lime"></button>
             <button class="eo-color" data-c="#ef4444" style="--c:#ef4444"></button>
-            <button class="eo-color" data-c="#dc2626" style="--c:#dc2626"></button>
-            <button class="eo-color" data-c="#f43f5e" style="--c:#f43f5e"></button>
-            <button class="eo-color" data-c="#ec4899" style="--c:#ec4899"></button>
-            <button class="eo-color" data-c="#d946ef" style="--c:#d946ef"></button>
-            <button class="eo-color" data-c="#a855f7" style="--c:#a855f7"></button>
-            <button class="eo-color" data-c="#7c3aed" style="--c:#7c3aed"></button>
+            <button class="eo-color" data-c="#f97316" style="--c:#f97316"></button>
+            <button class="eo-color" data-c="#fbbf24" style="--c:#fbbf24"></button>
+            <button class="eo-color" data-c="#22c55e" style="--c:#22c55e"></button>
+            <button class="eo-color" data-c="#14b8a6" style="--c:#14b8a6"></button>
+            <button class="eo-color" data-c="#06b6d4" style="--c:#06b6d4"></button>
+            <button class="eo-color" data-c="#3b82f6" style="--c:#3b82f6"></button>
             <button class="eo-color" data-c="#6366f1" style="--c:#6366f1"></button>
-            <button class="eo-color" data-c="#94a3b8" style="--c:#94a3b8"></button>
-            <button class="eo-color" data-c="#a78bfa" style="--c:#a78bfa"></button>
-            <button class="eo-color" data-c="#fb7185" style="--c:#fb7185"></button>
-            <button class="eo-color" data-c="#fcd34d" style="--c:#fcd34d"></button>
+            <button class="eo-color" data-c="#a855f7" style="--c:#a855f7"></button>
+            <button class="eo-color" data-c="#d946ef" style="--c:#d946ef"></button>
+            <button class="eo-color" data-c="#f43f5e" style="--c:#f43f5e"></button>
+            <button class="eo-color" data-c="#0a0c12" style="--c:#0a0c12"></button>
+            <button class="eo-color" data-c="#f5f5f7" style="--c:#f5f5f7"></button>
+            <button class="eo-color eo-color-custom" id="eo-color-custom" type="button" title="Cor personalizada">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
           </div>
         </div>
         <div class="eo-ctrl-section">
@@ -21361,6 +21375,92 @@ document.addEventListener('visibilitychange',()=>{
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initOS);
   else initOS();
+})();
+</script>
+
+<!-- ═══ CUSTOM COLOR PICKER POPOVER ═══ -->
+<div class="eo-cp-pop" id="eo-cp-pop">
+  <div class="eo-cp-sat" id="eo-cp-sat"><div class="eo-cp-sat-thumb" id="eo-cp-sat-thumb"></div></div>
+  <div class="eo-cp-hue" id="eo-cp-hue"><div class="eo-cp-hue-thumb" id="eo-cp-hue-thumb"></div></div>
+  <div class="eo-cp-row">
+    <div class="eo-cp-prev" id="eo-cp-prev"></div>
+    <input type="text" class="eo-cp-hex" id="eo-cp-hex" maxlength="7" value="#ec4899">
+    <button class="eo-cp-eye" id="eo-cp-eye" title="Conta-gotas (eyedropper)"><svg viewBox="0 0 24 24"><path d="M2 22l1-1 4.5-4.5"/><path d="M7 17l8-8"/><path d="M14 4l6 6-3 3-6-6z"/><path d="M19 5l3-3"/></svg></button>
+  </div>
+  <div class="eo-cp-actions">
+    <button class="eo-cp-btn" id="eo-cp-cancel">Cancelar</button>
+    <button class="eo-cp-btn primary" id="eo-cp-ok">Aplicar</button>
+  </div>
+</div>
+<script>
+(function(){
+  const pop=document.getElementById('eo-cp-pop');
+  const sat=document.getElementById('eo-cp-sat'),satTh=document.getElementById('eo-cp-sat-thumb');
+  const hue=document.getElementById('eo-cp-hue'),hueTh=document.getElementById('eo-cp-hue-thumb');
+  const prev=document.getElementById('eo-cp-prev'),hex=document.getElementById('eo-cp-hex');
+  let h=330,s=84,v=92,target=null;
+  function hsv2rgb(h,s,v){s/=100;v/=100;const c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;let r,g,b;if(h<60){r=c;g=x;b=0}else if(h<120){r=x;g=c;b=0}else if(h<180){r=0;g=c;b=x}else if(h<240){r=0;g=x;b=c}else if(h<300){r=x;g=0;b=c}else{r=c;g=0;b=x}return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)]}
+  function rgb2hex(r,g,b){return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  function hex2hsv(hexS){const m=/^#?([a-f\d]{6})$/i.exec(hexS);if(!m)return null;const i=parseInt(m[1],16);const r=(i>>16)/255,g=((i>>8)&255)/255,b=(i&255)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let H=0;if(d){if(mx===r)H=((g-b)/d+(g<b?6:0))*60;else if(mx===g)H=((b-r)/d+2)*60;else H=((r-g)/d+4)*60}return {h:H,s:mx?d/mx*100:0,v:mx*100}}
+  function update(){
+    const [r,g,b]=hsv2rgb(h,s,v);const c=rgb2hex(r,g,b);
+    sat.style.setProperty('--cp-h',h);
+    satTh.style.left=s+'%';satTh.style.top=(100-v)+'%';
+    hueTh.style.left=(h/360*100)+'%';
+    prev.style.setProperty('--cp-c',c);
+    if(document.activeElement!==hex)hex.value=c;
+    pop.style.setProperty('--cp-c',c);
+  }
+  function open(btn){
+    target=btn;
+    const cur=hex2hsv(getActiveColor()||'#ec4899');
+    if(cur){h=cur.h;s=cur.s;v=cur.v}
+    update();
+    const r=btn.getBoundingClientRect();
+    pop.classList.add('open');
+    const pw=240,ph=pop.offsetHeight||320;
+    let left=r.left+r.width/2-pw/2;left=Math.max(8,Math.min(window.innerWidth-pw-8,left));
+    let top=r.bottom+8;if(top+ph>window.innerHeight-8)top=r.top-ph-8;
+    pop.style.left=left+'px';pop.style.top=Math.max(8,top)+'px';
+  }
+  function close(){pop.classList.remove('open');target=null}
+  function getActiveColor(){const sel=document.querySelector('.eo-color[data-sel]:not(.eo-color-custom)');return sel?sel.dataset.c:null}
+  function apply(c){
+    const colors=document.getElementById('eo-colors');if(!colors)return;
+    colors.querySelectorAll('.eo-color').forEach(b=>b.removeAttribute('data-sel'));
+    let existing=colors.querySelector(`.eo-color[data-c="${c}"]`);
+    if(!existing){
+      existing=document.createElement('button');existing.className='eo-color';existing.dataset.c=c;existing.style.setProperty('--c',c);
+      const customBtn=document.getElementById('eo-color-custom');colors.insertBefore(existing,customBtn);
+      existing.addEventListener('click',()=>{colors.querySelectorAll('.eo-color').forEach(b=>b.removeAttribute('data-sel'));existing.setAttribute('data-sel','');existing.dispatchEvent(new CustomEvent('eoColorPick',{bubbles:true,detail:{c}}))});
+    }
+    existing.setAttribute('data-sel','');
+    existing.dispatchEvent(new CustomEvent('eoColorPick',{bubbles:true,detail:{c}}));
+  }
+  // Sat drag
+  function satMove(e){
+    const r=sat.getBoundingClientRect();
+    const x=Math.max(0,Math.min(r.width,(e.touches?e.touches[0].clientX:e.clientX)-r.left));
+    const y=Math.max(0,Math.min(r.height,(e.touches?e.touches[0].clientY:e.clientY)-r.top));
+    s=x/r.width*100;v=100-y/r.height*100;update();
+  }
+  sat.addEventListener('pointerdown',e=>{sat.setPointerCapture(e.pointerId);satMove(e);const mv=ev=>satMove(ev),up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up)};document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up)});
+  // Hue drag
+  function hueMove(e){const r=hue.getBoundingClientRect();const x=Math.max(0,Math.min(r.width,(e.touches?e.touches[0].clientX:e.clientX)-r.left));h=x/r.width*360;update()}
+  hue.addEventListener('pointerdown',e=>{hue.setPointerCapture(e.pointerId);hueMove(e);const mv=ev=>hueMove(ev),up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up)};document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up)});
+  // Hex input
+  hex.addEventListener('input',()=>{const c=hsv2rgb;const x=hex2hsv(hex.value.trim());if(x){h=x.h;s=x.s;v=x.v;update()}});
+  // Eyedropper
+  document.getElementById('eo-cp-eye').addEventListener('click',async ()=>{
+    if(!window.EyeDropper){alert('Eyedropper não suportado neste navegador');return}
+    try{const ed=new EyeDropper();const r=await ed.open();const x=hex2hsv(r.sRGBHex);if(x){h=x.h;s=x.s;v=x.v;update()}}catch(_){}
+  });
+  document.getElementById('eo-cp-cancel').addEventListener('click',close);
+  document.getElementById('eo-cp-ok').addEventListener('click',()=>{const c=hex.value.trim();if(/^#[0-9a-f]{6}$/i.test(c)){apply(c);close()}});
+  document.addEventListener('pointerdown',e=>{if(pop.classList.contains('open')&&!e.target.closest('#eo-cp-pop')&&!e.target.closest('#eo-color-custom'))close()},{capture:true});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pop.classList.contains('open'))close()});
+  // Bind custom button (delegated since may rerender)
+  document.addEventListener('click',e=>{const b=e.target.closest('#eo-color-custom');if(b){e.stopPropagation();open(b)}});
 })();
 </script>
 

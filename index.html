@@ -748,6 +748,13 @@ body.inv-dragging-active .inv-cell:hover{border-color:transparent;background:#1a
 body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .inv-cell:hover .item-icon svg{transform:none}
 .inv-cell.occupied{background:#1a1a1f;cursor:grab;border-radius:0!important}
+/* Fundo distinto por categoria (subtle tint) */
+.inv-cell.occupied[data-cat="municao"]{background:linear-gradient(135deg,#1f1f26 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(96,165,250,.08)}
+.inv-cell.occupied[data-cat="arma"]{background:linear-gradient(135deg,#221b1d 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(248,113,113,.06)}
+.inv-cell.occupied[data-cat="armadura"]{background:linear-gradient(135deg,#1c2026 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(96,165,250,.08)}
+.inv-cell.occupied[data-cat="consumivel"]{background:linear-gradient(135deg,#1d2420 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(34,197,94,.08)}
+.inv-cell.occupied[data-cat="material"]{background:linear-gradient(135deg,#22201d 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(251,191,36,.08)}
+.inv-cell.occupied[data-cat="chave"]{background:linear-gradient(135deg,#221d24 0%,#1a1a20 100%);box-shadow:inset 0 0 0 1px rgba(167,139,250,.08)}
 .inv-cell.covered{border-radius:0!important}
 .inv-cell.multi-origin{overflow:visible;z-index:5}
 .inv-cell.covered{opacity:1;background:#1a1a1f}
@@ -12166,7 +12173,7 @@ function buildCell(i){
     const iw=(item.gw!=null?item.gw:(_wEntry&&_wEntry.gw))||1;
     const ih=(item.gh!=null?item.gh:(_wEntry&&_wEntry.gh))||1;
     const isMulti=iw>1||ih>1;
-    cell.classList.add('occupied');cell.draggable=true;cell.dataset.itemId=item.id;
+    cell.classList.add('occupied');cell.draggable=true;cell.dataset.itemId=item.id;cell.dataset.cat=item.cat||'';
     if(item.id===selectedItemId)cell.classList.add('selected-item');
     if(item.equipped)cell.classList.add('equipped');
     const gearBtn=`<button class="item-gear-float" onclick="event.stopPropagation();openItemCtxMenu(event,${item.id})"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12h1M4 12h1M12 4v1M12 19v1M17.7 6.3l-.7.7M7 17l-.7.7M17 17l.7.7M7 7l-.7-.7"/></svg></button>`;

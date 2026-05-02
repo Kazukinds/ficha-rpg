@@ -10897,7 +10897,7 @@ window.openSettings=function(){
 
 // ═══ STATE ═══
 let inventory=[];
-let nextId=1,currentFilter='all',GRID_SIZE=140;
+let nextId=1,currentFilter='all',GRID_SIZE=25;
 let mounts=[],vehicles=[],nextMountId=1,nextVehicleId=1;
 let gridSlots=new Array(GRID_SIZE).fill(null);
 
@@ -12619,6 +12619,8 @@ function _normalizeAmmoCats(){
 }
 function renderGrid(){
   _normalizeAmmoCats();
+  // Defensive: força sincronia GRID_SIZE↔caseLevel (corrige saves antigos)
+  const _a=unlockArea();gridCols=_a.cols;gridRows=_a.rows;GRID_SIZE=_a.cols*_a.rows;
   const g=document.getElementById('inv-grid');
   g.style.display='';
   g.style.setProperty('--cols',gridCols);

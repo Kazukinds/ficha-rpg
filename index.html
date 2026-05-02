@@ -10897,7 +10897,7 @@ window.openSettings=function(){
 
 // ═══ STATE ═══
 let inventory=[];
-let nextId=1,currentFilter='all',GRID_SIZE=25;
+let nextId=1,currentFilter='all',GRID_SIZE=100;
 let mounts=[],vehicles=[],nextMountId=1,nextVehicleId=1;
 let gridSlots=new Array(GRID_SIZE).fill(null);
 
@@ -12530,12 +12530,10 @@ document.addEventListener('keydown',e=>{
 });
 // Case progression: grid sempre 14x10, caseLevel desbloqueia area top-left
 const CASE_LEVELS=[
-  {key:'maleta',    label:'Maleta',    cols:5,  rows:5,  total:25},
-  {key:'mochila',   label:'Mochila',   cols:7,  rows:7,  total:49},
-  {key:'container', label:'Container', cols:10, rows:10, total:100}
+  {key:'default', label:'Maleta', cols:10, rows:10, total:100}
 ];
 let caseLevel=0;
-let gridCols=5,gridRows=5;
+let gridCols=10,gridRows=10;
 
 function unlockArea(){return CASE_LEVELS[caseLevel]||CASE_LEVELS[0]}
 function isCellUnlocked(idx){

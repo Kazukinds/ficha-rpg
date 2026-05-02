@@ -20742,8 +20742,13 @@ document.querySelectorAll('.toggle-pills').forEach(container=>{
     btn.addEventListener('click',()=>{
       container.querySelectorAll('.toggle-pill').forEach(x=>x.classList.remove('active'));
       btn.classList.add('active');
-      updateSliderPos(container);
       const mode=btn.dataset.mode;
+      // Reset chartMode pra 'xp' (Nivel) sempre que clicar — long-press é o único path pro estagio
+      if(mode==='xp'){chartMode='xp'}
+      // Limpa inline overrides do long-press
+      const slider=container.querySelector('.toggle-slider');
+      if(slider){slider.style.background='';slider.style.boxShadow=''}
+      updateSliderPos(container);
       if(mode==='xp'||mode==='credito'){chartMode=mode;drawChart(true)}
       else if(mode==='tipo'||mode==='raridade'){donutMode=mode;renderDonut()}
     });

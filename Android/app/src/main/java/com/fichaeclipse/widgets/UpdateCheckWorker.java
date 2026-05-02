@@ -153,7 +153,7 @@ public class UpdateCheckWorker extends Worker {
                 : name;
 
         NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notif)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))

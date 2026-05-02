@@ -20728,45 +20728,34 @@ function _nativeVersion(){
   return {name,code:parseInt(code)||0};
 }
 async function _fetchLatestRelease(skipCache){
-  // PRIMÁRIO: redirect HTML (sem rate-limit)
-  const CACHE_KEY='eclipse_ota_cache';
-  const CACHE_TTL=5*60*1000; // 5min (era 30min — atualização nova demora a aparecer)
-  if(!skipCache){
-    try{
-      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
-      if(cached&&Date.now()-cached.at<CACHE_TTL)return cached.rel;
-    }catch(_){}
-  }
-  // Estratégia 1: redirect (sempre funciona, sem auth)
+  // Sem cache: sempre puxa última versão direto (evita instalar versão intermediária)
+  // Cache-bust query param garante que CDN/proxy não retornem versão anterior
+  const cb=Date.now();
+  // Estratégia 1: redirect HTML (sem rate-limit, sempre /releases/latest)
   try{
-    const r=await fetch(`https://github.com/${OTA_REPO}/releases/latest`,{cache:'no-store',redirect:'follow'});
+    const r=await fetch(`https://github.com/${OTA_REPO}/releases/latest?_=${cb}`,{cache:'no-store',redirect:'follow'});
     if(r.ok&&r.url){
       const m=r.url.match(/\/releases\/tag\/([^\/?#]+)/);
       if(m){
         const tag=decodeURIComponent(m[1]);
-        // APK direto via /releases/latest/download/Eclipse.apk (estável)
-        const rel={
+        return {
           tag_name:tag,
           name:'Eclipse '+tag,
           body:'Atualização disponível',
-          assets:[{name:'Eclipse.apk',browser_download_url:`https://github.com/${OTA_REPO}/releases/latest/download/Eclipse.apk`}]
+          assets:[{name:'Eclipse.apk',browser_download_url:`https://github.com/${OTA_REPO}/releases/latest/download/Eclipse.apk?_=${cb}`}]
         };
-        try{localStorage.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rel}))}catch(_){}
-        return rel;
       }
     }
   }catch(e){console.warn('redirect fail',e)}
-  // Estratégia 2: fallback API (60/hr rate limit, mas mais info)
+  // Estratégia 2: fallback API
   try{
-    const r=await fetch(`https://api.github.com/repos/${OTA_REPO}/releases/latest`,{cache:'no-store'});
-    if(r.ok){
-      const rel=await r.json();
-      try{localStorage.setItem(CACHE_KEY,JSON.stringify({at:Date.now(),rel}))}catch(_){}
-      return rel;
-    }
+    const r=await fetch(`https://api.github.com/repos/${OTA_REPO}/releases/latest?_=${cb}`,{cache:'no-store'});
+    if(r.ok)return await r.json();
   }catch(e){console.warn('api fail',e)}
   return null;
 }
+// Limpa cache antigo se houver
+try{localStorage.removeItem('eclipse_ota_cache')}catch(_){}
 function _parseVersionCode(tag){
   // Tag format: v2.0.7 ou 2.0.7 → versionCode = major*10000 + minor*100 + patch
   const m=String(tag||'').replace(/^v/,'').match(/(\d+)(?:\.(\d+))?(?:\.(\d+))?/);

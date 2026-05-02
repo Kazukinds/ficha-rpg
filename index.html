@@ -6608,6 +6608,12 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
       if(card){card.style.transition='transform .35s cubic-bezier(.2,.9,.2,1.05),filter .35s';card.style.transform='scale(.98)';card.style.filter='brightness(.85)';
         setTimeout(()=>{card.style.transform='';card.style.filter=''},360);
       }
+      const pill=document.querySelector('#evolucao-card .toggle-pill[data-mode="xp"]');
+      if(pill){
+        pill.textContent=window.chartMode==='estagio'?'EST':'XP';
+        pill.style.background=window.chartMode==='estagio'?'#a78bfa':'';
+        pill.style.color=window.chartMode==='estagio'?'#fff':'';
+      }
       const t=document.getElementById('evolucao-title');
       if(t)t.textContent=window.chartMode==='estagio'?'Evolução · Estágio':'Evolução';
       try{drawChart&&drawChart(true)}catch(_){}
@@ -6615,7 +6621,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
     },550);
   }
   function cancel(){if(pressTm)clearTimeout(pressTm);pressTm=null}
-  document.addEventListener('pointerdown',e=>{const c=e.target.closest('#evolucao-card .chart-area');if(c)start(e)});
+  document.addEventListener('pointerdown',e=>{const c=e.target.closest('#evolucao-card .toggle-pill[data-mode="xp"]');if(c)start(e)});
   document.addEventListener('pointerup',cancel);
   document.addEventListener('pointercancel',cancel);
   document.addEventListener('pointerleave',cancel);

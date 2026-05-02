@@ -6604,15 +6604,20 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
     pressTm=setTimeout(()=>{
       pressed=true;
       window.chartMode=window.chartMode==='estagio'?'xp':'estagio';
+      // Garante pill XP ativo
       const card=document.getElementById('evolucao-card');
-      if(card){card.style.transition='transform .35s cubic-bezier(.2,.9,.2,1.05),filter .35s';card.style.transform='scale(.98)';card.style.filter='brightness(.85)';
-        setTimeout(()=>{card.style.transform='';card.style.filter=''},360);
-      }
-      const pill=document.querySelector('#evolucao-card .toggle-pill[data-mode="xp"]');
-      const slider=document.querySelector('#evolucao-card .toggle-slider');
-      if(slider&&pill&&pill.classList.contains('active')){
+      const pill=card?.querySelector('.toggle-pill[data-mode="xp"]');
+      const otherPill=card?.querySelector('.toggle-pill[data-mode="credito"]');
+      if(pill){pill.classList.add('active');otherPill?.classList.remove('active')}
+      const container=card?.querySelector('.toggle-pills');
+      if(container&&typeof updateSliderPos==='function')updateSliderPos(container);
+      const slider=card?.querySelector('.toggle-slider');
+      if(slider){
         slider.style.background=window.chartMode==='estagio'?'#a78bfa':'#84cc16';
         slider.style.boxShadow=window.chartMode==='estagio'?'0 0 8px rgba(167,139,250,.4)':'0 0 8px rgba(132,204,22,.4)';
+      }
+      if(card){card.style.transition='transform .35s cubic-bezier(.2,.9,.2,1.05),filter .35s';card.style.transform='scale(.98)';card.style.filter='brightness(.85)';
+        setTimeout(()=>{card.style.transform='';card.style.filter=''},360);
       }
       const t=document.getElementById('evolucao-title');
       if(t)t.textContent='Evolução';

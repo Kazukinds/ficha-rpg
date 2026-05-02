@@ -200,7 +200,8 @@ button:active:not(:disabled),.card-action-btn:active,.modal-btn:active,.credit-p
 .ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.3;transform:scale(0);animation:anim-ripple 620ms var(--ease-out-expo) forwards;mix-blend-mode:overlay}
 
 /* ═══ SIDEBAR ═══ */
-.sidebar{width:72px;min-height:100vh;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:flex-start;padding:16px 14px;position:fixed;left:0;top:0;bottom:0;z-index:9990;transition:width .45s cubic-bezier(.2,.8,.2,1),border-radius .45s,box-shadow .45s;overflow:hidden}
+.sidebar{width:72px;min-height:100vh;background:#0c0c0e!important;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:flex-start;padding:16px 14px;position:fixed;left:0;top:0;bottom:0;z-index:9990;isolation:isolate;transition:width .45s cubic-bezier(.2,.8,.2,1),border-radius .45s,box-shadow .45s;overflow:hidden}
+[data-theme="light"] .sidebar{background:#fcfcfc!important}
 .sidebar.open{width:240px;border-right-color:transparent;border-top-right-radius:18px;border-bottom-right-radius:18px;box-shadow:0 0 0 1px var(--border-light),12px 0 40px rgba(0,0,0,.55),4px 0 12px rgba(0,0,0,.35)}
 .sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:20px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.12));opacity:0;transition:opacity .4s;pointer-events:none}
 .sidebar.open::after{opacity:1}

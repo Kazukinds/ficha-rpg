@@ -247,8 +247,8 @@ button:active:not(:disabled),.card-action-btn:active,.modal-btn:active,.credit-p
 .sidebar-label{opacity:0;font-size:13px;font-weight:600;letter-spacing:.2px;transform:translateX(-6px);transition:opacity .3s cubic-bezier(.4,0,.2,1) .15s,transform .35s cubic-bezier(.2,.8,.2,1) .12s;pointer-events:none}
 .sidebar.open .sidebar-label{opacity:1;transform:translateX(0)}
 .sidebar-btn:hover{background:var(--bg-hover);color:var(--text-secondary)}
-.sidebar-btn.active{background:var(--magenta);color:#fff}
-.sidebar-btn.active svg{stroke:#fff}
+.sidebar-btn.active{background:var(--magenta);color:#0a0a0c}
+.sidebar-btn.active svg{stroke:#0a0a0c}
 .sidebar-btn.active::before{display:none}
 .sidebar-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:6px;align-items:center;padding-top:12px;position:relative}
@@ -1784,7 +1784,7 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
 [data-theme="light"] .main-wrapper{background:var(--bg-sidebar)}
 [data-theme="light"] .content{background:var(--bg-body)}
 [data-theme="light"] .sidebar{background:var(--bg-sidebar);border-color:var(--border)}
-[data-theme="light"] .sidebar-btn.active{background:var(--magenta)!important;color:#fff!important}
+[data-theme="light"] .sidebar-btn.active{background:var(--magenta)!important;color:#0a0a0c!important}
 [data-theme="light"] .sidebar-btn.active::before{display:none}
 [data-theme="light"] .sidebar-logo svg{stroke:var(--magenta)}
 [data-theme="light"] .inv-cell{background:#eeecee}
@@ -1833,7 +1833,7 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
   .app-confirm-overlay.open .app-confirm-box{transform:translateY(0) !important}
 }
 [data-theme="light"] .toast{background:var(--bg-card);border-color:var(--magenta-dim);color:var(--magenta-dim)}
-[data-theme="light"] .sidebar-btn.active{color:#fff!important}
+[data-theme="light"] .sidebar-btn.active{color:#0a0a0c!important}
 [data-theme="light"] .profile-system-link{background:var(--bg-card-inner)}
 [data-theme="light"] .profile-system-icon{background:rgba(0,0,0,.02);border-color:var(--border-light)}
 [data-theme="light"] input[type="date"]{color-scheme:light}
@@ -4355,8 +4355,8 @@ body[data-cam-debug="1"]::before{content:'';position:fixed;top:env(safe-area-ins
 .sidebar-btn svg{stroke:currentColor;transition:transform .28s cubic-bezier(.2,.8,.2,1),filter .28s,color .2s}
 .sidebar-btn:hover{color:var(--text-primary)}
 .sidebar-btn:hover svg{transform:scale(1.12);filter:drop-shadow(0 0 6px color-mix(in srgb,currentColor 35%,transparent))}
-.sidebar-btn.active{background:var(--magenta)!important;color:#fff!important}
-.sidebar-btn.active svg{stroke:#fff!important;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--magenta) 45%,transparent))}
+.sidebar-btn.active{background:var(--magenta)!important;color:#0a0a0c!important}
+.sidebar-btn.active svg{stroke:#0a0a0c!important;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--magenta) 45%,transparent))}
 .profile-system-icon svg{transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s}
 .profile-system-link:hover .profile-system-icon svg{animation:icon-float 1.4s ease-in-out infinite}
 .status-icon svg{transition:transform .3s,filter .3s}

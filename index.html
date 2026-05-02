@@ -7590,7 +7590,8 @@ const WEAPON_SVGS={
   'a-bird-shot':{file:'icons/weapons/firearms/ammo/bird-shot.svg',label:"Bird Shot",type:'fogo',sub:'municao',gw:1,gh:1},
   'a-m962':{file:'icons/weapons/firearms/ammo/m962.svg',label:"M962",type:'fogo',sub:'municao',gw:1,gh:1},
   'a-rpg-rocket':{file:'icons/weapons/firearms/ammo/rpg-rocket.svg',label:"RPG Rocket",type:'fogo',sub:'municao',gw:1,gh:1},
-  'a-slug':{file:'icons/weapons/firearms/ammo/slug.svg',label:"Slug",type:'fogo',sub:'municao',gw:1,gh:1}
+  'a-slug':{file:'icons/weapons/firearms/ammo/slug.svg',label:"Slug",type:'fogo',sub:'municao',gw:1,gh:1},
+  'a-bateria':{file:'icons/weapons/firearms/ammo/bb-shot.svg',label:"Bateria",type:'energia',sub:'municao',gw:1,gh:1,energia:true}
 };
 // Pre-warm trim cache so subsequent renders use trimmed SVG synchronously (no flash).
 if(typeof requestIdleCallback==='function'){
@@ -11402,7 +11403,7 @@ function renderInvTab(){
   const statsEl=document.getElementById('inv-stat-blocks');
   const listEl=document.getElementById('inv-tab-list');
   if(!statsEl||!listEl)return;
-  const cats=['arma','armadura','consumivel','material','chave'];
+  const cats=['arma','municao','armadura','consumivel','material','chave'];
   statsEl.innerHTML=cats.map(cat=>{
     const items=inventory.filter(i=>i.cat===cat);
     const qty=items.reduce((s,i)=>s+i.qty,0);
@@ -12632,7 +12633,17 @@ function renderCaseSelector(){
   document.querySelectorAll('.re4-nav-arrow').forEach((b,i)=>{b.disabled=(i===0&&caseLevel===0)||(i===1&&caseLevel===CASE_LEVELS.length-1)});
 }
 
+function _normalizeAmmoCats(){
+  // Munição não é arma — reclassifica items legados
+  inventory.forEach(it=>{
+    if(it.iconWpn&&typeof WEAPON_SVGS!=='undefined'){
+      const w=WEAPON_SVGS[it.iconWpn];
+      if(w&&w.sub==='municao'&&it.cat==='arma')it.cat='municao';
+    }
+  });
+}
 function renderGrid(){
+  _normalizeAmmoCats();
   const g=document.getElementById('inv-grid');
   g.style.display='';
   g.style.setProperty('--cols',gridCols);
@@ -13063,6 +13074,7 @@ function renderItemDetail(){
         <div class="rid-rarity-tag" style="color:var(--rarity-${it.rarity},var(--magenta))">${rarLabel.toUpperCase()}</div>
       </div>
       <div class="rid-subtitle">${catLabel} · Nível ${lvl}</div>
+      ${(()=>{const dt=it.dmgType||(it.cat==='arma'?'físico':'');if(!dt&&it.cat!=='arma')return '';const opts='select:físico,corte,perfurante,contundente,fogo,elétrico,gelo,ácido,sônico,psíquico,radiante,necrótico';const colorMap={'físico':'#9ca3af','corte':'#e5e7eb','perfurante':'#cbd5e1','contundente':'#a3a3a3','fogo':'#fb923c','elétrico':'#fbbf24','gelo':'#60a5fa','ácido':'#84cc16','sônico':'#a78bfa','psíquico':'#ec4899','radiante':'#fde047','necrótico':'#7f1d1d'};const dc=colorMap[dt]||'var(--text-secondary)';return `<div class="rid-stat-row" onclick="_editItemStat(${it.id},'dmgType','Tipo de Dano','${opts}','${dt.replace(/'/g,"&#39;")}')"><div class="rid-stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/><path d="M12 8v6"/><circle cx="12" cy="17" r="1"/></svg></div><div class="rid-stat-name">Tipo</div><div class="rid-stat-bar" style="--v:0%"></div><div class="rid-stat-num" style="color:${dc};text-transform:uppercase;font-size:10px;letter-spacing:.5px">${dt||'—'}</div></div>`})()}
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'damage','Dano','dice','${String(dmg).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.dano}</div><div class="rid-stat-name">Dano</div><div class="rid-stat-bar" style="--v:${_pct(dmgNum,200)}%"></div><div class="rid-stat-num">${dmg}${_dmgStepStr}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'range','Alcance','select:Adjacente,Curto,Médio,Longo','${String(range).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.alcance}</div><div class="rid-stat-name">Alcance</div><div class="rid-stat-bar" style="--v:${_pct(rangeNum,100)}%"></div><div class="rid-stat-num">${range}</div></div>
       <div class="rid-stat-row" onclick="_editItemStat(${it.id},'crit','Crítico','str','${String(crit).replace(/'/g,'&#39;')}')"><div class="rid-stat-icon">${ico.crit}</div><div class="rid-stat-name">Crítico</div><div class="rid-stat-bar" style="--v:${critPct}%"></div><div class="rid-stat-num">${crit}</div></div>

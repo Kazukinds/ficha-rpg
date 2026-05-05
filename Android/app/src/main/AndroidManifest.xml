@@ -28,36 +28,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".DiceWidget" android:exported="true" android:label="Dados">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.fichaeclipse.widgets.ACTION_ROLL" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_dice_info" />
-        </receiver>
-
-        <receiver android:name=".ShortcutWidget$Iniciativa" android:exported="true" android:label="Iniciativa">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_shortcut_info" />
-        </receiver>
-
-        <receiver android:name=".ShortcutWidget$Nivel" android:exported="true" android:label="Nível">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_shortcut_info" />
-        </receiver>
-
-        <receiver android:name=".ShortcutWidget$Timer" android:exported="true" android:label="Timer">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_shortcut_info" />
-        </receiver>
-
-        <receiver android:name=".ShortcutWidget$Notas" android:exported="true" android:label="Notas">
-            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_shortcut_info" />
-        </receiver>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.fichaeclipse.widgets.fileprovider"

@@ -1,6 +1,5 @@
-# Eclipse — keep widgets / receivers / activities
+# Eclipse — keep activities / receivers
 -keep public class com.fichaeclipse.widgets.** { *; }
--keep class * extends android.appwidget.AppWidgetProvider { *; }
 -keep class * extends android.app.Activity { *; }
 -keep class * extends android.content.BroadcastReceiver { *; }
 -keep class * extends androidx.work.Worker { *; }

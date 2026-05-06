@@ -1637,8 +1637,12 @@ html.no-radius,html.no-radius *{border-radius:0!important}
 .cselect-arrow svg{width:16px;height:16px;stroke:var(--text-dim);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cselect-trigger.open .cselect-arrow{transform:translateY(-50%) rotate(180deg)}
 .cselect-trigger.open .cselect-arrow svg{stroke:var(--magenta)}
-.cselect-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1px solid var(--magenta-dim);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:0;overflow:hidden;z-index:60;transition:max-height .25s ease,opacity .2s;opacity:0;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.cselect-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1px solid var(--magenta-dim);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:0;overflow:hidden;z-index:60;transition:max-height .25s ease,opacity .2s;opacity:0;box-shadow:0 12px 32px rgba(0,0,0,.5);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .cselect-dropdown.open{max-height:240px;overflow-y:auto;opacity:1}
+.cselect-dropdown::-webkit-scrollbar{width:5px}
+.cselect-dropdown::-webkit-scrollbar-track{background:transparent}
+.cselect-dropdown::-webkit-scrollbar-thumb{background:var(--magenta-dim);border-radius:3px}
+.cselect-dropdown::-webkit-scrollbar-thumb:hover{background:var(--magenta)}
 .cselect-option{padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text-secondary);cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:8px;border-left:2px solid transparent}
 .cselect-option:first-child{margin-top:4px}
 .cselect-option:last-child{margin-bottom:4px}
@@ -4101,7 +4105,9 @@ body.wpn-picker-open #wpn-picker-backdrop{background:transparent;backdrop-filter
 @media(max-width:640px){
   .topbar-actions .save-wrap{display:none}
   .inv-grid{--cell-size:30px}
-  .cselect-dropdown.open{max-height:180px}
+  .cselect-dropdown.open{max-height:200px}
+  .cselect-dropdown{scroll-behavior:smooth}
+  .cselect-option{padding:12px 14px;font-size:13px}
   .modal{padding:16px}
   .profile-system-link{gap:10px}
   .summary-value{font-size:22px}

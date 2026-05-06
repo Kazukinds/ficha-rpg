@@ -952,7 +952,9 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .inv-cell .rarity-dot,.item-overlay .rarity-dot{display:none}
 .inv-detail{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;height:fit-content;box-shadow:var(--shadow-sm);transition:border-color var(--transition-base)}
 .overflow-count{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border);color:var(--magenta);min-width:24px;text-align:center}
-.overflow-list{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow-y:auto}
+.overflow-list{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:1fr;gap:4px;max-height:240px;overflow-y:hidden;padding:4px;background:rgba(255,255,255,.06);border-radius:8px;aspect-ratio:5/4;scrollbar-width:thin}
+.overflow-list:hover{overflow-y:auto}
+.overflow-list>*{aspect-ratio:1/1;border-radius:6px;overflow:hidden}
 .overflow-item{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-input);cursor:grab;transition:border-color .2s}
 .overflow-item:hover{border-color:var(--magenta-dim)}
 .overflow-icon{position:relative;width:32px;height:32px;border-radius:var(--radius-xs);background:var(--bg-card);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -7361,11 +7363,14 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
                     <button class="re4-top-btn" id="btn-add-item" type="button" title="Adicionar item" aria-label="Adicionar item">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
+                    <button class="re4-top-btn" id="btn-organize-inv" type="button" title="Organizar grid" aria-label="Organizar grid">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                    </button>
                     <button class="re4-top-btn" id="btn-clear-inv" type="button" title="Limpar inventário" aria-label="Limpar inventário">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><circle cx="12" cy="14" r=".5" fill="currentColor"/></svg>
                     </button>
                   </div>
-                  <script>document.getElementById('btn-add-item').addEventListener('click',()=>{try{openModal('item')}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-clear-inv').addEventListener('click',()=>{try{clearInventory()}catch(e){console.error(e);alert('Erro: '+e.message)}});</script>
+                  <script>document.getElementById('btn-add-item').addEventListener('click',()=>{try{openModal('item')}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-clear-inv').addEventListener('click',()=>{try{clearInventory()}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-organize-inv').addEventListener('click',()=>{try{organizeInventory()}catch(e){console.error(e);toast&&toast('Erro: '+e.message)}});</script>
                   <div class="inv-grid" id="inv-grid"></div>
                 </div>
               </div>
@@ -12509,6 +12514,20 @@ function canPlace(idx,w,h){
     if(gridSlots[ci]!==null)return false;
   }
   return true;
+}
+function organizeInventory(){
+  // Sort by area descending so big items get top-left first; tie-break by name
+  inventory.sort((a,b)=>{
+    const aw=(a.gw||1)*(a.gh||1),bw=(b.gw||1)*(b.gh||1);
+    if(bw!==aw)return bw-aw;
+    return (a.name||'').localeCompare(b.name||'');
+  });
+  // Clear positions to force re-pack
+  inventory.forEach(it=>{delete it.posIdx;delete it._forceOverflow});
+  if(typeof initGridSlots==='function')initGridSlots();
+  if(typeof renderGrid==='function')renderGrid();
+  if(typeof renderSummary==='function')renderSummary();
+  try{toast&&toast('Inventário organizado')}catch(_){}
 }
 function placeItem(idx,id,w,h){
   const col=idx%gridCols,row=Math.floor(idx/gridCols);

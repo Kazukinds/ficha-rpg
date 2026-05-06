@@ -14038,12 +14038,12 @@ window._openImgConfig=function(id,sourceData){
       </div>
       <div class="img-cfg-controls">
         <div class="img-cfg-row">
-          <label>Rotação <button type="button" id="imgCfgPlay" class="img-cfg-play-btn" title="Girar 0→90→180→-90→0"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg> Animar</button></label>
+          <label>Rotação <button type="button" id="imgCfgPlay" class="img-cfg-play-btn" title="Girar 0→-90→180→90→0"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg> Animar</button></label>
           <div class="img-cfg-rots">
             <button type="button" data-rot="0" class="active" title="Paisagem">0°</button>
-            <button type="button" data-rot="90" title="Retrato invertido (cabeça pra baixo)">90°</button>
+            <button type="button" data-rot="-90" title="Retrato invertido (cabeça pra baixo)">-90°</button>
             <button type="button" data-rot="180" title="Paisagem invertida">180°</button>
-            <button type="button" data-rot="-90" title="Retrato">-90°</button>
+            <button type="button" data-rot="90" title="Retrato">90°</button>
           </div>
           <div style="font-size:9px;color:var(--text-dim);margin-top:4px;letter-spacing:.3px">Cada ângulo tem config independente. Aplicar salva no ângulo selecionado.</div>
         </div>
@@ -14126,12 +14126,12 @@ window._openImgConfig=function(id,sourceData){
     ov.querySelector('#imgCfgScale').value=state.scale;
   };
   apply();
-  // Auto-rotate cycle: 0 (paisagem) → 90 (retrato invertido / cabeça pra baixo) → 180 (paisagem invertida) → -90 (retrato) → 0
+  // Auto-rotate cycle: 0 (paisagem) → -90 (retrato invertido / cabeça pra baixo) → 180 (paisagem invertida) → 90 (retrato) → 0
   let _playTimer=null;
   const playBtn=ov.querySelector('#imgCfgPlay');
   const stopPlay=()=>{if(_playTimer){clearInterval(_playTimer);_playTimer=null}if(playBtn)playBtn.classList.remove('playing')};
   const startPlay=()=>{
-    const seq=[0,90,180,-90,0];let i=0;
+    const seq=[0,-90,180,90,0];let i=0;
     state.rot=seq[i];state.iconRot=seq[i];apply();
     if(playBtn)playBtn.classList.add('playing');
     _playTimer=setInterval(()=>{

@@ -1433,6 +1433,8 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .profile-section-title{font-size:15px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .profile-section-title .profile-edit-btn{padding:4px 12px;font-size:11px;font-weight:600;font-family:inherit;background:transparent;border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-dim);cursor:pointer;transition:all .15s}
 .profile-section-title .profile-edit-btn:hover{border-color:var(--magenta-dim);color:var(--magenta)}
+.profile-section-title .profile-edit-btn{display:inline-flex;align-items:center;gap:5px}
+.profile-subsect-title{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--border)}
 .theme-toggle{display:flex;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px;margin-bottom:14px}
 .theme-opt{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;background:transparent;border:0;border-radius:7px;color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .18s}
 .theme-opt svg{width:14px;height:14px;stroke-width:2.2}
@@ -7469,34 +7471,40 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
       <div class="profile-layout">
         <div class="profile-main">
           <div class="profile-section">
-            <div class="profile-section-title">Informacoes Pessoais <button class="profile-edit-btn" onclick="toggleProfileEdit()">Editar</button></div>
-            <div class="profile-fields" id="profile-fields">
-              <div class="profile-field"><label>Nome</label><div class="profile-field-val" id="pf-name">Aventureiro</div></div>
-              <div class="profile-field"><label>Apelido</label><div class="profile-field-val" id="pf-nick" contenteditable="true" data-key="userNick" data-ph="—"></div></div>
-              <div class="profile-field"><label>Função</label><div class="profile-field-val" id="pf-role" contenteditable="true" data-key="userRole" data-ph="Jogador / Mestre"></div></div>
-              <div class="profile-field"><label>Fuso Horário</label><div class="profile-field-val" id="pf-tz">UTC-03:00 Brasília</div></div>
-            </div>
-          </div>
-          <div class="profile-section">
-            <div class="profile-section-title">Detalhes do Personagem</div>
-            <div class="profile-fields" id="profile-details-fields">
+            <div class="profile-section-title">Detalhes do Personagem <button class="profile-edit-btn" onclick="toggleProfileEdit()" title="Alternar edição"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> <span>Editar</span></button></div>
+
+            <div class="profile-subsect-title">Informações Pessoais</div>
+            <div class="profile-fields" id="profile-personal-fields">
               <div class="profile-field"><label>Nome</label><div class="profile-field-val" id="pf-charname" contenteditable="true" data-key="charname" data-ph="Nome do personagem"></div></div>
               <div class="profile-field"><label>Idade</label><div class="profile-field-val" id="pf-age" contenteditable="true" data-key="age" data-ph="—"></div></div>
-              <div class="profile-field"><label>Gênero</label><div class="profile-field-val" id="pf-gender" contenteditable="true" data-key="gender" data-ph="—"></div></div>
               <div class="profile-field"><label>Altura</label><div class="profile-field-val" id="pf-height" contenteditable="true" data-key="height" data-ph="1.70 m"></div></div>
               <div class="profile-field"><label>Peso</label><div class="profile-field-val" id="pf-weight" contenteditable="true" data-key="weight" data-ph="70 kg"></div></div>
-              <div class="profile-field"><label>Ocupação</label><div class="profile-field-val" id="pf-occupation" contenteditable="true" data-key="occupation" data-ph="—"></div></div>
+            </div>
+
+            <div class="profile-subsect-title" style="margin-top:18px">Sistema</div>
+            <div class="profile-fields" id="profile-details-fields">
               <div class="profile-field profile-field-pick"><label>Linhagem</label><div class="profile-field-val empty" id="pf-linhagem" onclick="openAdvPicker('linhagem')"></div></div>
-              <div class="profile-field profile-field-pick"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo" onclick="openAdvPicker('arquetipo')"></div></div>
               <div class="profile-field profile-field-pick"><label>Passado</label><div class="profile-field-val empty" id="pf-passado" onclick="openAdvPicker('passado')"></div></div>
+              <div class="profile-field profile-field-pick"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo" onclick="openAdvPicker('arquetipo')"></div></div>
               <div class="profile-field profile-field-pick"><label>Caminho</label><div class="profile-field-val empty" id="pf-caminho" onclick="openAdvPicker('caminho')"></div></div>
               <div class="profile-field"><label>Traço</label><div class="profile-field-val" id="pf-traco" contenteditable="true" data-key="traco" data-ph="—"></div></div>
+              <div class="profile-field"><label>Conceito</label><div class="profile-field-val" id="pf-concept" contenteditable="true" data-key="concept" data-ph="—"></div></div>
+              <div class="profile-field"><label>Lema</label><div class="profile-field-val" id="pf-motto" contenteditable="true" data-key="motto" data-ph="—"></div></div>
+              <div class="profile-field"><label>Ocupação</label><div class="profile-field-val" id="pf-occupation" contenteditable="true" data-key="occupation" data-ph="—"></div></div>
               <div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">0</div></div>
               <div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">0 / 5.000</div></div>
               <div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">0 / 0</div></div>
               <div class="profile-field"><label>Crédito Total</label><div class="profile-field-val" id="pf-gold">0</div></div>
-              <div class="profile-field"><label>Conceito</label><div class="profile-field-val" id="pf-concept" contenteditable="true" data-key="concept" data-ph="—"></div></div>
-              <div class="profile-field"><label>Lema</label><div class="profile-field-val" id="pf-motto" contenteditable="true" data-key="motto" data-ph="—"></div></div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Conta</div>
+            <div class="profile-fields" id="profile-fields">
+              <div class="profile-field"><label>Nome de usuário</label><div class="profile-field-val" id="pf-name">Aventureiro</div></div>
+              <div class="profile-field"><label>Apelido</label><div class="profile-field-val" id="pf-nick" contenteditable="true" data-key="userNick" data-ph="—"></div></div>
+              <div class="profile-field"><label>Função</label><div class="profile-field-val" id="pf-role" contenteditable="true" data-key="userRole" data-ph="Jogador / Mestre"></div></div>
+              <div class="profile-field"><label>Fuso Horário</label><div class="profile-field-val" id="pf-tz">UTC-03:00 Brasília</div></div>
             </div>
           </div>
         </div>
@@ -7510,20 +7518,6 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
                 <div class="profile-note-text">Personagem criado com sucesso.</div>
               </div>
             </div>
-          </div>
-          <div class="profile-sidebar-card">
-            <h4>Estatisticas</h4>
-            <div id="profile-stats">
-              <div class="profile-stat-row"><span class="stat-label">Armas</span><span class="stat-val" id="ps-armas">0</span></div>
-              <div class="profile-stat-row"><span class="stat-label">Armaduras</span><span class="stat-val" id="ps-armaduras">0</span></div>
-              <div class="profile-stat-row"><span class="stat-label">Consumiveis</span><span class="stat-val" id="ps-consumiveis">0</span></div>
-              <div class="profile-stat-row"><span class="stat-label">Materiais</span><span class="stat-val" id="ps-materiais">0</span></div>
-              <div class="profile-stat-row"><span class="stat-label">Chaves</span><span class="stat-val" id="ps-chaves">0</span></div>
-            </div>
-          </div>
-          <div class="profile-sidebar-card">
-            <h4>Log</h4>
-            <div id="profile-log" class="profile-log"></div>
           </div>
         </div>
       </div>
@@ -7635,6 +7629,10 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
                 </button>
               </div>
             </div>
+          </div>
+          <div class="profile-sidebar-card">
+            <h4>Log</h4>
+            <div id="profile-log" class="profile-log"></div>
           </div>
         </div>
       </div>
@@ -20597,11 +20595,9 @@ function renderProfile(){
   // pf-items / pf-skills removidos (substituídos por concept/motto editáveis)
   const cats={arma:0,armadura:0,consumivel:0,material:0,chave:0};
   inventory.forEach(i=>cats[i.cat]=(cats[i.cat]||0)+i.qty);
-  document.getElementById('ps-armas').textContent=cats.arma;
-  document.getElementById('ps-armaduras').textContent=cats.armadura;
-  document.getElementById('ps-consumiveis').textContent=cats.consumivel;
-  document.getElementById('ps-materiais').textContent=cats.material;
-  document.getElementById('ps-chaves').textContent=cats.chave;
+  const _setStat=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  _setStat('ps-armas',cats.arma);_setStat('ps-armaduras',cats.armadura);
+  _setStat('ps-consumiveis',cats.consumivel);_setStat('ps-materiais',cats.material);_setStat('ps-chaves',cats.chave);
   document.querySelector('.topbar-welcome h2').textContent=profileData.name;
   renderProfileLog();
 }
@@ -20863,7 +20859,7 @@ function toggleProfileEdit(){
   const btns=document.querySelectorAll('.profile-edit-btn');
   const fusosBR=['UTC-02:00 Fernando de Noronha','UTC-03:00 Brasília','UTC-04:00 Manaus','UTC-05:00 Rio Branco'];
   if(profileEditing){
-    btns.forEach(b=>{b.textContent='Salvar';b.style.borderColor='var(--magenta)';b.style.color='var(--magenta)'});
+    btns.forEach(b=>{const sp=b.querySelector('span');if(sp)sp.textContent='Salvar';else b.textContent='Salvar';b.style.borderColor='var(--magenta)';b.style.color='var(--magenta)'});
     infoFields.innerHTML=`<div class="profile-field"><label>Nome</label><input type="text" id="pf-name" value="${profileData.name}"></div><div class="profile-field"><label>Email</label><input type="text" id="pf-email" value="${profileData.email}"></div><div class="profile-field"><label>Telefone</label><input type="text" id="pf-phone" value="${profileData.phone}"></div><div class="profile-field"><label>Fuso Horário</label><select id="pf-tz">${fusosBR.map(f=>`<option${profileData.tz===f?' selected':''}>${f}</option>`).join('')}</select></div>`;
     // Purge valores que não estão no catálogo atual (ex: Obscuro, Erudito antigos)
     ['linhagem','arquetipo','passado','caminho'].forEach(k=>{
@@ -20884,7 +20880,7 @@ function toggleProfileEdit(){
     const pfL=document.getElementById('pf-linhagem'),pfP=document.getElementById('pf-passado'),pfA=document.getElementById('pf-arquetipo'),pfC=document.getElementById('pf-caminho');
     if(pfL)profileData.linhagem=pfL.value;if(pfP)profileData.passado=pfP.value;
     if(pfA)profileData.arquetipo=pfA.value;if(pfC)profileData.caminho=pfC.value;
-    btns.forEach(b=>{b.textContent='Editar';b.style.borderColor='';b.style.color=''});
+    btns.forEach(b=>{const sp=b.querySelector('span');if(sp)sp.textContent='Editar';else b.textContent='Editar';b.style.borderColor='';b.style.color=''});
     // Reconstrói a estrutura de display dos campos
     infoFields.innerHTML=`<div class="profile-field"><label>Nome</label><div class="profile-field-val" id="pf-name"></div></div><div class="profile-field"><label>Email</label><div class="profile-field-val" id="pf-email"></div></div><div class="profile-field"><label>Telefone</label><div class="profile-field-val" id="pf-phone"></div></div><div class="profile-field"><label>Fuso Horário</label><div class="profile-field-val" id="pf-tz"></div></div>`;
     if(detFields)detFields.innerHTML=`<div class="profile-field profile-field-pick"><label>Linhagem</label><div class="profile-field-val empty" id="pf-linhagem" onclick="openAdvPicker('linhagem')"></div></div><div class="profile-field profile-field-pick"><label>Arquétipo</label><div class="profile-field-val empty" id="pf-arquetipo" onclick="openAdvPicker('arquetipo')"></div></div><div class="profile-field profile-field-pick"><label>Passado</label><div class="profile-field-val empty" id="pf-passado" onclick="openAdvPicker('passado')"></div></div><div class="profile-field profile-field-pick"><label>Caminho</label><div class="profile-field-val empty" id="pf-caminho" onclick="openAdvPicker('caminho')"></div></div><div class="profile-field"><label>Nível</label><div class="profile-field-val" id="pf-level">0</div></div><div class="profile-field"><label>XP</label><div class="profile-field-val" id="pf-xp">0 / 5.000</div></div><div class="profile-field"><label>Vida</label><div class="profile-field-val" id="pf-hp">0 / 0</div></div><div class="profile-field"><label>Crédito Total</label><div class="profile-field-val" id="pf-gold">0</div></div><div class="profile-field"><label>Total de Itens</label><div class="profile-field-val" id="pf-items">0</div></div><div class="profile-field"><label>Habilidades</label><div class="profile-field-val" id="pf-skills">0</div></div>`;

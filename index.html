@@ -1637,7 +1637,8 @@ html.no-radius,html.no-radius *{border-radius:0!important}
 .cselect-arrow svg{width:16px;height:16px;stroke:var(--text-dim);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cselect-trigger.open .cselect-arrow{transform:translateY(-50%) rotate(180deg)}
 .cselect-trigger.open .cselect-arrow svg{stroke:var(--magenta)}
-.cselect-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1px solid var(--magenta-dim);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:0;overflow:hidden;z-index:60;transition:max-height .25s ease,opacity .2s;opacity:0;box-shadow:0 12px 32px rgba(0,0,0,.5);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cselect-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1px solid var(--magenta-dim);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:0;overflow:hidden;z-index:500;transition:max-height .25s ease,opacity .2s;opacity:0;box-shadow:0 12px 32px rgba(0,0,0,.5);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cselect.cselect-active{z-index:500}
 .cselect-dropdown.open{max-height:240px;overflow-y:auto;opacity:1}
 .cselect-dropdown::-webkit-scrollbar{width:5px}
 .cselect-dropdown::-webkit-scrollbar-track{background:transparent}
@@ -1883,7 +1884,9 @@ input[type="number"]{-moz-appearance:textfield}
 .item-form-compact .icon-tool span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-form-compact .icon-tool:hover{color:var(--text-secondary);background:rgba(255,255,255,.04)}
 .item-form-compact .icon-tool.active{background:var(--bg-card);color:var(--magenta);box-shadow:0 1px 3px rgba(0,0,0,.2),inset 0 0 0 1px color-mix(in srgb,var(--magenta) 25%,transparent)}
-.item-form-compact .icon-preview{flex:0 0 32px;width:32px;height:32px;border-radius:6px;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);overflow:hidden;margin-left:4px;padding:0;cursor:pointer;transition:all .15s;position:relative;font-family:inherit}
+.item-form-compact .icon-preview{flex:0 0 32px;width:32px;height:32px;border-radius:6px;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);overflow:hidden;margin-left:4px;padding:0;cursor:pointer;transition:all .15s;position:relative;font-family:inherit;z-index:1}
+/* Quando algum cselect estiver aberto, oculta o preview pra não sobrepor o dropdown */
+body:has(.cselect-trigger.open) .item-form-compact .icon-preview{opacity:0;pointer-events:none;transition:opacity .15s ease}
 .item-form-compact .icon-preview:hover{border-color:var(--magenta);color:var(--magenta);transform:scale(1.06);box-shadow:0 0 0 2px rgba(var(--magenta-rgb),.18)}
 .item-form-compact .icon-preview:active{transform:scale(.94)}
 .item-form-compact .icon-preview::after{content:'';position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;background:var(--magenta);border-radius:50%;border:2px solid var(--bg-card);transition:transform .15s}

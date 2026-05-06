@@ -6442,12 +6442,23 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .eclipse-onboard[data-on]{opacity:1;visibility:visible;transition:opacity .55s ease,visibility 0s 0s}
 .eo-bg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 50% 58%,rgba(254,20,85,.18) 0%,rgba(254,20,85,.06) 35%,transparent 65%),radial-gradient(120% 80% at 30% 20%,rgba(254,20,85,.10),transparent 55%),linear-gradient(180deg,#0a0c10 0%,#0e1116 55%,#06080b 100%)}
 [data-theme="light"] .eo-bg{background:radial-gradient(ellipse 80% 60% at 50% 58%,rgba(101,163,13,.18) 0%,rgba(132,204,22,.06) 35%,transparent 65%),linear-gradient(180deg,#f4f6fa 0%,#e9ecf2 60%,#f7f8fb 100%)}
-.eo-bg::before{display:block;content:"";position:absolute;left:50%;bottom:0;width:260vw;height:62vh;transform:translateX(-50%) perspective(600px) rotateX(60deg);transform-origin:50% 0%;background-image:linear-gradient(to right,rgba(254,20,85,.10) 1px,transparent 1px),linear-gradient(to bottom,rgba(254,20,85,.10) 1px,transparent 1px);background-size:50px 50px;background-position:0 0;animation:eo-grid-scroll 3s linear infinite;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 14%,#000 48%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 14%,#000 48%,#000 100%);pointer-events:none;z-index:0}
+/* Malha GPU-accelerated: transform translate3d em vez de background-position (compositor layer, sem repaint) */
+.eo-bg::before{display:block;content:"";position:absolute;left:50%;bottom:0;width:260vw;height:62vh;transform:translate3d(-50%,0,0) perspective(600px) rotateX(60deg);transform-origin:50% 0%;background-image:linear-gradient(to right,rgba(254,20,85,.10) 1px,transparent 1px),linear-gradient(to bottom,rgba(254,20,85,.10) 1px,transparent 1px);background-size:50px 50px;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 14%,#000 48%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.35) 14%,#000 48%,#000 100%);pointer-events:none;z-index:0;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;animation:eo-grid-shift 4s linear infinite;contain:strict}
 .eo-bg::after{display:none}
 [data-theme="light"] .eo-bg::before{background-image:linear-gradient(to right,rgba(101,163,13,.10) 1px,transparent 1px),linear-gradient(to bottom,rgba(101,163,13,.10) 1px,transparent 1px)}
 [data-theme="light"] .eo-bg::after{background:linear-gradient(90deg,transparent,rgba(101,163,13,.55),transparent);box-shadow:0 0 14px rgba(101,163,13,.4)}
-@keyframes eo-grid-scroll{from{background-position:0 0}to{background-position:-50px 0}}
+/* Translate via Y (perspectiva inverte direção) — pseudo já é 2x altura visível, looping seamless ao saltar 50px (= 1 tile) */
+@keyframes eo-grid-shift{
+  from{transform:translate3d(-50%,0,0) perspective(600px) rotateX(60deg)}
+  to{transform:translate3d(-50%,50px,0) perspective(600px) rotateX(60deg)}
+}
+/* Pausa quando onboard fechando (evita stutter no fim) */
+.eclipse-onboard:not([data-on]) .eo-bg::before{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.eo-bg::before{animation:none}}
+/* Mobile: animação mais lenta + menos opacidade pra reduzir custo */
+@media (max-width:520px),(pointer:coarse){
+  .eo-bg::before{animation-duration:7s;opacity:.7}
+}
 .eo-stage{z-index:2}
 .eo-stage{position:relative;width:min(560px,92vw);max-height:92vh;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 20px;overflow-y:auto}
 .eo-progress{display:flex;gap:8px;margin-bottom:24px}
@@ -6471,9 +6482,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .eo-card-front::before{content:'';position:absolute;inset:0;background:var(--eo-card-fg,#fff);-webkit-mask:url(icons/logo-eclipse-moon.svg) center/55% auto no-repeat,url(icons/logo-eclipse-star.svg) center/55% auto no-repeat;mask:url(icons/logo-eclipse-moon.svg) center/55% auto no-repeat,url(icons/logo-eclipse-star.svg) center/55% auto no-repeat;-webkit-mask-composite:source-over;mask-composite:add;opacity:.13;pointer-events:none;z-index:0}
 .eo-card-l,.eo-card-r{position:relative;z-index:1;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .eo-card-back{transform:translateZ(-4px) rotateY(180deg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:1;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .35s ease,background .35s ease,box-shadow .35s ease;background:linear-gradient(160deg,color-mix(in srgb,var(--eo-card-c,#1f1f23) 80%,#000) 0%,var(--eo-card-c,#1f1f23) 50%,color-mix(in srgb,var(--eo-card-c,#1f1f23) 60%,#000) 100%)}
-/* Malha em perspectiva movida pro fundo da interface (body) */
-.eo-bg::after{content:'';position:absolute;bottom:0;left:-50%;right:-50%;height:55vh;background:linear-gradient(to right,rgba(254,20,85,.35) 1px,transparent 1px) 0 0/60px 100%,linear-gradient(to bottom,rgba(254,20,85,.35) 1px,transparent 1px) 0 0/100% 40px;transform:perspective(420px) rotateX(60deg);transform-origin:bottom center;pointer-events:none;-webkit-mask-image:linear-gradient(to top,#000 25%,transparent 100%);mask-image:linear-gradient(to top,#000 25%,transparent 100%);animation:eo-grid-flow 3.5s linear infinite;z-index:0;opacity:.55}
-@keyframes eo-grid-flow{from{background-position:0 0,0 0}to{background-position:0 0,0 40px}}
+/* .eo-bg::after removido em v3.8.x — era 2ª malha sobreposta animando background-position (causava lag, especialmente no fim quando outras transições rodavam). Visual mantido pelo ::before otimizado acima. */
 .eo-back-logo{width:55%;aspect-ratio:1/1;background:var(--eo-card-fg,#fff);-webkit-mask:url(icons/logo-eclipse-moon.svg) center/contain no-repeat,url(icons/logo-eclipse-star.svg) center/contain no-repeat;mask:url(icons/logo-eclipse-moon.svg) center/contain no-repeat,url(icons/logo-eclipse-star.svg) center/contain no-repeat;-webkit-mask-composite:source-over;mask-composite:add;opacity:.55}
 .eo-back-brand{font-family:Inter,system-ui,sans-serif;font-weight:800;font-size:18px;color:var(--eo-card-fg,#fff);letter-spacing:.4px;opacity:.85}
 .eo-card [contenteditable]{user-select:text}

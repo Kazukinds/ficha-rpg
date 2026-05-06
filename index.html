@@ -1846,18 +1846,31 @@ input[type="number"]{-moz-appearance:textfield}
   .item-form-split .ifs-side .form-group{margin-bottom:0}
 }
 .modal{overflow:visible!important;position:relative}/* dropdowns escapam — scroll fica em #modal-body */
-.item-form-compact .form-group{margin-bottom:8px;transition:opacity .25s ease,max-height .28s ease,margin-bottom .25s ease,transform .25s ease}
-.item-form-compact .form-row{margin-bottom:8px}
-.item-form-compact .form-group label{font-size:10px;margin-bottom:3px;letter-spacing:.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase}
-.item-form-compact .form-group input,.item-form-compact .form-group select{padding:7px 10px;font-size:12px;border-radius:7px}
-.item-form-compact .form-group textarea{padding:7px 10px;font-size:11px;border-radius:7px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);width:100%}
+.item-form-compact{display:flex;flex-direction:column;gap:10px}
+.item-form-compact .form-group{margin-bottom:0;transition:opacity .25s ease,max-height .28s ease,margin .25s ease,transform .25s ease}
+.item-form-compact .form-row{margin-bottom:0;gap:10px}
+.item-form-compact .form-row.form-row-3{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px}
+.item-form-compact .form-group label{font-size:10px;margin-bottom:4px;letter-spacing:.6px;font-weight:700;color:var(--text-dim);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.item-form-compact .form-group input[type="text"],.item-form-compact .form-group input[type="number"],.item-form-compact .form-group select{padding:9px 11px;font-size:13px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);width:100%;transition:border-color .15s,background .15s}
+.item-form-compact .form-group input:focus,.item-form-compact .form-group select:focus{border-color:var(--magenta-dim);outline:none;background:color-mix(in srgb,var(--magenta) 4%,var(--bg-input))}
+.item-form-compact .form-group textarea{padding:9px 12px;font-size:11px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);width:100%;line-height:1.45;font-family:'JetBrains Mono','Courier New',monospace;transition:border-color .15s}
 .item-form-compact .form-group textarea:focus{border-color:var(--magenta-dim);outline:none}
-.item-form-compact .form-group-svg{padding:8px;background:rgba(255,255,255,.02);border:1px dashed var(--border);border-radius:8px}
-.item-form-compact .weapon-pick-trigger{padding:7px 10px;font-size:12px;border-radius:7px}
+.item-form-compact .form-group textarea::placeholder{color:color-mix(in srgb,var(--text-dim) 70%,transparent);font-style:italic}
+.item-form-compact .form-group-svg{padding:10px 12px;background:rgba(255,255,255,.025);border:1px dashed color-mix(in srgb,var(--magenta) 25%,var(--border));border-radius:10px;transition:border-color .2s,background .2s}
+.item-form-compact .form-group-svg:hover{border-color:var(--magenta-dim);background:rgba(255,255,255,.035)}
+.item-form-compact .form-group-svg input[type="file"]{padding:6px 8px;font-size:11px;width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer}
+.item-form-compact .form-group-svg input[type="file"]::file-selector-button{padding:5px 10px;font-size:11px;background:var(--magenta-bg-strong);color:var(--magenta);border:1px solid var(--magenta-dim);border-radius:5px;margin-right:8px;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.3px}
+.item-form-compact .weapon-pick-trigger{padding:9px 12px;font-size:13px;border-radius:8px}
+/* Tamanho row layout limpo */
+.item-form-compact .size-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.item-form-compact .size-row input[type="number"]{width:64px!important;flex:0 0 auto}
+#m-isize-preview,#m-esize-preview{display:inline-grid;gap:2px;padding:6px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;flex:0 0 auto;margin-left:auto;max-width:120px;max-height:120px;overflow:auto}
 /* Classificação fade hide */
-.form-group-rarity{overflow:hidden;max-height:80px;opacity:1;transform:translateY(0);transition:opacity .25s ease,max-height .28s ease,transform .25s ease,margin .25s ease,padding .25s ease}
-.form-group-rarity.hide-anim{opacity:0;max-height:0;transform:translateY(-6px);margin:0!important;padding:0!important;pointer-events:none}
-.form-group-rarity.show-anim{opacity:1;max-height:80px;transform:translateY(0)}
+.form-group-rarity{overflow:hidden;max-height:90px;opacity:1;transform:translateY(0);transition:opacity .25s ease,max-height .28s ease,transform .25s ease,margin .25s ease,padding .25s ease}
+.form-group-rarity.hide-anim{opacity:0;max-height:0;transform:translateY(-6px);margin:0!important;padding:0!important;pointer-events:none;visibility:hidden}
+.form-group-rarity.show-anim{opacity:1;max-height:90px;transform:translateY(0);visibility:visible}
+/* Modal title mais limpo */
+#modal-title{font-size:16px;font-weight:700;letter-spacing:-.2px}
 .form-row.form-row-3{display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:8px}
 .form-row.form-row-3 .form-group{flex:none;width:auto;margin-bottom:0}
 .item-tabs{display:flex;gap:4px;padding:4px;background:var(--bg-input);border-radius:10px;margin-bottom:14px}
@@ -16091,13 +16104,13 @@ function openModal(type,eid){
 <div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div>
 <div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault()"><option value="armaBranca">Armas Brancas</option><option value="armaFogo">Armas de Fogo</option><option value="explosivo">Explosivos</option><option value="operacional">Itens Operacionais</option><option value="implante">Implantes</option><option value="obscuro">Itens Obscuros</option><option value="protecao">Proteção</option><option value="vestimenta">Vestimenta</option><option value="acessorio">Acessório</option><option value="municao">Munições</option><option value="consumivel">Consumíveis</option><option value="material">Materiais</option></select></div><div class="form-group form-group-rarity" id="m-irarity-wrap"><label id="m-irarity-label">Classificação</label><select id="m-irarity" onchange="window._applyDurDefault&&window._applyDurDefault()"><option value="common">Improvisada</option><option value="uncommon">Básica</option><option value="rare">Tática</option><option value="epic">Avançada</option></select></div></div>
 <div class="form-group" id="m-wpn-wrap"><label>Ícone <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher ícone...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
-<div class="form-group"><label>Tamanho <span style="color:var(--text-dim);font-weight:400">(L × A, máx 8)</span></label>
-<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-  <input type="number" id="m-igw" value="1" min="1" max="8" style="width:60px;flex:0 0 auto" oninput="window._updateSizePreview&&window._updateSizePreview()">
-  <span style="color:var(--text-dim);font-weight:700">×</span>
-  <input type="number" id="m-igh" value="1" min="1" max="8" style="width:60px;flex:0 0 auto" oninput="window._updateSizePreview&&window._updateSizePreview()">
-  <button type="button" id="m-iswap" title="Inverter" onclick="window._swapItemSize&&window._swapItemSize()" style="width:30px;height:30px;border-radius:50%;background:rgba(var(--magenta-rgb),.12);border:1px solid rgba(var(--magenta-rgb),.4);color:var(--magenta);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
-  <div id="m-isize-preview" style="display:inline-grid;gap:1px;padding:3px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;flex:0 0 auto;margin-left:auto;max-width:90px;max-height:90px;overflow:auto"></div>
+<div class="form-group"><label>Tamanho <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(L × A · máx 8)</span></label>
+<div class="size-row">
+  <input type="number" id="m-igw" value="1" min="1" max="8" oninput="window._updateSizePreview&&window._updateSizePreview()">
+  <span style="color:var(--text-dim);font-weight:700;font-size:14px">×</span>
+  <input type="number" id="m-igh" value="1" min="1" max="8" oninput="window._updateSizePreview&&window._updateSizePreview()">
+  <button type="button" id="m-iswap" title="Inverter" onclick="window._swapItemSize&&window._swapItemSize()" style="width:32px;height:32px;border-radius:50%;background:rgba(var(--magenta-rgb),.14);border:1px solid rgba(var(--magenta-rgb),.4);color:var(--magenta);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;transition:background .15s,transform .15s"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+  <div id="m-isize-preview"></div>
 </div></div>
 <div class="form-row form-row-3"><div class="form-group"><label>Qtd</label><input type="number" id="m-iqty" value="1" min="1" max="9999"></div><div class="form-group"><label>Peso (kg)</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div><div class="form-group"><label>Valor</label><input type="number" id="m-ivalue" value="0" min="0"></div></div>
 <div class="form-group"><label>Durabilidade <span style="color:var(--text-dim);font-weight:400" id="m-idur-hint"></span></label><input type="number" id="m-idur" value="60" min="0" max="200"></div>
@@ -16111,9 +16124,11 @@ function openModal(type,eid){
       const w=Math.max(1,Math.min(8,gw)),h=Math.max(1,Math.min(8,gh));
       const prev=document.getElementById('m-isize-preview');
       if(!prev)return;
-      prev.style.gridTemplateColumns=`repeat(${w},10px)`;
-      prev.style.gridTemplateRows=`repeat(${h},10px)`;
-      prev.innerHTML=Array(w*h).fill('<div style="width:10px;height:10px;background:var(--magenta-bg-strong);border:1px solid var(--magenta-dim);border-radius:2px"></div>').join('');
+      // Cell size ajusta pra caber no max 110px
+      const cellSz=Math.max(8,Math.min(14,Math.floor(110/Math.max(w,h))));
+      prev.style.gridTemplateColumns=`repeat(${w},${cellSz}px)`;
+      prev.style.gridTemplateRows=`repeat(${h},${cellSz}px)`;
+      prev.innerHTML=Array(w*h).fill(`<div style="width:${cellSz}px;height:${cellSz}px;background:var(--magenta-bg-strong);border:1px solid var(--magenta-dim);border-radius:2px"></div>`).join('');
     };
     setTimeout(()=>{window._updateSizePreview&&window._updateSizePreview();window._toggleWpnPicker&&window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault()},30);
     window._swapItemSize=function(){
@@ -16177,7 +16192,33 @@ function openModal(type,eid){
       sel.innerHTML=tiers.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
       if(tiers.some(t=>t[0]===cur))sel.value=cur;
       if(lbl)lbl.textContent=usesTier?'Classificação':'Raridade';
-      const cs=sel.closest('.cselect');if(cs&&typeof initCustomSelects==='function'){const par=cs.parentElement;cs.replaceWith(sel);initCustomSelects(par)}
+      // Rebuild cselect dropdown in-place (sem replaceWith, mantém csInit)
+      const cs=sel.closest('.cselect');
+      if(cs){
+        const trigger=cs.querySelector('.cselect-trigger');
+        const dropdown=cs.querySelector('.cselect-dropdown');
+        if(trigger&&dropdown){
+          const curOpt=sel.options[sel.selectedIndex];
+          if(curOpt&&trigger.firstChild&&trigger.firstChild.nodeType===3)trigger.firstChild.textContent=curOpt.textContent;
+          dropdown.innerHTML='';
+          Array.from(sel.options).forEach((opt,idx)=>{
+            const o=document.createElement('div');
+            o.className='cselect-option'+(idx===sel.selectedIndex?' selected':'');
+            o.dataset.value=opt.value;
+            o.innerHTML=`<span class="opt-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span>${opt.textContent}</span>`;
+            o.addEventListener('click',e=>{
+              e.stopPropagation();
+              sel.value=opt.value;
+              sel.dispatchEvent(new Event('change',{bubbles:true}));
+              if(trigger.firstChild&&trigger.firstChild.nodeType===3)trigger.firstChild.textContent=opt.textContent;
+              dropdown.querySelectorAll('.cselect-option').forEach(x=>x.classList.remove('selected'));
+              o.classList.add('selected');
+              trigger.classList.remove('open');dropdown.classList.remove('open');
+            });
+            dropdown.appendChild(o);
+          });
+        }
+      }
     };
     // Durabilidade default baseado em categoria + classificação (PDF DURABILIDADE)
     window._applyDurDefault=function(){

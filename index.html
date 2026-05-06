@@ -1864,9 +1864,12 @@ input[type="number"]{-moz-appearance:textfield}
   .item-form-split .ifs-side .form-group{margin-bottom:0}
 }
 .modal{overflow:visible!important;position:relative}/* dropdowns escapam — scroll fica em #modal-body */
-.item-form-compact{display:flex;flex-direction:column;gap:10px}
+.item-form-compact{display:flex;flex-direction:column;gap:12px}
 .item-form-compact .form-group{margin-bottom:0;transition:opacity .25s ease,max-height .28s ease,margin .25s ease,transform .25s ease}
 .item-form-compact .form-row{margin-bottom:0;gap:10px}
+.item-form-compact .form-section{padding:12px;background:rgba(255,255,255,.015);border:1px solid color-mix(in srgb,var(--border) 70%,transparent);border-radius:10px;display:flex;flex-direction:column;gap:10px}
+.item-form-compact .form-section-title{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text-dim);margin:0 0 -2px;display:flex;align-items:center;gap:6px}
+.item-form-compact .form-section-title::before{content:'';width:3px;height:10px;background:var(--magenta);border-radius:2px}
 .item-form-compact .form-row.form-row-3{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px}
 .item-form-compact .form-group label{font-size:10px;margin-bottom:4px;letter-spacing:.6px;font-weight:700;color:var(--text-dim);text-transform:uppercase;display:flex;align-items:center;gap:6px}
 .item-form-compact .form-group input[type="text"],.item-form-compact .form-group input[type="number"],.item-form-compact .form-group select{padding:9px 11px;font-size:13px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);width:100%;transition:border-color .15s,background .15s}
@@ -1878,12 +1881,13 @@ input[type="number"]{-moz-appearance:textfield}
 .item-form-compact .form-group-svg:hover{border-color:var(--magenta-dim);background:rgba(255,255,255,.035)}
 .item-form-compact .form-group-svg input[type="file"]{padding:6px 8px;font-size:11px;width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer}
 .item-form-compact .form-group-svg input[type="file"]::file-selector-button{padding:5px 10px;font-size:11px;background:var(--magenta-bg-strong);color:var(--magenta);border:1px solid var(--magenta-dim);border-radius:5px;margin-right:8px;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.3px}
-/* Icon toolbar — 3 toggles compactos + pane lazy */
-.item-form-compact .icon-toolbar{display:flex;gap:4px;align-items:center;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:6px}
-.item-form-compact .icon-tool{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px 8px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .15s;min-width:0}
+/* Icon toolbar — segmented compacto */
+.item-form-compact .icon-toolbar{display:flex;gap:3px;align-items:center;background:var(--bg-input);border:1px solid var(--border);border-radius:9px;padding:3px;margin-bottom:8px;position:relative}
+.item-form-compact .icon-tool{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:7px 8px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .18s cubic-bezier(.4,0,.2,1);min-width:0;position:relative}
 .item-form-compact .icon-tool span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-form-compact .icon-tool:hover{color:var(--text-secondary);background:rgba(255,255,255,.04)}
-.item-form-compact .icon-tool.active{background:var(--bg-card);color:var(--magenta);box-shadow:0 1px 3px rgba(0,0,0,.2),inset 0 0 0 1px color-mix(in srgb,var(--magenta) 25%,transparent)}
+.item-form-compact .icon-tool.active{background:var(--bg-card);color:var(--magenta);box-shadow:0 1px 3px rgba(0,0,0,.25),inset 0 0 0 1px color-mix(in srgb,var(--magenta) 30%,transparent)}
+.item-form-compact .icon-tool.has-content::after{content:'';position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--magenta);box-shadow:0 0 4px rgba(var(--magenta-rgb),.6)}
 .item-form-compact .icon-preview{flex:0 0 28px;width:28px;height:28px;padding:0;border-radius:6px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;color:var(--text-dim);overflow:hidden;margin-left:6px;cursor:pointer;transition:all .15s;position:relative;font-family:inherit;z-index:1}
 .item-form-compact .icon-preview.has-icon{background:var(--bg-input);border:1px solid var(--magenta-dim)}
 .item-form-compact .icon-preview svg,.item-form-compact .icon-preview img{width:70%;height:70%}
@@ -16447,11 +16451,17 @@ function openModal(type,eid){
       const svgRaw=(document.getElementById('m-iisvg')?.value||'').trim();
       const wpn=document.getElementById('m-iwpn')?.value||'';
       const loaded=window._loadedIconSvg||'';
+      // has-content em cada tab
+      const tPick=document.getElementById('m-icon-tab-pick');
+      const tSvg=document.getElementById('m-icon-tab-svg');
+      const tFile=document.getElementById('m-icon-tab-file');
+      if(tPick)tPick.classList.toggle('has-content',!!(wpn&&WEAPON_SVGS[wpn]));
+      if(tSvg)tSvg.classList.toggle('has-content',!!(svgRaw&&/<svg/i.test(svgRaw)));
+      if(tFile)tFile.classList.toggle('has-content',!!loaded);
       if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0];prev.classList.add('has-icon')}
       else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`;prev.classList.add('has-icon')}
       else if(loaded){prev.innerHTML=loaded;prev.classList.add('has-icon')}
       else{
-        // Vazio — gear pequeno + label CONFIG (via ::before do CSS)
         prev.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
         prev.classList.remove('has-icon');
       }

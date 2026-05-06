@@ -14268,6 +14268,14 @@ window._openImgConfig=function(id,sourceData){
   // CONFIRMAR: salva último ângulo + aplica tudo + fecha
   ov.querySelector('#imgCfgOk').addEventListener('click',()=>{
     _saveCurrentAngle(false);
+    // Draft (Adicionar Item): só persiste no objeto, sem side effects globais
+    if(it._isDraft){
+      it.rot=state.rot;
+      const total=Object.keys(it.customImages||{}).length;
+      toast(`Imagem configurada · ${total} ângulo${total>1?'s':''} salvo${total>1?'s':''} no draft`);
+      close();
+      return;
+    }
     if(typeof setItemRotation==='function' && (it.rot||0)!==state.rot){
       setItemRotation(it.id,state.rot);
     } else {
@@ -16377,27 +16385,34 @@ function openModal(type,eid){
       }
       else if(wpn&&WEAPON_SVGS[wpn]){src=WEAPON_SVGS[wpn].file}
       if(!src){toast&&toast('Escolha um ícone primeiro (Catálogo, Código ou Arquivo)','warn');return}
-      // Cria draft item temporário no inventory
+      // Cria draft item temporário no inventory + remove imediatamente (closure no _openImgConfig captura ref)
       const DRAFT_ID=-99999;
-      const existingDraft=inventory.find(i=>i.id===DRAFT_ID);
-      if(existingDraft){inventory=inventory.filter(i=>i.id!==DRAFT_ID)}
+      inventory=inventory.filter(i=>i.id!==DRAFT_ID);
       const conf=window._pendingIconConfig||{};
-      const draft={id:DRAFT_ID,name:'__draft',cat:'arma',rarity:'common',qty:1,weight:0,value:0,durability:60,gw,gh,iconKey:'sword',iconWpn:'',iconSvg:'',customImage:src,customImages:conf.customImages||{0:src},imageConf:conf.imageConf||{},desc:''};
+      const draft={id:DRAFT_ID,name:'__draft',_isDraft:true,cat:'arma',rarity:'common',qty:1,weight:0,value:0,durability:60,gw,gh,iconKey:'sword',iconWpn:'',iconSvg:'',customImage:src,customImages:conf.customImages||{0:src},_imgConfs:conf._imgConfs||{},imageConf:conf.imageConf||{},desc:''};
       inventory.push(draft);
-      // Abre configurador
       window._openImgConfig(DRAFT_ID,src);
-      // Hook close: extrai config + remove draft
+      // Remove draft do inventory IMEDIATAMENTE — _openImgConfig já capturou ref via closure (it=inventory.find...)
+      // Isso evita que o item draft apareça no grid + impede drag/edit acidental
+      inventory=inventory.filter(i=>i.id!==DRAFT_ID);
+      // MutationObserver: pega config do draft (ref preservada via closure) ao fechar modal
       const ov=document.querySelector('.img-cfg-overlay');
       if(ov){
         const observer=new MutationObserver(()=>{
           if(!document.body.contains(ov)){
             observer.disconnect();
-            const d=inventory.find(i=>i.id===DRAFT_ID);
-            if(d){
-              window._pendingIconConfig={customImage:d.customImage,customImages:d.customImages,imageConf:d.imageConf};
-              window._loadedIconSvg=`<img src="${d.customImage||src}" style="width:100%;height:100%;object-fit:contain" draggable="false">`;
-            }
+            // Usa ref `draft` direto (não inventory.find) — draft já foi removido mas ref vive aqui
+            window._pendingIconConfig={
+              customImage:draft.customImage,
+              customImages:draft.customImages,
+              _imgConfs:draft._imgConfs,
+              imageConf:draft.imageConf,
+              rot:draft.rot
+            };
+            window._loadedIconSvg=`<img src="${draft.customImage||src}" style="width:100%;height:100%;object-fit:contain" draggable="false">`;
+            // Garante limpeza de qualquer draft remanescente
             inventory=inventory.filter(i=>i.id!==DRAFT_ID);
+            try{renderGrid&&renderGrid()}catch(_){}
             window._renderIconPreview&&window._renderIconPreview();
             toast&&toast('Imagem configurada','success');
           }
@@ -16837,7 +16852,9 @@ function saveItem(){let n=document.getElementById('m-iname').value.trim().slice(
     const pc=window._pendingIconConfig;
     if(pc.customImage)ni.customImage=pc.customImage;
     if(pc.customImages)ni.customImages=pc.customImages;
+    if(pc._imgConfs)ni._imgConfs=pc._imgConfs;
     if(pc.imageConf)ni.imageConf=pc.imageConf;
+    if(typeof pc.rot==='number')ni.rot=pc.rot;
     window._pendingIconConfig=null;
   }
   // Mochila: se categoria for "acessorio" e nome contém "mochila"/"bolsa", inicia container

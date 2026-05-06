@@ -1884,10 +1884,8 @@ input[type="number"]{-moz-appearance:textfield}
 .item-form-compact .icon-tool span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item-form-compact .icon-tool:hover{color:var(--text-secondary);background:rgba(255,255,255,.04)}
 .item-form-compact .icon-tool.active{background:var(--bg-card);color:var(--magenta);box-shadow:0 1px 3px rgba(0,0,0,.2),inset 0 0 0 1px color-mix(in srgb,var(--magenta) 25%,transparent)}
-.item-form-compact .icon-preview{flex:0 0 32px;width:32px;height:32px;border-radius:6px;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);overflow:hidden;margin-left:4px;padding:0;cursor:pointer;transition:all .15s;position:relative;font-family:inherit;z-index:1}
-/* Quando algum cselect estiver aberto, oculta o preview pra não sobrepor o dropdown */
-body:has(.cselect-trigger.open) .item-form-compact .icon-preview{opacity:0;pointer-events:none;transition:opacity .15s ease}
-.item-form-compact .icon-preview:hover{border-color:var(--magenta);color:var(--magenta);transform:scale(1.06);box-shadow:0 0 0 2px rgba(var(--magenta-rgb),.18)}
+.item-form-compact .icon-preview{flex:0 0 38px;width:38px;height:38px;border-radius:8px;background:linear-gradient(145deg,#1d1d23,#15151a);border:1.5px solid var(--magenta-dim);display:flex;align-items:center;justify-content:center;color:var(--magenta);overflow:hidden;margin-left:6px;padding:0;cursor:pointer;transition:all .15s;position:relative;font-family:inherit;z-index:1;box-shadow:0 0 0 1px rgba(0,0,0,.3),0 2px 8px rgba(var(--magenta-rgb),.15)}
+.item-form-compact .icon-preview:hover{border-color:var(--magenta);transform:scale(1.08);box-shadow:0 0 0 2px rgba(var(--magenta-rgb),.3),0 4px 14px rgba(var(--magenta-rgb),.4)}
 .item-form-compact .icon-preview:active{transform:scale(.94)}
 .item-form-compact .icon-preview::after{content:'';position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;background:var(--magenta);border-radius:50%;border:2px solid var(--bg-card);transition:transform .15s}
 .item-form-compact .icon-preview:hover::after{transform:scale(1.15)}
@@ -14901,11 +14899,11 @@ function openEditItem(id){
     const svgRaw=(document.getElementById('m-eisvg')?.value||'').trim();
     const wpn=document.getElementById('m-iwpn')?.value||'';
     const loaded=window._loadedIconSvg||'';
-    if(item.customImage){prev.innerHTML=`<img src="${item.customImage}" alt="" draggable="false">`}
-    else if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0]}
-    else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`}
-    else if(loaded){prev.innerHTML=loaded}
-    else{prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 9h.01"/><path d="M9 15h6"/></svg>'}
+    if(item.customImage){prev.innerHTML=`<img src="${item.customImage}" alt="" draggable="false">`;prev.classList.add('has-icon')}
+    else if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0];prev.classList.add('has-icon')}
+    else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`;prev.classList.add('has-icon')}
+    else if(loaded){prev.innerHTML=loaded;prev.classList.add('has-icon')}
+    else{prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';prev.classList.remove('has-icon')}
   };
   // Click preview → abre _openImgConfig direto no item real (não draft, item já existe)
   window._openEditIconConfig=function(realId){
@@ -16280,7 +16278,7 @@ function openModal(type,eid){
     <button type="button" id="m-icon-tab-pick" class="icon-tool active" data-tool="pick" onclick="window._iconTool('pick')" title="Catálogo de ícones"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span>Catálogo</span></button>
     <button type="button" id="m-icon-tab-svg" class="icon-tool" data-tool="svg" onclick="window._iconTool('svg')" title="Colar código SVG"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Código</span></button>
     <button type="button" id="m-icon-tab-file" class="icon-tool" data-tool="file" onclick="window._iconTool('file')" title="Upload arquivo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Arquivo</span></button>
-    <button type="button" class="icon-preview" id="m-icon-preview" title="Configurar imagem dentro do grid" onclick="window._openDraftIconConfig&&window._openDraftIconConfig()"></button>
+    <button type="button" class="icon-preview" id="m-icon-preview" title="Configurar imagem dentro do grid (posição/escala/rotação)" aria-label="Configurar imagem" onclick="window._openDraftIconConfig&&window._openDraftIconConfig()"></button>
   </div>
   <div class="icon-pane" id="m-icon-pane-pick" data-pane="pick">
     <div id="m-wpn-wrap"><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher do catálogo...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
@@ -16448,10 +16446,14 @@ function openModal(type,eid){
       const svgRaw=(document.getElementById('m-iisvg')?.value||'').trim();
       const wpn=document.getElementById('m-iwpn')?.value||'';
       const loaded=window._loadedIconSvg||'';
-      if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0]}
-      else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`}
-      else if(loaded){prev.innerHTML=loaded}
-      else{prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 9h.01"/><path d="M9 15h6"/></svg>'}
+      if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0];prev.classList.add('has-icon')}
+      else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`;prev.classList.add('has-icon')}
+      else if(loaded){prev.innerHTML=loaded;prev.classList.add('has-icon')}
+      else{
+        // Ícone gear mais óbvio (config)
+        prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+        prev.classList.remove('has-icon');
+      }
     };
     // Hook _toggleWpnPicker → atualizar mensagem catálogo
     const _origToggle=window._toggleWpnPicker;

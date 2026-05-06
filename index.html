@@ -6686,7 +6686,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
 .img-cfg-slot-frame .gl-h{left:0;right:0;height:1px}
 .img-cfg-slot-lbl{position:absolute;bottom:-18px;right:0;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--magenta);letter-spacing:.5px;font-weight:700}
 .img-cfg-preview-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2}
-.img-cfg-preview{display:block;max-width:92%;max-height:92%;width:auto;height:auto;object-fit:contain;transform-origin:center center;transition:transform .3s cubic-bezier(.2,.9,.2,1.05);filter:drop-shadow(0 4px 12px rgba(0,0,0,.6))}
+.img-cfg-preview{display:block;max-width:92%;max-height:92%;width:auto;height:auto;object-fit:contain;transform-origin:center center;transition:transform .25s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.6));will-change:transform}
 .img-cfg-controls{padding:10px 12px;display:flex;flex-direction:column;gap:10px}
 .img-cfg-row{display:flex;flex-direction:column;gap:4px}
 .img-cfg-row label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center}
@@ -14038,12 +14038,12 @@ window._openImgConfig=function(id,sourceData){
       </div>
       <div class="img-cfg-controls">
         <div class="img-cfg-row">
-          <label>Rotação <button type="button" id="imgCfgPlay" class="img-cfg-play-btn" title="Girar 0→90→180→-90→0"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg> Animar</button></label>
+          <label>Rotação <button type="button" id="imgCfgPlay" class="img-cfg-play-btn" title="Girar 0→-90→180→90→0"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg> Animar</button></label>
           <div class="img-cfg-rots">
-            <button type="button" data-rot="0" class="active">0°</button>
-            <button type="button" data-rot="90">90°</button>
-            <button type="button" data-rot="180">180°</button>
-            <button type="button" data-rot="-90">-90°</button>
+            <button type="button" data-rot="0" class="active" title="Paisagem">0°</button>
+            <button type="button" data-rot="-90" title="Retrato">-90°</button>
+            <button type="button" data-rot="180" title="Paisagem invertida">180°</button>
+            <button type="button" data-rot="90" title="Retrato invertido">90°</button>
           </div>
           <div style="font-size:9px;color:var(--text-dim);margin-top:4px;letter-spacing:.3px">Cada ângulo tem config independente. Aplicar salva no ângulo selecionado.</div>
         </div>
@@ -14126,29 +14126,31 @@ window._openImgConfig=function(id,sourceData){
     ov.querySelector('#imgCfgScale').value=state.scale;
   };
   apply();
-  // Auto-rotate cycle: 0→90→180→-90→0
+  // Auto-rotate cycle: 0 (paisagem normal) → -90 (retrato normal) → 180 (paisagem invertida) → 90 (retrato invertido) → 0
   let _playTimer=null;
   const playBtn=ov.querySelector('#imgCfgPlay');
   const stopPlay=()=>{if(_playTimer){clearInterval(_playTimer);_playTimer=null}if(playBtn)playBtn.classList.remove('playing')};
   const startPlay=()=>{
-    const seq=[0,90,180,-90,0];let i=0;
-    state.rot=seq[i];apply();
+    const seq=[0,-90,180,90,0];let i=0;
+    state.rot=seq[i];state.iconRot=seq[i];apply();
     if(playBtn)playBtn.classList.add('playing');
     _playTimer=setInterval(()=>{
       i=(i+1)%seq.length;
       state.rot=seq[i];
+      state.iconRot=seq[i]; // svg gira junto com o bloco
       apply();
       if(i===seq.length-1){stopPlay()}
     },800);
   };
   if(playBtn)playBtn.addEventListener('click',()=>{_playTimer?stopPlay():startPlay()});
   ov.querySelectorAll('[data-rot]').forEach(b=>b.addEventListener('click',()=>{
-    // Top buttons = ÂNGULO CONTEXTO (define shape do bloco + qual variant editar)
-    state.rot=+b.dataset.rot;
+    // Top buttons = ângulo único: bloco E imagem rotacionam juntos
+    const newRot=+b.dataset.rot;
+    state.rot=newRot;
     const k=window._normRotKey?window._normRotKey(state.rot):String(state.rot);
     const c=(it._imgConfs||{})[k];
-    // Reset config + iconRot pra config do novo ângulo
-    state.iconRot=c?(c.rot||0):0;
+    // iconRot SEGUE rot (frame + svg movem juntos). Se houver config salva e c.rot definido manualmente, usa.
+    state.iconRot=c&&typeof c.rot==='number'?c.rot:newRot;
     state.scale=c?(c.scale||100):100;
     state.flipH=c?!!c.flipH:false;
     state.flipV=c?!!c.flipV:false;

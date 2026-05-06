@@ -1860,6 +1860,21 @@ input[type="number"]{-moz-appearance:textfield}
 .item-form-compact .form-group-svg:hover{border-color:var(--magenta-dim);background:rgba(255,255,255,.035)}
 .item-form-compact .form-group-svg input[type="file"]{padding:6px 8px;font-size:11px;width:100%;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer}
 .item-form-compact .form-group-svg input[type="file"]::file-selector-button{padding:5px 10px;font-size:11px;background:var(--magenta-bg-strong);color:var(--magenta);border:1px solid var(--magenta-dim);border-radius:5px;margin-right:8px;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:.3px}
+/* Icon toolbar — 3 toggles compactos + pane lazy */
+.item-form-compact .icon-toolbar{display:flex;gap:4px;align-items:center;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:3px;margin-bottom:6px}
+.item-form-compact .icon-tool{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:6px 8px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .15s;min-width:0}
+.item-form-compact .icon-tool span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-form-compact .icon-tool:hover{color:var(--text-secondary);background:rgba(255,255,255,.04)}
+.item-form-compact .icon-tool.active{background:var(--bg-card);color:var(--magenta);box-shadow:0 1px 3px rgba(0,0,0,.2),inset 0 0 0 1px color-mix(in srgb,var(--magenta) 25%,transparent)}
+.item-form-compact .icon-preview{flex:0 0 30px;width:30px;height:30px;border-radius:6px;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);overflow:hidden;margin-left:4px}
+.item-form-compact .icon-preview svg,.item-form-compact .icon-preview img{width:80%;height:80%;object-fit:contain}
+.item-form-compact .icon-pane{animation:icon-pane-in .2s ease}
+@keyframes icon-pane-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.item-form-compact .icon-pane textarea{padding:8px 10px;font-size:11px;border-radius:7px;background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);width:100%;line-height:1.45;font-family:'JetBrains Mono','Courier New',monospace;min-height:60px;resize:vertical}
+.item-form-compact .icon-pane textarea:focus{border-color:var(--magenta-dim);outline:none}
+.item-form-compact .icon-pane input[type="file"]{padding:6px 8px;font-size:11px;width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);cursor:pointer}
+.item-form-compact .icon-pane input[type="file"]::file-selector-button{padding:5px 10px;font-size:11px;background:var(--magenta-bg-strong);color:var(--magenta);border:1px solid var(--magenta-dim);border-radius:5px;margin-right:8px;cursor:pointer;font-family:inherit;font-weight:600}
+@media(max-width:520px){.item-form-compact .icon-tool span{display:none}.item-form-compact .icon-tool{padding:8px 6px}}
 .item-form-compact .weapon-pick-trigger{padding:9px 12px;font-size:13px;border-radius:8px}
 /* Tamanho row layout limpo */
 .item-form-compact .size-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -16103,7 +16118,27 @@ function openModal(type,eid){
     body.innerHTML=`<div class="item-form-compact">
 <div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div>
 <div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault()"><option value="armaBranca">Armas Brancas</option><option value="armaFogo">Armas de Fogo</option><option value="explosivo">Explosivos</option><option value="operacional">Itens Operacionais</option><option value="implante">Implantes</option><option value="obscuro">Itens Obscuros</option><option value="protecao">Proteção</option><option value="vestimenta">Vestimenta</option><option value="acessorio">Acessório</option><option value="municao">Munições</option><option value="consumivel">Consumíveis</option><option value="material">Materiais</option></select></div><div class="form-group form-group-rarity" id="m-irarity-wrap"><label id="m-irarity-label">Classificação</label><select id="m-irarity" onchange="window._applyDurDefault&&window._applyDurDefault()"><option value="common">Improvisada</option><option value="uncommon">Básica</option><option value="rare">Tática</option><option value="epic">Avançada</option></select></div></div>
-<div class="form-group" id="m-wpn-wrap"><label>Ícone <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher ícone...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
+<!-- ÍCONE: row compacta com 3 toggles -->
+<div class="form-group icon-section">
+  <label>Ícone <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+  <div class="icon-toolbar">
+    <button type="button" id="m-icon-tab-pick" class="icon-tool active" data-tool="pick" onclick="window._iconTool('pick')" title="Catálogo de ícones"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span>Catálogo</span></button>
+    <button type="button" id="m-icon-tab-svg" class="icon-tool" data-tool="svg" onclick="window._iconTool('svg')" title="Colar código SVG"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Código</span></button>
+    <button type="button" id="m-icon-tab-file" class="icon-tool" data-tool="file" onclick="window._iconTool('file')" title="Upload arquivo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>Arquivo</span></button>
+    <span class="icon-preview" id="m-icon-preview"></span>
+  </div>
+  <div class="icon-pane" id="m-icon-pane-pick" data-pane="pick">
+    <div id="m-wpn-wrap"><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPickerForItem()"><span id="m-iwpn-preview">Escolher do catálogo...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-iwpn" value=""></div>
+    <div id="m-cat-only-msg" style="font-size:11px;color:var(--text-dim);padding:8px;display:none">Catálogo disponível só para Armas. Use Código/Arquivo p/ outras categorias.</div>
+  </div>
+  <div class="icon-pane" id="m-icon-pane-svg" data-pane="svg" style="display:none">
+    <textarea id="m-iisvg" rows="3" placeholder="Cole &lt;svg&gt;...&lt;/svg&gt; aqui" oninput="window._renderIconPreview&&window._renderIconPreview()"></textarea>
+  </div>
+  <div class="icon-pane" id="m-icon-pane-file" data-pane="file" style="display:none">
+    <input type="file" id="m-iifile" accept="image/png,image/jpeg,image/svg+xml,image/*,.svg" onchange="window._loadIconFile&&window._loadIconFile(this);window._renderIconPreview&&window._renderIconPreview()">
+    <div style="font-size:10px;color:var(--text-dim);margin-top:4px">PNG · JPG · SVG (galeria/documentos no mobile)</div>
+  </div>
+</div>
 <div class="form-group"><label>Tamanho <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(L × A · máx 8)</span></label>
 <div class="size-row">
   <input type="number" id="m-igw" value="1" min="1" max="8" oninput="window._updateSizePreview&&window._updateSizePreview()">
@@ -16113,9 +16148,8 @@ function openModal(type,eid){
   <div id="m-isize-preview"></div>
 </div></div>
 <div class="form-row form-row-3"><div class="form-group"><label>Qtd</label><input type="number" id="m-iqty" value="1" min="1" max="9999"></div><div class="form-group"><label>Peso (kg)</label><input type="number" id="m-iweight" value="1" min="0" step="0.5"></div><div class="form-group"><label>Valor</label><input type="number" id="m-ivalue" value="0" min="0"></div></div>
-<div class="form-group"><label>Durabilidade <span style="color:var(--text-dim);font-weight:400" id="m-idur-hint"></span></label><input type="number" id="m-idur" value="60" min="0" max="200"></div>
+<div class="form-group"><label>Durabilidade <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0" id="m-idur-hint"></span></label><input type="number" id="m-idur" value="60" min="0" max="200"></div>
 <div class="form-group"><label>Descrição</label><input type="text" id="m-idesc" placeholder="Notas..."></div>
-<div class="form-group form-group-svg"><label>Ícone SVG / Imagem <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><textarea id="m-iisvg" rows="3" style="font-family:monospace;font-size:11px;width:100%;resize:vertical;min-height:64px" placeholder="Cole código <svg>...</svg> ou use o seletor abaixo"></textarea><input type="file" id="m-iifile" accept="image/png,image/jpeg,image/svg+xml,image/*,.svg" onchange="window._loadIconFile&&window._loadIconFile(this)" style="font-size:11px;margin-top:6px"></div>
 <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveItem()">Adicionar</button></div>
 </div>`;
     window._updateSizePreview=function(){
@@ -16242,6 +16276,38 @@ function openModal(type,eid){
     };
     // Marca como touched ao usuário editar manual
     setTimeout(()=>{const dur=document.getElementById('m-idur');if(dur)dur.addEventListener('input',()=>{dur.dataset.userTouched='1'})},50);
+    // Icon toolbar: alterna pane (Catálogo / Código SVG / Arquivo)
+    window._iconTool=function(tool){
+      ['pick','svg','file'].forEach(t=>{
+        const btn=document.getElementById('m-icon-tab-'+t);
+        const pane=document.getElementById('m-icon-pane-'+t);
+        if(btn)btn.classList.toggle('active',t===tool);
+        if(pane)pane.style.display=t===tool?'':'none';
+      });
+    };
+    // Atualiza preview pequeno na toolbar
+    window._renderIconPreview=function(){
+      const prev=document.getElementById('m-icon-preview');if(!prev)return;
+      const svgRaw=(document.getElementById('m-iisvg')?.value||'').trim();
+      const wpn=document.getElementById('m-iwpn')?.value||'';
+      const loaded=window._loadedIconSvg||'';
+      if(svgRaw&&/<svg[\s\S]*?<\/svg>/i.test(svgRaw)){prev.innerHTML=svgRaw.match(/<svg[\s\S]*?<\/svg>/i)[0]}
+      else if(wpn&&WEAPON_SVGS[wpn]){prev.innerHTML=`<img src="${WEAPON_SVGS[wpn].file}" alt="" draggable="false">`}
+      else if(loaded){prev.innerHTML=loaded}
+      else{prev.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 9h.01"/><path d="M9 15h6"/></svg>'}
+    };
+    // Hook _toggleWpnPicker → atualizar mensagem catálogo
+    const _origToggle=window._toggleWpnPicker;
+    window._toggleWpnPicker=function(){
+      if(_origToggle)_origToggle();
+      const cat=document.getElementById('m-icat')?.value;
+      const isWpn=(cat==='arma'||cat==='armaBranca'||cat==='arma-fogo'||cat==='armaFogo'||cat==='explosivo');
+      const wrap=document.getElementById('m-wpn-wrap');
+      const msg=document.getElementById('m-cat-only-msg');
+      if(wrap)wrap.style.display=isWpn?'':'none';
+      if(msg)msg.style.display=isWpn?'none':'';
+    };
+    setTimeout(()=>{window._renderIconPreview&&window._renderIconPreview()},50);
   } else if(type==='weapon'){
     title.textContent='Adicionar Arma';
     body.innerHTML=`<div class="form-group"><label>Arma</label><button type="button" class="weapon-pick-trigger" onclick="window._openWpnPicker()"><span id="m-wpick-preview">Escolher arma...</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button><input type="hidden" id="m-wname-pick" value=""></div><div class="form-group"><label>Nome <span style="color:var(--text-dim);font-weight:400">(opcional)</span></label><input type="text" id="m-wname" placeholder="Ex: Pistola Curta"></div><div class="form-row"><div class="form-group"><label>Raridade</label><select id="m-wrarity"><option value="common">Comum</option><option value="uncommon">Incomum</option><option value="rare">Raro</option><option value="epic">Épico</option><option value="legendary">Lendário</option></select></div><div class="form-group"><label>Quantidade</label><input type="number" id="m-wqty" value="1" min="1"></div></div><div class="form-row"><div class="form-group"><label>Largura (slots)</label><input type="number" id="m-wgw" value="2" min="1" max="8"></div><div class="form-group"><label>Altura (slots)</label><input type="number" id="m-wgh" value="1" min="1" max="8"></div></div><div class="form-row"><div class="form-group"><label>Peso (kg)</label><input type="number" id="m-wweight" value="1" min="0" step="0.5"></div><div class="form-group"><label>Valor (créditos)</label><input type="number" id="m-wvalue" value="0" min="0"></div></div><div class="form-group"><label>Descrição</label><input type="text" id="m-wdesc" placeholder="Notas..."></div><div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal()">Cancelar</button><button class="modal-btn primary" onclick="saveWeapon()">Adicionar</button></div>`;
@@ -16682,6 +16748,7 @@ window._loadIconFile=function(input){
     if(/^data:image\/svg/.test(txt)){try{const svg=atob(txt.split(',')[1]||'');window._loadedIconSvg=(svg.match(/<svg[\s\S]*?<\/svg>/i)||[''])[0]}catch(_){}}
     else if(/<svg/i.test(txt)){window._loadedIconSvg=(txt.match(/<svg[\s\S]*?<\/svg>/i)||[''])[0]}
     else if(/^data:image\//.test(txt)){window._loadedIconSvg=`<img src="${txt}" style="width:100%;height:100%;object-fit:contain" draggable="false">`}
+    if(window._renderIconPreview)window._renderIconPreview();
     toast&&toast('Ícone carregado','success');
   };
   if(/svg/i.test(f.type)||/\.svg$/i.test(f.name))r.readAsText(f);else r.readAsDataURL(f);

@@ -7838,7 +7838,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.1</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.2</span></div>
             <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">380</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
@@ -19015,7 +19015,7 @@ function performSave(){
   if(!name)name='ficha';
   closeModal();
   const data=collectAllData();
-  data._meta={savedAt:new Date().toISOString(),version:'3.8.1',filename:name};
+  data._meta={savedAt:new Date().toISOString(),version:'3.8.2',filename:name};
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -22434,6 +22434,18 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.2',date:'2026-05-07',title:'Extensões — hotkeys, paleta de comandos, auto-backup, session timer',items:[
+    {tag:'feat',text:'Paleta de comandos (Ctrl+Shift+P) — busca rápida sobre todas ações: trocar aba, exportar, copiar, backup, etc.'},
+    {tag:'feat',text:'Auto-backup silencioso a cada 10 minutos — últimas 3 versões salvas em localStorage; restaurar via paleta'},
+    {tag:'feat',text:'Hotkey Ctrl+S = salvar agora · Ctrl+/ = atalhos · Ctrl+Shift+B = backup · Ctrl+Shift+E = exportar texto · Ctrl+Shift+C = copiar nome · Ctrl+Shift+J = copiar JSON'},
+    {tag:'feat',text:'Session-time chip na topbar — mostra há quanto tempo você tá editando'},
+    {tag:'feat',text:'Floating dice button (desktop) — clique pra rolar 1d20 rápido com toast de resultado'},
+    {tag:'feat',text:'Last-tab restore — recarregou a página e volta na aba que você tava'},
+    {tag:'feat',text:'Modal de ajuda (Ctrl+/) lista atalhos do plugin + uso de localStorage + tempo de sessão'},
+    {tag:'feat',text:'Export plain text — gera .txt formatado com toda a ficha (legível, não JSON)'},
+    {tag:'fix',text:'localStorage quota exceeded agora avisa via toast em vez de falhar silenciosamente'},
+    {tag:'fix',text:'API pública window.eclipseExt expõe utilitários (SS wrapper, makeBackup, restoreBackup, openCmdPalette, addCommand, addHotkey)'}
+  ]},
   {version:'v3.8.1',date:'2026-05-07',title:'Polimento geral — bugs, dead code, storage',items:[
     {tag:'fix',text:'drawInterludioChart duplicada — segunda definição (variante Perícia) sobrescrevia a versão semanal correta; removida'},
     {tag:'fix',text:'Service worker: removida referência a biblioteca.html (arquivo inexistente, quebrava install do cache)'},
@@ -26259,6 +26271,434 @@ document.addEventListener('pointerout',e=>{
   });
   document.addEventListener('mousedown',()=>{clearTimeout(timer);hide();curTarget=null});
   document.addEventListener('scroll',()=>{clearTimeout(timer);hide();curTarget=null},true);
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     v3.8.2 EXTENSIONS — pure additions, isolados em IIFE.
+     Não toca em estado existente; usa apenas APIs públicas (toast, autosaveNow, etc.)
+     com guards. Falha silenciosa se host não estiver pronto.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style id="eclipse-ext-css">
+/* ═══ Command palette (Ctrl+K) ═══ */
+.ecx-cp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:99998;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;padding-left:12px;padding-right:12px;animation:ecxFade .15s ease}
+.ecx-cp-overlay.open{display:flex}
+.ecx-cp-box{width:min(640px,100%);background:var(--bg-card,#131316);border:1px solid var(--border,#232329);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column;max-height:72vh}
+.ecx-cp-box input{width:100%;padding:14px 18px;background:transparent;border:none;border-bottom:1px solid var(--border,#232329);color:var(--text-primary,#f0f0f5);font:500 15px Inter,system-ui,sans-serif;outline:none}
+.ecx-cp-list{overflow-y:auto;padding:6px 0;max-height:60vh}
+.ecx-cp-item{display:flex;gap:10px;align-items:center;padding:10px 16px;cursor:pointer;font-size:14px;color:var(--text-primary,#f0f0f5);border-left:2px solid transparent;transition:background var(--transition-fast,.15s)}
+.ecx-cp-item:hover,.ecx-cp-item[data-active="1"]{background:var(--bg-hover,#1f1f25);border-left-color:var(--magenta,#fe1455)}
+.ecx-cp-item small{color:var(--text-dim,#5a5a6e);font-size:11px;margin-left:auto;font-family:JetBrains Mono,monospace}
+.ecx-cp-empty{padding:24px;text-align:center;color:var(--text-dim,#5a5a6e);font-size:13px}
+@keyframes ecxFade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ Help modal (Ctrl+/ ou F1) ═══ */
+.ecx-help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:99997;display:none;align-items:center;justify-content:center;padding:18px;animation:ecxFade .18s ease}
+.ecx-help-overlay.open{display:flex}
+.ecx-help-box{width:min(560px,100%);max-height:80vh;background:var(--bg-card,#131316);border:1px solid var(--border,#232329);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.ecx-help-head{padding:16px 20px;border-bottom:1px solid var(--border,#232329);display:flex;align-items:center;justify-content:space-between}
+.ecx-help-head h3{font:700 16px Inter,system-ui,sans-serif;color:var(--text-primary,#f0f0f5);letter-spacing:.02em}
+.ecx-help-close{background:none;border:none;color:var(--text-dim,#5a5a6e);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+.ecx-help-close:hover{color:var(--magenta,#fe1455)}
+.ecx-help-body{padding:16px 20px;overflow-y:auto;font:400 13.5px/1.55 Inter,system-ui,sans-serif;color:var(--text-primary,#f0f0f5)}
+.ecx-help-body kbd{display:inline-block;padding:2px 8px;background:var(--bg-input,#1c1c21);border:1px solid var(--border,#232329);border-bottom-width:2px;border-radius:5px;font:600 11px JetBrains Mono,monospace;color:var(--magenta,#fe1455);min-width:24px;text-align:center}
+.ecx-help-body table{width:100%;border-collapse:collapse;margin:8px 0}
+.ecx-help-body td{padding:7px 4px;border-bottom:1px solid var(--border,#232329);vertical-align:middle}
+.ecx-help-body td:first-child{width:140px;white-space:nowrap}
+.ecx-help-body td:last-child{color:var(--text-secondary,#a0a0b0);font-size:13px}
+.ecx-help-body h4{margin:14px 0 6px;color:var(--magenta,#fe1455);font:700 12px Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.ecx-help-body h4:first-child{margin-top:0}
+
+/* ═══ Session-time chip na topbar ═══ */
+.ecx-session-chip{display:none;align-items:center;gap:6px;padding:4px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border,#232329);border-radius:999px;font:500 11px JetBrains Mono,monospace;color:var(--text-secondary,#a0a0b0);user-select:none;cursor:default}
+.ecx-session-chip[data-show="1"]{display:inline-flex}
+.ecx-session-chip svg{width:11px;height:11px;opacity:.7}
+@media(max-width:520px){.ecx-session-chip{font-size:10px;padding:3px 7px}}
+
+/* ═══ Quick-roll FAB ═══ */
+.ecx-fab{position:fixed;right:max(env(safe-area-inset-right,0),16px);bottom:max(env(safe-area-inset-bottom,0),16px);width:48px;height:48px;border-radius:50%;background:var(--magenta,#fe1455);color:#fff;border:none;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:9000;box-shadow:0 6px 18px rgba(254,20,85,.45),0 2px 6px rgba(0,0,0,.4);transition:transform var(--transition-fast,.15s)}
+.ecx-fab[data-visible="1"]{display:flex}
+.ecx-fab:hover{transform:scale(1.08)}
+.ecx-fab:active{transform:scale(.92)}
+.ecx-fab svg{width:22px;height:22px}
+@media(pointer:coarse){.ecx-fab{display:none!important}}
+
+/* ═══ Toast undo button ═══ */
+#toast .ecx-undo-btn{margin-left:10px;padding:3px 10px;background:rgba(255,255,255,.08);border:1px solid var(--border,#2a2a32);border-radius:6px;color:var(--magenta,#fe1455);font:600 11px Inter,sans-serif;cursor:pointer;letter-spacing:.05em;text-transform:uppercase}
+#toast .ecx-undo-btn:hover{background:rgba(255,255,255,.14)}
+</style>
+
+<script>
+(function eclipseExt(){
+  'use strict';
+  const VER='3.8.2';
+  const has=fn=>typeof fn==='function';
+  const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext]',label||'',e);return null}};
+  const _toast=(m,o)=>{if(has(window.toast)){try{window.toast(m,o)}catch(e){console.warn(e)}}};
+
+  // ═══ 1. Safe localStorage wrapper com detecção de quota ═══
+  const SS={
+    get(k,def){try{const v=localStorage.getItem(k);return v==null?def:v}catch(e){return def}},
+    getJSON(k,def){try{const v=localStorage.getItem(k);return v==null?def:JSON.parse(v)}catch(e){return def}},
+    set(k,v){
+      try{localStorage.setItem(k,v);return true}
+      catch(e){
+        if(e&&(e.code===22||e.code===1014||e.name==='QuotaExceededError')){
+          if(!SS._warned){SS._warned=true;_toast('Armazenamento cheio — limpe fichas antigas','error');setTimeout(()=>SS._warned=false,15000)}
+        }
+        return false;
+      }
+    },
+    setJSON(k,v){return SS.set(k,JSON.stringify(v))},
+    del(k){try{localStorage.removeItem(k);return true}catch(e){return false}},
+    keys(){try{return Object.keys(localStorage)}catch(e){return[]}},
+    usage(){try{let n=0;for(const k of Object.keys(localStorage)){const v=localStorage.getItem(k);n+=k.length+(v?v.length:0)}return n}catch(e){return 0}}
+  };
+
+  // ═══ 2. Auto-backup shadow (3 últimas snapshots a cada 10min) ═══
+  const BACKUP_KEY_PREFIX='eclipse_autobackup_';
+  const MAX_BACKUPS=3;
+  function makeBackup(){
+    if(!has(window.collectAllData))return;
+    const data=safe(()=>window.collectAllData(),'collectAllData');
+    if(!data)return;
+    const now=Date.now();
+    const key=BACKUP_KEY_PREFIX+now;
+    const ok=SS.setJSON(key,data);
+    if(!ok)return;
+    // Trim antigos
+    const all=SS.keys().filter(k=>k.startsWith(BACKUP_KEY_PREFIX)).sort();
+    while(all.length>MAX_BACKUPS){SS.del(all.shift())}
+  }
+  function listBackups(){
+    return SS.keys().filter(k=>k.startsWith(BACKUP_KEY_PREFIX)).sort().reverse().map(k=>{
+      const ts=parseInt(k.replace(BACKUP_KEY_PREFIX,''),10);
+      return{key:k,ts,date:new Date(ts).toLocaleString('pt-BR')};
+    });
+  }
+  function restoreBackup(key){
+    const data=SS.getJSON(key);
+    if(!data)return false;
+    if(has(window.applyAllData)){try{window.applyAllData(data);_toast('Backup restaurado','success');return true}catch(e){_toast('Falha ao restaurar','error');return false}}
+    return false;
+  }
+
+  // ═══ 3. Session timer ═══
+  const sessionStart=Date.now();
+  function fmtDuration(ms){
+    const s=Math.max(0,Math.floor(ms/1000));
+    const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+    return h>0?`${h}h ${m}m`:m>0?`${m}m ${ss}s`:`${ss}s`;
+  }
+  function updateSessionChip(){
+    const chip=document.getElementById('ecx-session-chip');
+    if(chip){chip.querySelector('span').textContent=fmtDuration(Date.now()-sessionStart);chip.dataset.show='1'}
+  }
+
+  // ═══ 4. Last-tab restore (sessionStorage, transiente) ═══
+  function rememberTab(tabId){
+    if(!tabId)return;
+    try{sessionStorage.setItem('eclipse-last-tab',tabId)}catch(e){}
+  }
+  function getLastTab(){
+    try{return sessionStorage.getItem('eclipse-last-tab')||null}catch(e){return null}
+  }
+
+  // ═══ 5. Clipboard helpers ═══
+  async function copyText(txt){
+    try{
+      if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(txt);return true}
+      // Fallback: textarea+execCommand
+      const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+      const ok=document.execCommand('copy');document.body.removeChild(ta);return ok;
+    }catch(e){return false}
+  }
+  async function copyCharacterJSON(){
+    if(!has(window.collectAllData)){_toast('Função não disponível','error');return}
+    const data=safe(()=>window.collectAllData());
+    if(!data)return;
+    const ok=await copyText(JSON.stringify(data));
+    _toast(ok?'JSON copiado para clipboard':'Falha ao copiar',ok?'success':'error');
+  }
+  async function copyCharacterName(){
+    const nameEl=document.getElementById('profile-name')||document.querySelector('.profile-header-info h2,.profile-name-input');
+    if(!nameEl)return;
+    const name=(nameEl.value||nameEl.textContent||'').trim();
+    if(!name){_toast('Sem nome para copiar');return}
+    const ok=await copyText(name);
+    _toast(ok?`"${name}" copiado`:'Falha ao copiar',ok?'success':'error');
+  }
+  function downloadAsText(filename,content){
+    try{
+      const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();
+      setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},100);
+      return true;
+    }catch(e){return false}
+  }
+  function exportPlainText(){
+    if(!has(window.collectAllData)){_toast('Função não disponível','error');return}
+    const data=safe(()=>window.collectAllData());if(!data)return;
+    const lines=[];
+    lines.push('═══════ FICHA ECLIPSE ═══════');
+    lines.push('Gerado em: '+new Date().toLocaleString('pt-BR'));
+    lines.push('Versão: v'+VER);
+    lines.push('');
+    function dump(obj,depth){
+      const pad='  '.repeat(depth||0);
+      if(obj==null)return;
+      if(typeof obj!=='object'){lines.push(pad+String(obj));return}
+      if(Array.isArray(obj)){obj.forEach((it,i)=>{lines.push(pad+'['+i+']');dump(it,(depth||0)+1)});return}
+      Object.entries(obj).forEach(([k,v])=>{
+        if(v==null||(Array.isArray(v)&&!v.length))return;
+        if(typeof v==='object'){lines.push(pad+k+':');dump(v,(depth||0)+1)}
+        else lines.push(pad+k+': '+v);
+      });
+    }
+    dump(data,0);
+    const fname='ficha-'+(data.profile?.name||'sem-nome').replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.txt';
+    if(downloadAsText(fname,lines.join('\n')))_toast('Exportado: '+fname);
+    else _toast('Falha no download','error');
+  }
+
+  // ═══ 6. Hotkey system ═══
+  function isTypingTarget(el){
+    if(!el)return false;
+    const t=el.tagName;
+    return t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||el.isContentEditable;
+  }
+  const HOTKEYS=[
+    {k:'s',ctrl:true,desc:'Salvar manualmente',action:()=>{if(has(window.autosaveNow)){window.autosaveNow();_toast('Salvo')}else _toast('Auto-save indisponível','warn')}},
+    {k:'/',ctrl:true,desc:'Mostrar atalhos do plugin',action:openHelpModal},
+    {k:'p',ctrl:true,shift:true,desc:'Paleta de comandos',action:openCmdPalette},
+    {k:'Escape',desc:'Fechar modal/popup',action:closeTopModal},
+    {k:'b',ctrl:true,shift:true,desc:'Backup manual',action:()=>{makeBackup();_toast('Backup feito')}},
+    {k:'e',ctrl:true,shift:true,desc:'Exportar texto',action:exportPlainText},
+    {k:'c',ctrl:true,shift:true,desc:'Copiar nome',action:copyCharacterName},
+    {k:'j',ctrl:true,shift:true,desc:'Copiar JSON',action:copyCharacterJSON},
+  ];
+  document.addEventListener('keydown',e=>{
+    const allowInTyping=e.key==='Escape';
+    if(!allowInTyping&&isTypingTarget(e.target))return;
+    for(const h of HOTKEYS){
+      const keyMatch=h.k.length===1?e.key.toLowerCase()===h.k.toLowerCase():e.key===h.k;
+      if(!keyMatch)continue;
+      if(!!h.ctrl!==(e.ctrlKey||e.metaKey))continue;
+      if(!!h.shift!==e.shiftKey)continue;
+      if(!!h.alt!==e.altKey)continue;
+      // Esc: só preventDefault se realmente fechou algo da extensão
+      if(e.key==='Escape'){
+        const closed=safe(h.action,'hotkey:'+h.k);
+        if(closed)e.preventDefault();
+        return;
+      }
+      e.preventDefault();
+      safe(h.action,'hotkey:'+h.k);
+      return;
+    }
+  });
+
+  // ═══ 7. Esc fecha apenas overlays próprios (retorna true se fechou algo) ═══
+  function closeTopModal(){
+    const cp=document.getElementById('ecx-cp');
+    if(cp&&cp.classList.contains('open')){cp.classList.remove('open');return true}
+    const help=document.getElementById('ecx-help');
+    if(help&&help.classList.contains('open')){help.classList.remove('open');return true}
+    return false;
+  }
+
+  // ═══ 8. Help modal ═══
+  function openHelpModal(){
+    let host=document.getElementById('ecx-help');
+    if(!host){
+      host=document.createElement('div');host.id='ecx-help';host.className='ecx-help-overlay';
+      host.addEventListener('click',e=>{if(e.target===host)host.classList.remove('open')});
+      const usage=SS.usage();
+      const usageKB=(usage/1024).toFixed(1);
+      host.innerHTML=`<div class="ecx-help-box" role="dialog" aria-label="Atalhos">
+        <div class="ecx-help-head"><h3>Atalhos · Ficha Eclipse v${VER}</h3>
+          <button class="ecx-help-close" aria-label="Fechar">&times;</button></div>
+        <div class="ecx-help-body">
+          <h4>Teclado</h4>
+          <table>${HOTKEYS.map(h=>{
+            const parts=[];if(h.ctrl)parts.push('Ctrl');if(h.shift)parts.push('Shift');if(h.alt)parts.push('Alt');parts.push(h.k.toUpperCase());
+            return `<tr><td>${parts.map(p=>'<kbd>'+p+'</kbd>').join(' + ')}</td><td>${h.desc}</td></tr>`;
+          }).join('')}</table>
+          <h4>Backups automáticos</h4>
+          <p style="color:var(--text-secondary);font-size:12.5px">A cada 10 minutos a ficha é copiada para localStorage (últimas 3 versões mantidas). Use <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> pra forçar agora.</p>
+          <h4>Armazenamento</h4>
+          <p style="color:var(--text-secondary);font-size:12.5px">localStorage uso: <strong>${usageKB} KB</strong> · ${SS.keys().length} chaves</p>
+          <h4>Sessão</h4>
+          <p style="color:var(--text-secondary);font-size:12.5px">Ativo há <strong id="ecx-help-elapsed">${fmtDuration(Date.now()-sessionStart)}</strong></p>
+        </div></div>`;
+      document.body.appendChild(host);
+      host.querySelector('.ecx-help-close').addEventListener('click',()=>host.classList.remove('open'));
+    }else{
+      // Atualiza valores dinâmicos
+      const elapsed=host.querySelector('#ecx-help-elapsed');
+      if(elapsed)elapsed.textContent=fmtDuration(Date.now()-sessionStart);
+    }
+    host.classList.add('open');
+  }
+
+  // ═══ 9. Command palette (Ctrl+K) ═══
+  const COMMANDS=[
+    {label:'Salvar agora',hint:'Ctrl+S',run:()=>has(window.autosaveNow)&&window.autosaveNow()},
+    {label:'Backup manual',hint:'Ctrl+Shift+B',run:makeBackup},
+    {label:'Restaurar último backup',run:()=>{const b=listBackups()[0];if(b)restoreBackup(b.key);else _toast('Nenhum backup','warn')}},
+    {label:'Exportar como texto',hint:'Ctrl+Shift+E',run:exportPlainText},
+    {label:'Copiar nome do personagem',hint:'Ctrl+Shift+C',run:copyCharacterName},
+    {label:'Copiar JSON da ficha',hint:'Ctrl+Shift+J',run:copyCharacterJSON},
+    {label:'Mostrar atalhos',hint:'Ctrl+/',run:openHelpModal},
+    {label:'Ir pra Dashboard',run:()=>switchTab('dashboard')},
+    {label:'Ir pra Progresso',run:()=>switchTab('progress')},
+    {label:'Ir pra Crédito',run:()=>switchTab('credit')},
+    {label:'Ir pra Perícias',run:()=>switchTab('pericias')},
+    {label:'Ir pra Biblioteca',run:()=>switchTab('biblioteca')},
+    {label:'Ir pra Inventário',run:()=>switchTab('inventory')},
+    {label:'Ir pra Feitiços',run:()=>switchTab('feiticos')},
+    {label:'Alternar tema',run:()=>has(window.toggleTheme)&&window.toggleTheme()},
+    {label:'Alternar som',run:()=>has(window.toggleSound)&&window.toggleSound()},
+    {label:'Limpar todos backups automáticos',run:()=>{const n=SS.keys().filter(k=>k.startsWith(BACKUP_KEY_PREFIX)).length;SS.keys().filter(k=>k.startsWith(BACKUP_KEY_PREFIX)).forEach(k=>SS.del(k));_toast(n+' backups removidos')}},
+    {label:'Mostrar uso de armazenamento',run:()=>{const u=SS.usage();_toast((u/1024).toFixed(1)+' KB · '+SS.keys().length+' chaves')}},
+    {label:'Recarregar app',run:()=>location.reload()},
+  ];
+  function switchTab(name){
+    const btn=document.querySelector(`.sidebar-btn[data-tab="${name}"]`)||document.querySelector(`[onclick*="switchTab('${name}')"]`)||document.querySelector(`[onclick*='switchTab("${name}")']`);
+    if(btn)btn.click();
+    else if(has(window.switchTab))window.switchTab(name);
+  }
+  function openCmdPalette(){
+    let host=document.getElementById('ecx-cp');
+    if(!host){
+      host=document.createElement('div');host.id='ecx-cp';host.className='ecx-cp-overlay';
+      host.innerHTML=`<div class="ecx-cp-box" role="dialog" aria-label="Paleta de comandos">
+        <input type="text" placeholder="Digite um comando..." autocomplete="off" spellcheck="false">
+        <div class="ecx-cp-list"></div>
+      </div>`;
+      document.body.appendChild(host);
+      host.addEventListener('click',e=>{if(e.target===host)host.classList.remove('open')});
+      const inp=host.querySelector('input');
+      const list=host.querySelector('.ecx-cp-list');
+      let active=0;
+      function render(filter){
+        const f=(filter||'').toLowerCase().trim();
+        const matches=COMMANDS.filter(c=>!f||c.label.toLowerCase().includes(f));
+        if(!matches.length){list.innerHTML='<div class="ecx-cp-empty">Sem resultados</div>';return}
+        active=Math.min(active,matches.length-1);
+        list.innerHTML=matches.map((c,i)=>`<div class="ecx-cp-item" data-idx="${i}" data-active="${i===active?'1':'0'}">${c.label}${c.hint?`<small>${c.hint}</small>`:''}</div>`).join('');
+        list.querySelectorAll('.ecx-cp-item').forEach((el,i)=>{
+          el.addEventListener('click',()=>{host.classList.remove('open');safe(()=>matches[i].run())});
+          el.addEventListener('mouseenter',()=>{active=i;list.querySelectorAll('.ecx-cp-item').forEach((e,j)=>e.dataset.active=(j===i?'1':'0'))});
+        });
+      }
+      inp.addEventListener('input',()=>{active=0;render(inp.value)});
+      inp.addEventListener('keydown',e=>{
+        const items=list.querySelectorAll('.ecx-cp-item');
+        if(e.key==='ArrowDown'){e.preventDefault();active=Math.min(active+1,items.length-1);items.forEach((el,i)=>el.dataset.active=(i===active?'1':'0'));items[active]?.scrollIntoView({block:'nearest'})}
+        else if(e.key==='ArrowUp'){e.preventDefault();active=Math.max(0,active-1);items.forEach((el,i)=>el.dataset.active=(i===active?'1':'0'));items[active]?.scrollIntoView({block:'nearest'})}
+        else if(e.key==='Enter'){e.preventDefault();items[active]?.click()}
+      });
+      host._render=render;
+    }
+    host.classList.add('open');
+    const inp=host.querySelector('input');inp.value='';host._render('');
+    setTimeout(()=>inp.focus(),50);
+  }
+
+  // ═══ 10. Session chip injection ═══
+  function injectSessionChip(){
+    const tries=[
+      ()=>document.querySelector('.topbar-right'),
+      ()=>document.querySelector('.topbar-row-2'),
+      ()=>document.querySelector('.topbar'),
+    ];
+    let host=null;
+    for(const t of tries){host=safe(t);if(host)break}
+    if(!host)return;
+    let chip=document.getElementById('ecx-session-chip');
+    if(chip)return;
+    chip=document.createElement('span');
+    chip.id='ecx-session-chip';chip.className='ecx-session-chip';
+    chip.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span>0s</span>';
+    chip.title='Tempo de sessão';
+    host.appendChild(chip);
+    chip.addEventListener('click',()=>_toast('Sessão: '+fmtDuration(Date.now()-sessionStart)+' · ficha ativa'));
+  }
+
+  // ═══ 11. Quick-roll FAB (apenas desktop, sem hover device) ═══
+  function injectFab(){
+    if(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches)return;
+    if(document.getElementById('ecx-fab'))return;
+    const btn=document.createElement('button');
+    btn.id='ecx-fab';btn.className='ecx-fab';btn.dataset.visible='1';
+    btn.title='Rolar 1d20 (Alt+R)';btn.setAttribute('aria-label','Rolar 1d20');
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><line x1="22" y1="8.5" x2="12" y2="15.5"/><line x1="2" y1="8.5" x2="12" y2="15.5"/></svg>';
+    btn.addEventListener('click',quickRoll);
+    document.body.appendChild(btn);
+  }
+  function quickRoll(){
+    let result;
+    if(has(window._rollDie))result=window._rollDie(20);
+    else result=Math.floor(Math.random()*20)+1;
+    const tag=result===20?' · CRÍTICO!':result===1?' · FALHA!':'';
+    _toast('1d20: '+result+tag,result===20?'success':result===1?'error':'info');
+    if(window.tiks&&has(window.tiks.tick))safe(()=>window.tiks.tick());
+  }
+
+  // ═══ 12. Tab tracker (lembra última aba) ═══
+  function attachTabTracker(){
+    document.addEventListener('click',e=>{
+      const btn=e.target&&e.target.closest&&e.target.closest('.sidebar-btn[data-tab]');
+      if(btn)rememberTab(btn.dataset.tab);
+    },true);
+  }
+
+  // ═══ 13. Visibility-based session pause ═══
+  let pausedSince=0;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){pausedSince=Date.now()}
+    else if(pausedSince){
+      // Não resetamos sessionStart — apenas indicamos que voltou
+      pausedSince=0;
+    }
+  });
+
+  // ═══ 14. Inicialização ═══
+  function init(){
+    safe(injectSessionChip,'session-chip');
+    safe(injectFab,'fab');
+    safe(attachTabTracker,'tab-tracker');
+    // Atualiza session chip a cada 30s
+    setInterval(updateSessionChip,30000);
+    setTimeout(updateSessionChip,1500);
+    // Backup automático: 10 minutos
+    setInterval(()=>safe(makeBackup,'autobackup'),10*60*1000);
+    // Primeiro backup 30s após load (espera tudo settling)
+    setTimeout(()=>safe(makeBackup,'autobackup-init'),30000);
+    // Restaura última aba se sessionStorage tem
+    const lastTab=getLastTab();
+    if(lastTab){
+      setTimeout(()=>{
+        const btn=document.querySelector(`.sidebar-btn[data-tab="${lastTab}"]`);
+        if(btn&&!btn.classList.contains('active'))safe(()=>btn.click(),'restore-tab');
+      },800);
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+
+  // ═══ 15. API pública ═══
+  window.eclipseExt={
+    version:VER,
+    SS,copyText,copyCharacterJSON,copyCharacterName,exportPlainText,downloadAsText,
+    makeBackup,listBackups,restoreBackup,
+    openHelpModal,openCmdPalette,
+    fmtDuration,sessionStart,
+    addCommand(c){if(c&&c.label&&c.run)COMMANDS.push(c)},
+    addHotkey(h){if(h&&h.k&&h.action)HOTKEYS.push(h)},
+  };
 })();
 </script>
 

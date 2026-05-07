@@ -7848,8 +7848,8 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.7</span></div>
-            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">381</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.8</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">382</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
               <select id="cfg-perf-mode" onchange="setPerfMode(this.value)" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-family:inherit;font-size:12px;outline:none;cursor:pointer">
@@ -22461,6 +22461,10 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.8',date:'2026-05-07',title:'Hotfix — save cartão fallback robusto + animação card mais suave',items:[
+    {tag:'fix',text:'Save cartão: fallback blob URL em vez de data: URL direto. Funciona melhor em WebView Android antigo. Error handling completo com toast claro de falha.'},
+    {tag:'fix',text:'Card 3D animação reduzida: drag sensitivity 0.7→0.35 (mais lento), card final agora também snap múltiplo de 180° (não roda livremente forever), dblclick spin 360° removido (conflitava com cycle font de assinatura).'}
+  ]},
   {version:'v3.8.7',date:'2026-05-07',title:'Salvar cartão Eclipse no celular + UX polish',items:[
     {tag:'feat',text:'Cartão Eclipse (onboarding final): botão SALVAR agora grava PNG em Pictures/Eclipse/ no celular Android com notificação tap-to-open. Android 10+ usa MediaStore (sem permissão). <10 pede MANAGE_EXTERNAL_STORAGE. Browser web continua usando download padrão.'},
     {tag:'feat',text:'Backups automáticos saíram da topbar e ficam no tab Configurações > Sistemas (link azul com count + intervalo). Modal de listagem/restauração intacto.'},
@@ -25642,26 +25646,18 @@ document.addEventListener('visibilitychange',()=>{
         c.style.transform='perspective(1200px) rotateY('+total+'deg)';
       }
       c.addEventListener('pointerdown',e=>{if(e.target.closest('canvas, [contenteditable], button, [data-go]'))return;if(c.hasAttribute('data-signing'))return;dragStart={x:e.clientX,or:rotY};c.setAttribute('data-dragging','');c.style.transition='none';try{c.setPointerCapture(e.pointerId)}catch(_){}});
-      c.addEventListener('pointermove',e=>{if(!dragStart)return;rotY=dragStart.or+(e.clientX-dragStart.x)*0.7;applyT()});
+      c.addEventListener('pointermove',e=>{if(!dragStart)return;rotY=dragStart.or+(e.clientX-dragStart.x)*0.35;applyT()});
       const stop=()=>{
         if(!dragStart)return;
         dragStart=null;c.removeAttribute('data-dragging');
-        // Card final (step 3) = livre, sem snap. Outros snap múltiplo de 180 (frente/verso) com easing.
-        const isFinal=c.classList.contains('eo-card-final');
-        if(!isFinal){
-          rotY=Math.round(rotY/180)*180;
-        }
-        c.style.transition=isFinal?'':'transform .55s cubic-bezier(.2,.8,.2,1)';
+        // Sempre snap múltiplo de 180 (frente/verso) com easing — evita rotação infinita.
+        rotY=Math.round(rotY/180)*180;
+        c.style.transition='transform .55s cubic-bezier(.2,.8,.2,1)';
         applyT();
-        setTimeout(()=>{if(!isFinal){c.style.transition='';if(rotY===0){c.style.transform=''}}},560);
+        setTimeout(()=>{c.style.transition='';if(rotY===0){c.style.transform=''}},560);
       };
       c.addEventListener('pointerup',stop);c.addEventListener('pointercancel',stop);c.addEventListener('pointerleave',stop);
-      // Double-click no cartão (área não editável) → spin 360°
-      c.addEventListener('dblclick',e=>{
-        if(e.target.closest('canvas, [contenteditable], button, [data-go]'))return;
-        if(c.hasAttribute('data-signing'))return;
-        spin360();
-      });
+      // Dblclick no cartão removido — conflitava com cycle font e era animação excessiva.
     });
     const sigClear=$('#eo-sig-clear');if(sigClear)sigClear.addEventListener('click',()=>{if(sigCtx&&sigCv){sigCtx.clearRect(0,0,sigCv.width,sigCv.height);hadInk=false;state.sig='';state.autoSig=false;const h=$('#eo-sig-hint');if(h)h.style.display='';syncPreview()}});
     window.addEventListener('resize',fitSigCanvas);
@@ -25804,21 +25800,44 @@ document.addEventListener('visibilitychange',()=>{
       if(!path)throw new Error('Falha mesmo com permissão');
       return path;
     }
+    function _saveViaBlob(dataUrl,fname){
+      // Fallback browser/WebView: blob URL costuma funcionar mesmo onde data: não dispara download
+      try{
+        const b64=dataUrl.split(',')[1]||'';
+        const bin=atob(b64);
+        const u8=new Uint8Array(bin.length);
+        for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+        const blob=new Blob([u8],{type:'image/png'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');a.href=url;a.download=fname;a.rel='noopener';
+        document.body.appendChild(a);a.click();
+        setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},1000);
+        return true;
+      }catch(e){console.warn('[save] blob fail',e);return false}
+    }
     if(saveBtn)saveBtn.addEventListener('click',async()=>{
       const fname=`eclipse-card-${(state.name||'aventureiro').toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
       const origLabel=saveBtn.innerHTML;saveBtn.disabled=true;saveBtn.style.opacity='.6';
       try{
         const dataUrl=await renderCardFrontPNG();
+        if(!dataUrl)throw new Error('Falha ao renderizar PNG');
         if(window.EclipseFiles&&typeof window.EclipseFiles.saveImage==='function'){
           const path=await _saveViaAndroid(dataUrl,fname);
-          if(path)toast&&toast('Salvo: '+path);
-          else toast&&toast('Falha ao salvar no celular','error');
+          if(path){toast&&toast('Salvo em '+path,'success')}
+          else throw new Error('Bridge retornou vazio');
         }else{
-          const a=document.createElement('a');a.href=dataUrl;a.download=fname;document.body.appendChild(a);a.click();a.remove();
-          toast&&toast('Cartão salvo');
+          // Browser ou WebView antigo (pré-v3.8.7): tenta blob, depois data:
+          const ok=_saveViaBlob(dataUrl,fname);
+          if(ok)toast&&toast('Cartão salvo','success');
+          else{
+            const a=document.createElement('a');a.href=dataUrl;a.download=fname;a.rel='noopener';
+            document.body.appendChild(a);a.click();a.remove();
+            toast&&toast('Tentando salvar… verifique Downloads');
+          }
         }
       }catch(err){
-        toast&&toast('Erro: '+(err&&err.message||'falha'),'error');
+        console.error('[eo-save]',err);
+        toast&&toast('Erro: '+(err&&err.message||'falha ao salvar'),'error');
       }
       saveBtn.disabled=false;saveBtn.style.opacity='';saveBtn.innerHTML=origLabel;
     });
@@ -27145,7 +27164,7 @@ document.addEventListener('pointerout',e=>{
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.7';
+  const VER='3.8.8';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};

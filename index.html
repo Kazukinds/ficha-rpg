@@ -7864,8 +7864,8 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.10</span></div>
-            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">384</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.11</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">385</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
               <select id="cfg-perf-mode" onchange="setPerfMode(this.value)" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-family:inherit;font-size:12px;outline:none;cursor:pointer">
@@ -22540,6 +22540,10 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.11',date:'2026-05-07',title:'Hotfix — save/share cartão no app Android',items:[
+    {tag:'fix',text:'Save cartão: bridge retorna `ERROR:motivo` em falha (era string vazia silenciosa). JS exibe motivo claro no toast. Permissão pedida só quando reason contém "permiss".'},
+    {tag:'feat',text:'Compartilhar cartão no app Android: nova bridge EclipseFiles.shareImage que dispara Intent.ACTION_SEND com PNG via FileProvider. Abre seletor nativo "Compartilhar via" com WhatsApp/Instagram/etc. Browser web continua usando Web Share API com arquivo.'}
+  ]},
   {version:'v3.8.10',date:'2026-05-07',title:'Inventário — cabide toggle + partes do corpo na vestimenta',items:[
     {tag:'feat',text:'Novo botão cabide na toolbar do inventário toggla painel de equipamentos. Desktop: slide-in lateral. Mobile: overlay full-screen com backdrop blur. Click fora ou Esc fecha.'},
     {tag:'feat',text:'Modal Adicionar Item: campo "Parte do corpo" (chips multi-select cabeça/rosto/pescoço/torso/pernas/pés) aparece quando categoria = Vestimenta ou Proteção. Salvo em item.parts.'}
@@ -25872,21 +25876,25 @@ document.addEventListener('visibilitychange',()=>{
         setTimeout(()=>{if(window.__filesPermResult){delete window.__filesPermResult;res(false)}},120000);
       });
     }
+    function _isErr(s){return typeof s==='string'&&s.indexOf('ERROR:')===0}
+    function _errMsg(s){return _isErr(s)?s.slice(6):s}
     async function _saveViaAndroid(dataUrl,fname){
       const Files=window.EclipseFiles;
-      // Tenta direto. Em Android 10+ MediaStore não precisa de permissão. Em <10 falha se sem MANAGE_EXTERNAL_STORAGE.
-      let path='';
-      try{path=Files.saveImage(fname,dataUrl)||''}catch(_){}
-      if(path)return path;
-      // Falhou — Android <10 sem MANAGE_EXTERNAL_STORAGE. Avisa user antes de abrir Settings.
+      let result='';
+      try{result=Files.saveImage(fname,dataUrl)||'ERROR:bridge retornou vazio'}catch(e){result='ERROR:'+(e&&e.message||'exception')}
+      if(!_isErr(result))return result;
+      const reason=_errMsg(result);
+      const needsPerm=/permiss/i.test(reason);
+      if(!needsPerm)throw new Error(reason);
+      // Permissão necessária (Android <10 sem MANAGE_EXTERNAL_STORAGE)
       toast&&toast('Abrindo configurações — toque "Permitir acesso a todos os arquivos"','warn');
       await new Promise(r=>setTimeout(r,1200));
       try{Files.requestPermission()}catch(_){throw new Error('Sem bridge de permissão')}
       const ok=await _waitPerm();
       if(!ok)throw new Error('Permissão negada');
-      try{path=Files.saveImage(fname,dataUrl)||''}catch(_){}
-      if(!path)throw new Error('Falha mesmo com permissão');
-      return path;
+      try{result=Files.saveImage(fname,dataUrl)||'ERROR:retry falhou'}catch(e){result='ERROR:'+(e&&e.message||'exception')}
+      if(_isErr(result))throw new Error(_errMsg(result));
+      return result;
     }
     function _saveViaBlob(dataUrl,fname){
       // Fallback browser/WebView: blob URL costuma funcionar mesmo onde data: não dispara download
@@ -25931,11 +25939,35 @@ document.addEventListener('visibilitychange',()=>{
     });
     const shareBtn=$('#eo-share-card');
     if(shareBtn)shareBtn.addEventListener('click',async()=>{
+      const fname=`eclipse-card-${(state.name||'aventureiro').toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
       const txt=`Meu cartão Eclipse — ${state.name||'Aventureiro'}`;
+      const orig=shareBtn.innerHTML;shareBtn.disabled=true;shareBtn.style.opacity='.6';
       try{
-        if(navigator.share)await navigator.share({title:'Eclipse',text:txt});
-        else if(navigator.clipboard){await navigator.clipboard.writeText(txt);if(typeof toast==='function')toast('Copiado')}
-      }catch(_){}
+        const dataUrl=await renderCardFrontPNG();
+        if(window.EclipseFiles&&typeof window.EclipseFiles.shareImage==='function'){
+          const r=window.EclipseFiles.shareImage(fname,dataUrl,txt);
+          if(_isErr(r))throw new Error(_errMsg(r));
+        }else if(navigator.canShare&&navigator.share){
+          // Web Share API com arquivo
+          try{
+            const blob=await(await fetch(dataUrl)).blob();
+            const file=new File([blob],fname,{type:'image/png'});
+            if(navigator.canShare({files:[file]})){
+              await navigator.share({files:[file],title:'Eclipse',text:txt});
+            }else{
+              await navigator.share({title:'Eclipse',text:txt});
+            }
+          }catch(e){if(e.name!=='AbortError')throw e}
+        }else if(navigator.clipboard){
+          await navigator.clipboard.writeText(txt);
+          toast&&toast('Copiado pra área de transferência');
+        }else{
+          throw new Error('Nenhum método de compartilhamento disponível');
+        }
+      }catch(err){
+        if(err&&err.name!=='AbortError')toast&&toast('Erro: '+(err&&err.message||'falha'),'error');
+      }
+      shareBtn.disabled=false;shareBtn.style.opacity='';shareBtn.innerHTML=orig;
     });
     $('#eo-finish').addEventListener('click',()=>{
       try{localStorage.setItem(DATA_KEY,JSON.stringify(state));localStorage.setItem(DONE_KEY,'1')}catch(_){}
@@ -27252,7 +27284,7 @@ document.addEventListener('pointerout',e=>{
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.10';
+  const VER='3.8.11';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};

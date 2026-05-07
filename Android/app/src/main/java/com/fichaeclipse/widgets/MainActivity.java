@@ -916,11 +916,13 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String saveImage(String filename, String base64) {
-            if (filename == null || base64 == null) return "";
+            if (filename == null || base64 == null) return "ERROR:args nulos";
             try {
                 int comma = base64.indexOf(',');
                 if (comma >= 0) base64 = base64.substring(comma + 1);
-                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                byte[] bytes;
+                try { bytes = Base64.decode(base64, Base64.DEFAULT); }
+                catch (Exception e) { return "ERROR:base64 inválido"; }
                 String savedPath;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     ContentValues v = new ContentValues();
@@ -928,14 +930,14 @@ public class MainActivity extends Activity {
                     v.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
                     v.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Eclipse");
                     Uri u = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, v);
-                    if (u == null) return "";
+                    if (u == null) return "ERROR:MediaStore insert falhou";
                     OutputStream os = getContentResolver().openOutputStream(u);
-                    if (os == null) return "";
+                    if (os == null) return "ERROR:openOutputStream null";
                     os.write(bytes); os.flush(); os.close();
                     savedPath = "Pictures/Eclipse/" + filename;
                     _notifySaved(filename, savedPath, u);
                 } else {
-                    if (!_hasManageStorage()) return "";
+                    if (!_hasManageStorage()) return "ERROR:sem permissão de armazenamento";
                     File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eclipse");
                     if (!dir.exists()) dir.mkdirs();
                     File out = new File(dir, filename);
@@ -951,7 +953,42 @@ public class MainActivity extends Activity {
                 }
                 return savedPath;
             } catch (Exception e) {
-                return "";
+                String msg = e.getMessage();
+                return "ERROR:" + (msg != null ? msg : e.getClass().getSimpleName());
+            }
+        }
+
+        @JavascriptInterface
+        public String shareImage(String filename, String base64, String text) {
+            if (filename == null || base64 == null) return "ERROR:args nulos";
+            try {
+                int comma = base64.indexOf(',');
+                if (comma >= 0) base64 = base64.substring(comma + 1);
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                File cacheDir = new File(getCacheDir(), "shared");
+                if (!cacheDir.exists()) cacheDir.mkdirs();
+                File out = new File(cacheDir, filename);
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(out, false);
+                fos.write(bytes); fos.flush(); fos.close();
+                final Uri uri = FileProvider.getUriForFile(MainActivity.this,
+                        "com.fichaeclipse.widgets.fileprovider", out);
+                final String shareText = text != null ? text : "";
+                runOnUiThread(() -> {
+                    try {
+                        Intent send = new Intent(Intent.ACTION_SEND);
+                        send.setType("image/png");
+                        send.putExtra(Intent.EXTRA_STREAM, uri);
+                        if (!shareText.isEmpty()) send.putExtra(Intent.EXTRA_TEXT, shareText);
+                        send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        Intent chooser = Intent.createChooser(send, "Compartilhar cartão");
+                        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(chooser);
+                    } catch (Exception ignored) {}
+                });
+                return "OK";
+            } catch (Exception e) {
+                String msg = e.getMessage();
+                return "ERROR:" + (msg != null ? msg : e.getClass().getSimpleName());
             }
         }
     }

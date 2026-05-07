@@ -7838,7 +7838,7 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.4</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.5</span></div>
             <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">380</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
@@ -19015,7 +19015,7 @@ function performSave(){
   if(!name)name='ficha';
   closeModal();
   const data=collectAllData();
-  data._meta={savedAt:new Date().toISOString(),version:'3.8.4',filename:name};
+  data._meta={savedAt:new Date().toISOString(),version:'3.8.5',filename:name};
   const json=JSON.stringify(data,null,2);
   const blob=new Blob([json],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -22434,6 +22434,10 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.5',date:'2026-05-07',title:'Hotfix — vazamento de código fonte do print view',items:[
+    {tag:'fix',text:'openPrintView: substituído `<script>...<\\/script>` literal no template literal por concatenação `<scr\'+\'ipt>...</scr\'+\'ipt>` — alguns parsers HTML (incluindo Android WebView em certas configurações) interpretavam erroneamente, vazando o restante do JS como texto visível na página'},
+    {tag:'fix',text:'Adicionado setTimeout(200ms) antes do window.print() na janela popup pra garantir que o DOM esteja pronto antes da impressão'}
+  ]},
   {version:'v3.8.4',date:'2026-05-07',title:'Extensions wave 3 — backups visíveis, HP quick adjust, print view, PWA helpers',items:[
     {tag:'feat',text:'Backup count badge na topbar — clique abre lista de backups com botões Restaurar / Excluir por item'},
     {tag:'feat',text:'Save indicator dot — pulsa em verde quando autosaveNow() dispara'},
@@ -27088,7 +27092,7 @@ document.addEventListener('pointerout',e=>{
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.4';
+  const VER='3.8.5';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};
@@ -27244,7 +27248,7 @@ document.addEventListener('pointerout',e=>{
       <h1>${esc(name)}</h1>
       <p class="meta">Gerado: ${new Date().toLocaleString('pt-BR')} · Ficha Eclipse v${VER}</p>
       ${dump(data,0)}
-      <script>window.print()<\/script>
+      `+'<scr'+'ipt>setTimeout(function(){window.print()},200)</scr'+'ipt>'+`
     </body></html>`);
     w.document.close();
   }

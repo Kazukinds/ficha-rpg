@@ -7848,8 +7848,8 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.8</span></div>
-            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">382</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.9</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">383</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
               <select id="cfg-perf-mode" onchange="setPerfMode(this.value)" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-family:inherit;font-size:12px;outline:none;cursor:pointer">
@@ -22461,6 +22461,9 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.9',date:'2026-05-07',title:'UX — toast preventivo antes de abrir Settings de armazenamento',items:[
+    {tag:'feat',text:'Save cartão em Android <10: toast aviso ("Abrindo configurações — toque Permitir acesso a todos os arquivos") antes de redirect pra Settings page de MANAGE_EXTERNAL_STORAGE. Evita confusão de "porque a tela mudou de repente".'}
+  ]},
   {version:'v3.8.8',date:'2026-05-07',title:'Hotfix — save cartão fallback robusto + animação card mais suave',items:[
     {tag:'fix',text:'Save cartão: fallback blob URL em vez de data: URL direto. Funciona melhor em WebView Android antigo. Error handling completo com toast claro de falha.'},
     {tag:'fix',text:'Card 3D animação reduzida: drag sensitivity 0.7→0.35 (mais lento), card final agora também snap múltiplo de 180° (não roda livremente forever), dblclick spin 360° removido (conflitava com cycle font de assinatura).'}
@@ -25792,7 +25795,9 @@ document.addEventListener('visibilitychange',()=>{
       let path='';
       try{path=Files.saveImage(fname,dataUrl)||''}catch(_){}
       if(path)return path;
-      // Falhou — pede permissão e retry
+      // Falhou — Android <10 sem MANAGE_EXTERNAL_STORAGE. Avisa user antes de abrir Settings.
+      toast&&toast('Abrindo configurações — toque "Permitir acesso a todos os arquivos"','warn');
+      await new Promise(r=>setTimeout(r,1200));
       try{Files.requestPermission()}catch(_){throw new Error('Sem bridge de permissão')}
       const ok=await _waitPerm();
       if(!ok)throw new Error('Permissão negada');
@@ -27164,7 +27169,7 @@ document.addEventListener('pointerout',e=>{
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.8';
+  const VER='3.8.9';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};

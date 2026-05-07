@@ -1108,7 +1108,13 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 #tab-inventory.active{margin:0;padding:0}
 .re4-shell>.re4-bar{grid-column:1/-1}
 .re4-shell>.re4-body{grid-column:1/-1;display:flex;gap:10px;align-items:stretch}
-.re4-shell>.re4-body>.equip-slots{flex:0 0 56px;align-self:flex-start;position:sticky;top:80px}
+.re4-shell>.re4-body>.equip-slots{flex:0 0 0;width:0;align-self:flex-start;position:sticky;top:80px;overflow:hidden;opacity:0;transition:flex-basis .35s cubic-bezier(.2,.8,.2,1),width .35s cubic-bezier(.2,.8,.2,1),opacity .25s ease,padding .35s ease;order:99;padding:0;pointer-events:none}
+.re4-shell.equip-open>.re4-body>.equip-slots{flex:0 0 56px;width:56px;opacity:1;pointer-events:auto}
+@media(max-width:980px){
+  .re4-shell>.re4-body>.equip-slots{position:fixed!important;inset:0;width:100vw!important;height:100vh!important;flex:none!important;background:rgba(8,8,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:9998;display:flex!important;flex-direction:row;justify-content:center;align-items:center;gap:10px;padding:20px;flex-wrap:wrap;transform:translateY(100%);opacity:0;transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .25s ease;pointer-events:none}
+  .re4-shell.equip-open>.re4-body>.equip-slots{transform:translateY(0);opacity:1;pointer-events:auto}
+  .re4-shell.equip-open>.re4-body>.equip-slots .equip-slot{width:64px;height:64px}
+}
 .re4-shell>.re4-body>.re4-case-pane{flex:0 0 auto;min-width:0;align-self:flex-start}
 .re4-shell>.re4-body>.re4-item-detail{flex:0 0 280px;min-width:0;align-self:flex-start}
 .equip-slots{display:flex;flex-direction:column;gap:5px;padding:0;background:none;border:none;border-radius:0;width:56px;justify-content:center;align-items:center}
@@ -1154,6 +1160,13 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .equip-slot-ico{display:block;width:24px;height:24px;background:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat;flex-shrink:0}
 .equip-slot-lbl{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-dim);background:var(--bg-card);border:1px solid var(--border);padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10}
 .equip-slot:hover .equip-slot-lbl{opacity:1}
+/* Chips de "Parte do corpo" no modal item */
+.iparts-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ipart-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;letter-spacing:.04em;text-transform:uppercase}
+.ipart-chip:hover{border-color:var(--magenta-dim);color:var(--magenta);background:color-mix(in srgb,var(--magenta) 8%,var(--bg-input))}
+.ipart-chip.active{background:var(--magenta);border-color:var(--magenta);color:#0a0a0c}
+.ipart-chip.active .ipart-ico{background:#0a0a0c}
+.ipart-ico{display:inline-block;width:14px;height:14px;background:currentColor;-webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat;flex-shrink:0}
 @media(max-width:980px){.re4-shell>.re4-body>.equip-slots{flex:0 0 auto;width:100%;flex-direction:row;justify-content:center}}
 .re4-shell>.re4-body>.re4-right{flex:0 0 300px;min-width:0;display:flex;flex-direction:column;gap:10px}
 .re4-shell>.re4-body>.re4-right>.re4-item-detail{flex:0 0 auto;width:100%}
@@ -7590,8 +7603,11 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
                     <button class="re4-top-btn" id="btn-clear-inv" type="button" title="Limpar inventário" aria-label="Limpar inventário">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><circle cx="12" cy="14" r=".5" fill="currentColor"/></svg>
                     </button>
+                    <button class="re4-top-btn" id="btn-toggle-equip" type="button" title="Equipamentos (cabide)" aria-label="Abrir painel de equipamentos">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 8v3"/><path d="M12 11 3 18h18z"/></svg>
+                    </button>
                   </div>
-                  <script>document.getElementById('btn-add-item').addEventListener('click',()=>{try{openModal('item')}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-clear-inv').addEventListener('click',()=>{try{clearInventory()}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-organize-inv').addEventListener('click',()=>{try{organizeInventory()}catch(e){console.error(e);toast&&toast('Erro: '+e.message)}});</script>
+                  <script>document.getElementById('btn-add-item').addEventListener('click',()=>{try{openModal('item')}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-clear-inv').addEventListener('click',()=>{try{clearInventory()}catch(e){console.error(e);alert('Erro: '+e.message)}});document.getElementById('btn-organize-inv').addEventListener('click',()=>{try{organizeInventory()}catch(e){console.error(e);toast&&toast('Erro: '+e.message)}});document.getElementById('btn-toggle-equip').addEventListener('click',()=>{try{window.toggleEquipPanel&&window.toggleEquipPanel()}catch(e){console.error(e)}});</script>
                   <div class="inv-grid" id="inv-grid"></div>
                 </div>
               </div>
@@ -7848,8 +7864,8 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.9</span></div>
-            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">383</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.10</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">384</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
               <select id="cfg-perf-mode" onchange="setPerfMode(this.value)" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-family:inherit;font-size:12px;outline:none;cursor:pointer">
@@ -16492,7 +16508,19 @@ function openModal(type,eid){
 <div class="item-page active" data-page="1" data-title="Identidade" data-sub="Nome, categoria, tamanho" data-icon='<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'>
 <div class="form-group"><label>Nome</label><input type="text" id="m-iname" placeholder="Ex: Espada Curta" required></div>
 <div class="form-group"><label>Apelido / Subtítulo <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label><input type="text" id="m-isubtitle" placeholder="Ex: Lâmina do amanhecer" maxlength="60"></div>
-<div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault();window._itemPagerSync&&window._itemPagerSync()"><option value="armaBranca">Armas Brancas</option><option value="armaFogo">Armas de Fogo</option><option value="explosivo">Explosivos</option><option value="operacional">Itens Operacionais</option><option value="implante">Implantes</option><option value="obscuro">Itens Obscuros</option><option value="protecao">Proteção</option><option value="vestimenta">Vestimenta</option><option value="acessorio">Acessório</option><option value="municao">Munições</option><option value="consumivel">Consumíveis</option><option value="material">Materiais</option></select></div><div class="form-group form-group-rarity" id="m-irarity-wrap"><label id="m-irarity-label">Classificação</label><select id="m-irarity" onchange="window._applyDurDefault&&window._applyDurDefault()"><option value="common">Improvisada</option><option value="uncommon">Básica</option><option value="rare">Tática</option><option value="epic">Avançada</option></select></div></div>
+<div class="form-row"><div class="form-group"><label>Categoria</label><select id="m-icat" onchange="window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault();window._itemPagerSync&&window._itemPagerSync();window._togglePartsField&&window._togglePartsField()"><option value="armaBranca">Armas Brancas</option><option value="armaFogo">Armas de Fogo</option><option value="explosivo">Explosivos</option><option value="operacional">Itens Operacionais</option><option value="implante">Implantes</option><option value="obscuro">Itens Obscuros</option><option value="protecao">Proteção</option><option value="vestimenta">Vestimenta</option><option value="acessorio">Acessório</option><option value="municao">Munições</option><option value="consumivel">Consumíveis</option><option value="material">Materiais</option></select></div><div class="form-group form-group-rarity" id="m-irarity-wrap"><label id="m-irarity-label">Classificação</label><select id="m-irarity" onchange="window._applyDurDefault&&window._applyDurDefault()"><option value="common">Improvisada</option><option value="uncommon">Básica</option><option value="rare">Tática</option><option value="epic">Avançada</option></select></div></div>
+<div class="form-group" id="m-iparts-wrap" style="display:none">
+  <label>Parte do corpo <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(múltipla seleção)</span></label>
+  <div id="m-iparts-chips" class="iparts-chips" role="group" aria-label="Partes do corpo">
+    <button type="button" class="ipart-chip" data-part="cabeca"><span class="ipart-ico" style="--ico:url(icons/equip/cabeca.svg)"></span><span>Cabeça</span></button>
+    <button type="button" class="ipart-chip" data-part="rosto"><span class="ipart-ico" style="--ico:url(icons/equip/rosto.svg)"></span><span>Rosto</span></button>
+    <button type="button" class="ipart-chip" data-part="pescoco"><span class="ipart-ico" style="--ico:url(icons/equip/pescoco.svg)"></span><span>Pescoço</span></button>
+    <button type="button" class="ipart-chip" data-part="torso"><span class="ipart-ico" style="--ico:url(icons/equip/torso.svg)"></span><span>Torso</span></button>
+    <button type="button" class="ipart-chip" data-part="pernas"><span class="ipart-ico" style="--ico:url(icons/equip/pernas.svg)"></span><span>Pernas</span></button>
+    <button type="button" class="ipart-chip" data-part="pes"><span class="ipart-ico" style="--ico:url(icons/equip/pes.svg)"></span><span>Pés</span></button>
+  </div>
+  <input type="hidden" id="m-iparts" value="">
+</div>
 <div class="form-group"><label>Tamanho no Grid <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0">(L × A · máx 8)</span></label>
 <div class="size-row">
   <input type="number" id="m-igw" value="1" min="1" max="8" oninput="window._updateSizePreview&&window._updateSizePreview()">
@@ -16578,7 +16606,7 @@ function openModal(type,eid){
       prev.style.gridTemplateRows=`repeat(${h},${cellSz}px)`;
       prev.innerHTML=Array(w*h).fill(`<div style="width:${cellSz}px;height:${cellSz}px;background:var(--magenta-bg-strong);border:1px solid var(--magenta-dim);border-radius:2px"></div>`).join('');
     };
-    setTimeout(()=>{window._updateSizePreview&&window._updateSizePreview();window._toggleWpnPicker&&window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault();window._initItemPager&&window._initItemPager();window._syncDmgInput&&window._syncDmgInput()},30);
+    setTimeout(()=>{window._updateSizePreview&&window._updateSizePreview();window._toggleWpnPicker&&window._toggleWpnPicker();window._updateRarityLabels&&window._updateRarityLabels();window._applyDurDefault&&window._applyDurDefault();window._initItemPager&&window._initItemPager();window._syncDmgInput&&window._syncDmgInput();window._togglePartsField&&window._togglePartsField()},30);
     window._toggleDualFields=function(){
       const arch=document.getElementById('m-iarch')?.value;
       const dual=document.getElementById('m-dual-fields');
@@ -16752,6 +16780,26 @@ function openModal(type,eid){
       if(!isArma)document.getElementById('m-iwpn').value='';
       window._wpnPickerFilter=(cat==='arma-fogo'||cat==='armaFogo')?'fogo':((cat==='arma'||cat==='armaBranca')?'branca':null);
     };
+    window._togglePartsField=function(){
+      const cat=document.getElementById('m-icat')&&document.getElementById('m-icat').value;
+      const wrap=document.getElementById('m-iparts-wrap');
+      if(!wrap)return;
+      const usesParts=(cat==='vestimenta'||cat==='protecao');
+      wrap.style.display=usesParts?'':'none';
+      if(!usesParts){
+        wrap.querySelectorAll('.ipart-chip.active').forEach(c=>c.classList.remove('active'));
+        const h=document.getElementById('m-iparts');if(h)h.value='';
+      }
+    };
+    // Wire chips toggle active + sync hidden input
+    document.addEventListener('click',e=>{
+      const chip=e.target.closest&&e.target.closest('#m-iparts-chips .ipart-chip');
+      if(!chip)return;
+      e.preventDefault();
+      chip.classList.toggle('active');
+      const sel=Array.from(document.querySelectorAll('#m-iparts-chips .ipart-chip.active')).map(c=>c.dataset.part);
+      const h=document.getElementById('m-iparts');if(h)h.value=sel.join(',');
+    });
     window._updateRarityLabels=function(){
       const cat=document.getElementById('m-icat').value;
       const sel=document.getElementById('m-irarity');
@@ -17425,6 +17473,11 @@ function saveItem(){let n=document.getElementById('m-iname').value.trim().slice(
   }
   // Mochila: se categoria for "acessorio" e nome contém "mochila"/"bolsa", inicia container
   if(_origCat==='acessorio'&&/mochila|bolsa|saco|bag/i.test(n)){ni.isBag=true;ni.bag={gw:3,gh:3,items:[],quickDraw:false}}
+  // Partes do corpo (vestimenta/proteção)
+  if(_origCat==='vestimenta'||_origCat==='protecao'){
+    const partsRaw=(document.getElementById('m-iparts')?.value||'').trim();
+    if(partsRaw)ni.parts=partsRaw.split(',').filter(Boolean);
+  }
   inventory.push(ni);
   if(typeof addLogRow==='function')try{addLogRow(ni)}catch(_){}renderGrid();if(typeof renderDashLists==='function')renderDashLists();if(typeof renderInvTab==='function')renderInvTab();closeModal();toast(`${n} adicionado ao inventario`)
 }
@@ -18152,6 +18205,32 @@ document.addEventListener('click',e=>{if(!e.target.closest('.minical-wrap'))docu
 /* ═══ LOADOUT MANAGER (conjuntos de armas) ═══ */
 function _loadLoadouts(){try{const a=JSON.parse(localStorage.getItem('eclipse_loadouts')||'[]');return Array.isArray(a)?a:[]}catch(_){return[]}}
 function _saveLoadouts(arr){try{localStorage.setItem('eclipse_loadouts',JSON.stringify(arr))}catch(_){}}
+window.toggleEquipPanel=function(){
+  const shell=document.querySelector('#tab-inventory .re4-shell');
+  if(!shell)return;
+  const open=shell.classList.toggle('equip-open');
+  const btn=document.getElementById('btn-toggle-equip');
+  if(btn)btn.setAttribute('aria-expanded',open?'true':'false');
+  // Mobile: trava scroll do body quando overlay aberto
+  if(window.matchMedia('(max-width:980px)').matches){
+    document.body.style.overflow=open?'hidden':'';
+  }
+};
+// Click fora (mobile overlay) ou Esc fecha
+document.addEventListener('click',e=>{
+  const shell=document.querySelector('#tab-inventory .re4-shell.equip-open');
+  if(!shell)return;
+  if(!window.matchMedia('(max-width:980px)').matches)return;
+  if(e.target.closest('.equip-slot, .equip-conjunto-btn, #btn-toggle-equip'))return;
+  if(e.target.closest('.equip-slots'))return;
+  shell.classList.remove('equip-open');document.body.style.overflow='';
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const shell=document.querySelector('#tab-inventory .re4-shell.equip-open');
+    if(shell){shell.classList.remove('equip-open');document.body.style.overflow=''}
+  }
+});
 function openLoadoutManager(){const ov=document.getElementById('lout-overlay');if(!ov)return;ov.classList.add('open');ov.setAttribute('aria-hidden','false');renderLoadoutList()}
 function closeLoadoutManager(){const ov=document.getElementById('lout-overlay');if(!ov)return;ov.classList.remove('open');ov.setAttribute('aria-hidden','true')}
 function renderLoadoutList(){
@@ -22461,6 +22540,10 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.10',date:'2026-05-07',title:'Inventário — cabide toggle + partes do corpo na vestimenta',items:[
+    {tag:'feat',text:'Novo botão cabide na toolbar do inventário toggla painel de equipamentos. Desktop: slide-in lateral. Mobile: overlay full-screen com backdrop blur. Click fora ou Esc fecha.'},
+    {tag:'feat',text:'Modal Adicionar Item: campo "Parte do corpo" (chips multi-select cabeça/rosto/pescoço/torso/pernas/pés) aparece quando categoria = Vestimenta ou Proteção. Salvo em item.parts.'}
+  ]},
   {version:'v3.8.9',date:'2026-05-07',title:'UX — toast preventivo antes de abrir Settings de armazenamento',items:[
     {tag:'feat',text:'Save cartão em Android <10: toast aviso ("Abrindo configurações — toque Permitir acesso a todos os arquivos") antes de redirect pra Settings page de MANAGE_EXTERNAL_STORAGE. Evita confusão de "porque a tela mudou de repente".'}
   ]},
@@ -27169,7 +27252,7 @@ document.addEventListener('pointerout',e=>{
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.9';
+  const VER='3.8.10';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};

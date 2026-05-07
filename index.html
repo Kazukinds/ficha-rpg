@@ -217,19 +217,19 @@ button:active:not(:disabled),.card-action-btn:active,.modal-btn:active,.credit-p
   ::view-transition-old(root),::view-transition-new(root){animation-duration:.32s;animation-timing-function:cubic-bezier(.22,.61,.36,1)}
   ::view-transition-old(root){animation-name:anim-fade-in;animation-direction:reverse}
   ::view-transition-new(root){animation-name:anim-fade-in}
-  /* Theme switch — animação só no container .main-wrapper (theme-main); sidebar/root crossfade default */
-  @keyframes theme-mask-slide{from{mask-position:0 -200%;-webkit-mask-position:0 -200%}to{mask-position:0 0%;-webkit-mask-position:0 0%}}
-  @keyframes theme-hold{from,to{opacity:1}}
-  html.theme-switching::view-transition-old(theme-main){animation:theme-hold .42s linear both!important}
-  html.theme-switching::view-transition-new(theme-main){
-    animation:theme-mask-slide .42s cubic-bezier(.4,0,.2,1) both!important;
-    mix-blend-mode:normal;
-    mask-image:linear-gradient(180deg,#000 0%,#000 33%,transparent 67%,transparent 100%);
-    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 33%,transparent 67%,transparent 100%);
-    mask-size:100% 300%;-webkit-mask-size:100% 300%;
-    mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat
+  /* Theme switch — circular reveal expandindo do ponto do clique (--ttx,--tty) */
+  @keyframes theme-circle-reveal{
+    from{clip-path:circle(0 at var(--ttx,50%) var(--tty,50%))}
+    to{clip-path:circle(var(--ttr,150vmax) at var(--ttx,50%) var(--tty,50%))}
   }
-  html.theme-switching::view-transition-old(root),html.theme-switching::view-transition-new(root){animation-duration:.42s}
+  html.theme-switching::view-transition-old(root){animation:none!important;opacity:1}
+  html.theme-switching::view-transition-new(root){
+    animation:theme-circle-reveal .55s cubic-bezier(.4,0,.2,1) both!important;
+    mix-blend-mode:normal
+  }
+  /* Ícone do botão: flip 360° durante a transição */
+  @keyframes theme-icon-spin{from{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(.7)}to{transform:rotate(360deg) scale(1)}}
+  html.theme-switching .sidebar-theme-btn svg{animation:theme-icon-spin .55s cubic-bezier(.4,0,.2,1) both}
 }
 
 /* Bar fills com overshoot spring */
@@ -326,7 +326,6 @@ body:has(.lout-overlay[aria-hidden="false"]) .sidebar{opacity:0;pointer-events:n
 
 /* ═══ MAIN ═══ */
 .main-wrapper{margin-left:72px;flex:1;display:flex;flex-direction:column;min-height:100vh;background:var(--bg-sidebar);transition:filter .3s,opacity .3s}
-html.theme-switching .main-wrapper{view-transition-name:theme-main}
 body:has(.sidebar.open) .main-wrapper{filter:brightness(.55) blur(.5px);pointer-events:none}
 body:has(.sidebar.open) .main-wrapper *{pointer-events:none}
 .topbar{padding:14px 28px 18px;display:flex;flex-direction:column;align-items:stretch;gap:12px;background:var(--bg-sidebar);position:sticky;top:0;z-index:50}
@@ -5245,9 +5244,10 @@ button:not(:disabled):active{transform:scale(.97)}
 .attr-tanks-wrap{position:relative;width:min(320px,92%);aspect-ratio:1/1;margin:14px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none;animation:atkIn .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes atkIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 .attr-tanks-rot{position:absolute;inset:0;transform:rotate(var(--at-rot,0deg));transition:transform .45s cubic-bezier(.2,.8,.2,1);will-change:transform}
-.attr-tanks-grid{display:none}
-.attr-tanks-grid::before{content:"";position:absolute;left:50%;top:-14%;bottom:-14%;width:1px;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--magenta) 25%,transparent) 18%,color-mix(in srgb,var(--magenta) 25%,transparent) 82%,transparent);transform:translateX(-50%)}
-.attr-tanks-grid::after{content:"";position:absolute;top:50%;left:-14%;right:-14%;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--magenta) 25%,transparent) 18%,color-mix(in srgb,var(--magenta) 25%,transparent) 82%,transparent);transform:translateY(-50%)}
+.attr-tanks-grid{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s ease}
+.attr-tanks-wrap:hover .attr-tanks-grid{opacity:1}
+.attr-tanks-grid::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(180deg,color-mix(in srgb,var(--magenta) 55%,transparent),color-mix(in srgb,var(--magenta) 90%,transparent) 50%,color-mix(in srgb,var(--magenta) 55%,transparent));transform:translateX(-50%);box-shadow:0 0 8px color-mix(in srgb,var(--magenta) 60%,transparent)}
+.attr-tanks-grid::after{content:"";position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,color-mix(in srgb,var(--magenta) 55%,transparent),color-mix(in srgb,var(--magenta) 90%,transparent) 50%,color-mix(in srgb,var(--magenta) 55%,transparent));transform:translateY(-50%);box-shadow:0 0 8px color-mix(in srgb,var(--magenta) 60%,transparent)}
 .attr-tank{position:absolute;width:48%;aspect-ratio:1/1;border-radius:0;background:transparent;border:none;cursor:pointer;transition:filter .25s}
 .attr-tank:hover{filter:drop-shadow(0 6px 18px color-mix(in srgb,var(--at-c) 55%,transparent)) brightness(1.15);z-index:5}
 .attr-tank:hover .attr-tank-inner{transform:rotate(calc(-1 * var(--at-rot,0deg))) scale(1.08);transition:transform .25s cubic-bezier(.2,.9,.2,1.05)}
@@ -7823,6 +7823,16 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
               </span>
               <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
+            <a class="profile-system-link" id="cfg-bkp-link" href="#" title="Backups automáticos (a cada 10 min)" onclick="event.preventDefault();window.eclipseExt3&&window.eclipseExt3.openBackupList();">
+              <span class="profile-system-icon" aria-hidden="true" style="color:#60a5fa;border-color:color-mix(in srgb,#60a5fa 45%,var(--border))">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </span>
+              <span class="profile-system-info">
+                <span class="profile-system-name" style="color:#60a5fa">Backups automáticos</span>
+                <span class="profile-system-sub" id="cfg-bkp-sub">0 backups · auto a cada 10 min</span>
+              </span>
+              <svg class="profile-system-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
             <a class="profile-system-link" href="#" title="Admin + importar/limpar ficha" onclick="event.preventDefault();openAdminPanel();">
               <span class="profile-system-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -7838,8 +7848,8 @@ body.forja-sub-preview-open .modal.forja-active>*:not(.modal-header){filter:blur
         <div class="profile-sidebar">
           <div class="profile-sidebar-card">
             <h4>Sobre</h4>
-            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.6</span></div>
-            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">380</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Versão</span><span class="stat-val" id="cfg-app-ver">v3.8.7</span></div>
+            <div class="profile-stat-row"><span class="stat-label">Build</span><span class="stat-val" id="cfg-app-build">381</span></div>
             <div class="profile-stat-row"><span class="stat-label">Plataforma</span><span class="stat-val" id="cfg-app-plat">Web</span></div>
             <div class="profile-stat-row" style="flex-wrap:wrap;gap:6px"><span class="stat-label">Performance</span>
               <select id="cfg-perf-mode" onchange="setPerfMode(this.value)" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-primary);padding:4px 8px;border-radius:6px;font-family:inherit;font-size:12px;outline:none;cursor:pointer">
@@ -18623,9 +18633,26 @@ window.setTheme=function(t){
     _applyTheme(t);return;
   }
   const root=document.documentElement;
+  // Origem do círculo: clique recente, ou fallback no botão de tema, ou centro
+  const e=window.event;
+  let cx=window.innerWidth/2,cy=window.innerHeight/2;
+  if(e&&typeof e.clientX==='number'&&e.clientX>0){cx=e.clientX;cy=e.clientY}
+  else{
+    const btn=document.querySelector('.sidebar-theme-btn,.theme-opt.active');
+    if(btn){const r=btn.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2}
+  }
+  const dx=Math.max(cx,window.innerWidth-cx);
+  const dy=Math.max(cy,window.innerHeight-cy);
+  const radius=Math.hypot(dx,dy);
+  root.style.setProperty('--ttx',cx+'px');
+  root.style.setProperty('--tty',cy+'px');
+  root.style.setProperty('--ttr',radius+'px');
   root.classList.add('theme-switching');
   const vt=document.startViewTransition(()=>_applyTheme(t));
-  vt.finished.finally(()=>root.classList.remove('theme-switching'));
+  vt.finished.finally(()=>{
+    root.classList.remove('theme-switching');
+    root.style.removeProperty('--ttx');root.style.removeProperty('--tty');root.style.removeProperty('--ttr');
+  });
 };
 window.setAppearanceOpt=function(key,val){
   const cls={compact:'compact-mode',radius:'no-radius'}[key];
@@ -22434,6 +22461,15 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.7',date:'2026-05-07',title:'Salvar cartão Eclipse no celular + UX polish',items:[
+    {tag:'feat',text:'Cartão Eclipse (onboarding final): botão SALVAR agora grava PNG em Pictures/Eclipse/ no celular Android com notificação tap-to-open. Android 10+ usa MediaStore (sem permissão). <10 pede MANAGE_EXTERNAL_STORAGE. Browser web continua usando download padrão.'},
+    {tag:'feat',text:'Backups automáticos saíram da topbar e ficam no tab Configurações > Sistemas (link azul com count + intervalo). Modal de listagem/restauração intacto.'},
+    {tag:'feat',text:'Print view (Alt+P) reescrito sem popup nem document.write — DOM API only + @media print no app principal. Imune a leak de tag <script> em qualquer WebView.'},
+    {tag:'feat',text:'Atributos diamond: hover sobre o conjunto mostra cruz contínua magenta atrás dos 4 ícones (visual de coordenada).'},
+    {tag:'feat',text:'Toggle de tema com circular reveal expandindo do botão clicado + ícone gira 360° durante a transição (View Transitions API).'},
+    {tag:'feat',text:'Assinatura no cartão Eclipse: dblclick no campo cycla fonte cursiva (antes era click único — conflitava com drag/spin do card 3D).'},
+    {tag:'fix',text:'Quick-roll FAB (1d20 desktop) removido — nunca foi muito usado e poluía canto da tela.'}
+  ]},
   {version:'v3.8.6',date:'2026-05-07',title:'Hotfix definitivo — print view sem injeção de tag JS',items:[
     {tag:'fix',text:'openPrintView reescrita: removida totalmente a tentativa de injetar `<script>` na janela popup. Agora w.print() é chamado do contexto pai via setTimeout(350ms). Source do módulo eclipseExt3 não contém mais nenhuma sequência de bytes parecida com tag de script — Android WebView antigo não consegue mais fechar prematuramente o bloco de script da extensão.'},
     {tag:'fix',text:'Comentário interno também removeu menção literal a "<script>" — ZERO ocorrências em qualquer ponto do source dos 3 módulos da extensão (apenas os delimitadores externos legítimos do <script> tag de cada módulo).'},
@@ -25584,11 +25620,14 @@ document.addEventListener('visibilitychange',()=>{
       document.addEventListener('pointercancel',sigUp);
       setTimeout(fitSigCanvas,100);setTimeout(fitSigCanvas,400);setTimeout(fitSigCanvas,800);
     }
-    /* dblclick texto → cycle font; click único na assinatura (img/label, não canvas) → cycle sig font */
+    /* dblclick na assinatura → cycle sig font; dblclick em texto/brand → cycle text font */
     function cycleTextFont(){state.font=(state.font+1)%FONTS.length;syncPreview()}
     function cycleSigFont(){state.sigFont=(state.sigFont+1)%SIG_FONTS.length;syncPreview()}
-    root.addEventListener('click',e=>{if(e.target.tagName==='CANVAS'||e.target.closest('button, [data-go]'))return;if(e.target.closest('.eo-card-sig')){e.preventDefault();e.stopPropagation();cycleSigFont()}});
-    root.addEventListener('dblclick',e=>{if(e.target.closest('button, [data-go]'))return;if(e.target.closest('.eo-card-row, .eo-card-brand')){e.preventDefault();e.stopPropagation();cycleTextFont()}});
+    root.addEventListener('dblclick',e=>{
+      if(e.target.tagName==='CANVAS'||e.target.closest('button, [data-go]'))return;
+      if(e.target.closest('.eo-card-sig')){e.preventDefault();e.stopPropagation();cycleSigFont();return}
+      if(e.target.closest('.eo-card-row, .eo-card-brand')){e.preventDefault();e.stopPropagation();cycleTextFont()}
+    });
     /* card 3D drag pra rodar 360° (frente/verso) — sem tilt hover */
     $$('.eo-card').forEach(c=>{
       if(!c.querySelector('.eo-card-front')){const front=document.createElement('div');front.className='eo-card-front';Array.from(c.children).forEach(ch=>{if(!ch.classList||!ch.classList.contains('eo-card-back'))front.appendChild(ch)});c.insertBefore(front,c.firstChild)}
@@ -25745,15 +25784,41 @@ document.addEventListener('visibilitychange',()=>{
       return cv.toDataURL('image/png');
     }
     const saveBtn=$('#eo-save-card');
+    function _waitPerm(){
+      return new Promise(res=>{
+        window.__filesPermResult=ok=>{delete window.__filesPermResult;res(ok)};
+        setTimeout(()=>{if(window.__filesPermResult){delete window.__filesPermResult;res(false)}},120000);
+      });
+    }
+    async function _saveViaAndroid(dataUrl,fname){
+      const Files=window.EclipseFiles;
+      // Tenta direto. Em Android 10+ MediaStore não precisa de permissão. Em <10 falha se sem MANAGE_EXTERNAL_STORAGE.
+      let path='';
+      try{path=Files.saveImage(fname,dataUrl)||''}catch(_){}
+      if(path)return path;
+      // Falhou — pede permissão e retry
+      try{Files.requestPermission()}catch(_){throw new Error('Sem bridge de permissão')}
+      const ok=await _waitPerm();
+      if(!ok)throw new Error('Permissão negada');
+      try{path=Files.saveImage(fname,dataUrl)||''}catch(_){}
+      if(!path)throw new Error('Falha mesmo com permissão');
+      return path;
+    }
     if(saveBtn)saveBtn.addEventListener('click',async()=>{
       const fname=`eclipse-card-${(state.name||'aventureiro').toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
       const origLabel=saveBtn.innerHTML;saveBtn.disabled=true;saveBtn.style.opacity='.6';
       try{
         const dataUrl=await renderCardFrontPNG();
-        const a=document.createElement('a');a.href=dataUrl;a.download=fname;document.body.appendChild(a);a.click();a.remove();
-        if(typeof toast==='function')toast('Cartão salvo');
+        if(window.EclipseFiles&&typeof window.EclipseFiles.saveImage==='function'){
+          const path=await _saveViaAndroid(dataUrl,fname);
+          if(path)toast&&toast('Salvo: '+path);
+          else toast&&toast('Falha ao salvar no celular','error');
+        }else{
+          const a=document.createElement('a');a.href=dataUrl;a.download=fname;document.body.appendChild(a);a.click();a.remove();
+          toast&&toast('Cartão salvo');
+        }
       }catch(err){
-        if(typeof toast==='function')toast('Erro ao salvar');
+        toast&&toast('Erro: '+(err&&err.message||'falha'),'error');
       }
       saveBtn.disabled=false;saveBtn.style.opacity='';saveBtn.innerHTML=origLabel;
     });
@@ -26354,12 +26419,6 @@ document.addEventListener('pointerout',e=>{
 @media(max-width:520px){.ecx-session-chip{font-size:10px;padding:3px 7px}}
 
 /* ═══ Quick-roll FAB ═══ */
-.ecx-fab{position:fixed;right:max(env(safe-area-inset-right,0),16px);bottom:max(env(safe-area-inset-bottom,0),16px);width:48px;height:48px;border-radius:50%;background:var(--magenta,#fe1455);color:#fff;border:none;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:9000;box-shadow:0 6px 18px rgba(254,20,85,.45),0 2px 6px rgba(0,0,0,.4);transition:transform var(--transition-fast,.15s)}
-.ecx-fab[data-visible="1"]{display:flex}
-.ecx-fab:hover{transform:scale(1.08)}
-.ecx-fab:active{transform:scale(.92)}
-.ecx-fab svg{width:22px;height:22px}
-@media(pointer:coarse){.ecx-fab{display:none!important}}
 
 /* ═══ Toast undo button ═══ */
 #toast .ecx-undo-btn{margin-left:10px;padding:3px 10px;background:rgba(255,255,255,.08);border:1px solid var(--border,#2a2a32);border-radius:6px;color:var(--magenta,#fe1455);font:600 11px Inter,sans-serif;cursor:pointer;letter-spacing:.05em;text-transform:uppercase}
@@ -26665,26 +26724,6 @@ document.addEventListener('pointerout',e=>{
     chip.addEventListener('click',()=>_toast('Sessão: '+fmtDuration(Date.now()-sessionStart)+' · ficha ativa'));
   }
 
-  // ═══ 11. Quick-roll FAB (apenas desktop, sem hover device) ═══
-  function injectFab(){
-    if(window.matchMedia&&window.matchMedia('(pointer:coarse)').matches)return;
-    if(document.getElementById('ecx-fab'))return;
-    const btn=document.createElement('button');
-    btn.id='ecx-fab';btn.className='ecx-fab';btn.dataset.visible='1';
-    btn.title='Rolar 1d20 (Alt+R)';btn.setAttribute('aria-label','Rolar 1d20');
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><line x1="22" y1="8.5" x2="12" y2="15.5"/><line x1="2" y1="8.5" x2="12" y2="15.5"/></svg>';
-    btn.addEventListener('click',quickRoll);
-    document.body.appendChild(btn);
-  }
-  function quickRoll(){
-    let result;
-    if(has(window._rollDie))result=window._rollDie(20);
-    else result=Math.floor(Math.random()*20)+1;
-    const tag=result===20?' · CRÍTICO!':result===1?' · FALHA!':'';
-    _toast('1d20: '+result+tag,result===20?'success':result===1?'error':'info');
-    if(window.tiks&&has(window.tiks.tick))safe(()=>window.tiks.tick());
-  }
-
   // ═══ 12. Tab tracker (lembra última aba) ═══
   function attachTabTracker(){
     document.addEventListener('click',e=>{
@@ -26706,7 +26745,6 @@ document.addEventListener('pointerout',e=>{
   // ═══ 14. Inicialização ═══
   function init(){
     safe(injectSessionChip,'session-chip');
-    safe(injectFab,'fab');
     safe(attachTabTracker,'tab-tracker');
     // Atualiza session chip a cada 30s
     setInterval(updateSessionChip,30000);
@@ -27071,10 +27109,6 @@ document.addEventListener('pointerout',e=>{
 .ecx3-save-dot.pulse{opacity:1;animation:ecx3Pulse 1.2s ease-out}
 @keyframes ecx3Pulse{0%{transform:scale(.4);opacity:1}50%{transform:scale(1.4);opacity:.8}100%{transform:scale(1);opacity:0}}
 
-/* ═══ Backup count badge ═══ */
-.ecx3-bkp-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);border-radius:999px;font:600 10px JetBrains Mono,monospace;color:#60a5fa;cursor:pointer;user-select:none}
-.ecx3-bkp-badge:hover{background:rgba(96,165,250,.22)}
-
 /* ═══ Backup list modal ═══ */
 .ecx3-modal-bk{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:99993;display:none;align-items:center;justify-content:center;padding:18px}
 .ecx3-modal-bk.open{display:flex}
@@ -27092,12 +27126,26 @@ document.addEventListener('pointerout',e=>{
 .ecx3-empty{padding:24px;text-align:center;color:var(--text-dim,#5a5a6e);font-size:13px}
 .ecx3-mc-close{background:none;border:none;color:var(--text-dim,#5a5a6e);font-size:22px;cursor:pointer;line-height:1}
 .ecx3-mc-close:hover{color:var(--magenta,#fe1455)}
+
+/* Print view: container fica oculto na tela; visível apenas em @media print */
+#ecx3-print-host{display:none}
+@media print{
+  body>*{display:none!important}
+  body>#ecx3-print-host{display:block!important;font:14px/1.5 -apple-system,Inter,system-ui,sans-serif;color:#222;background:#fff;padding:8px;max-width:800px;margin:0 auto}
+  #ecx3-print-host h1{font-size:24px;margin-bottom:6px}
+  #ecx3-print-host p.meta{color:#888;font-size:11px;margin-bottom:24px}
+  #ecx3-print-host h2{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#666;margin-top:18px;border-bottom:1px solid #ccc;padding-bottom:4px}
+  #ecx3-print-host dt{font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#444;margin-top:8px}
+  #ecx3-print-host dd{margin-left:0;font-size:13px}
+  #ecx3-print-host ul{padding-left:18px;margin:4px 0}
+  @page{margin:12mm}
+}
 </style>
 
 <script>
 (function eclipseExt3(){
   'use strict';
-  const VER='3.8.6';
+  const VER='3.8.7';
   if(!window.eclipseExt){console.warn('[ext3] host eclipseExt missing');return}
   const has=fn=>typeof fn==='function';
   const safe=(fn,label)=>{try{return fn()}catch(e){console.warn('[ext3]',label||'',e);return null}};
@@ -27128,24 +27176,12 @@ document.addEventListener('pointerout',e=>{
     window.autosaveNow.__ecx3Wrapped=true;
   }
 
-  // ═══ 2. Backup count badge ═══
-  function injectBackupBadge(){
-    const chip=document.getElementById('ecx-session-chip');
-    if(!chip)return;
-    if(document.getElementById('ecx3-bkp-badge'))return;
-    const badge=document.createElement('button');
-    badge.id='ecx3-bkp-badge';badge.className='ecx3-bkp-badge';badge.type='button';
-    badge.title='Ver backups (clique)';badge.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>0</span>';
-    badge.addEventListener('click',openBackupList);
-    chip.parentElement.insertBefore(badge,chip.nextSibling);
-    refreshBackupBadge();
-  }
+  // Backup count — agora só atualiza subtitle do link em Configurações
   function refreshBackupBadge(){
-    const badge=document.getElementById('ecx3-bkp-badge');
-    if(!badge)return;
+    const sub=document.getElementById('cfg-bkp-sub');
+    if(!sub)return;
     const n=window.eclipseExt.listBackups().length;
-    badge.querySelector('span').textContent=n;
-    badge.style.display=n>0?'inline-flex':'none';
+    sub.textContent=(n===0?'Nenhum backup ainda':n+' backup'+(n>1?'s':''))+' · auto a cada 10 min';
   }
 
   // ═══ 3. Backup list modal ═══
@@ -27228,26 +27264,42 @@ document.addEventListener('pointerout',e=>{
     _toast('HP: '+next+(delta>=0?' (+'+delta+')':' ('+delta+')'),delta>=0?'success':'warn');
   }
 
-  // ═══ 6. Print view — sem injeção de tags JS no popup ═══
+  // Print view — DOM API only, sem popup, sem document.write, sem string HTML.
+  // Constrói container oculto no doc atual; @media print exibe só ele.
+  function buildPrintNode(o){
+    if(o==null)return document.createTextNode('');
+    if(typeof o!=='object'){const t=document.createElement('span');t.textContent=String(o);return t}
+    if(Array.isArray(o)){
+      const ul=document.createElement('ul');
+      o.forEach(v=>{const li=document.createElement('li');li.appendChild(buildPrintNode(v));ul.appendChild(li)});
+      return ul;
+    }
+    const dl=document.createElement('dl');
+    Object.entries(o).forEach(([k,v])=>{
+      if(v==null||v===''||(Array.isArray(v)&&!v.length))return;
+      const dt=document.createElement('dt');dt.textContent=k;
+      const dd=document.createElement('dd');dd.appendChild(buildPrintNode(v));
+      dl.appendChild(dt);dl.appendChild(dd);
+    });
+    return dl;
+  }
   function openPrintView(){
     if(!has(window.collectAllData)){_toast('Indisponível','error');return}
     const data=safe(()=>window.collectAllData());if(!data)return;
-    const w=window.open('','_blank','width=800,height=900');
-    if(!w){_toast('Pop-up bloqueado','error');return}
     const name=(data.profile&&data.profile.name)||'Personagem';
-    function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-    function dump(o){
-      if(o==null)return'';
-      if(typeof o!=='object')return esc(o);
-      if(Array.isArray(o))return '<ul>'+o.map(v=>'<li>'+dump(v)+'</li>').join('')+'</ul>';
-      return '<dl>'+Object.entries(o).filter(([,v])=>v!=null&&v!==''&&!(Array.isArray(v)&&!v.length)).map(([k,v])=>'<dt>'+esc(k)+'</dt><dd>'+dump(v)+'</dd>').join('')+'</dl>';
-    }
-    const css='body{font:14px/1.5 -apple-system,Inter,system-ui,sans-serif;color:#222;background:#fff;padding:32px;max-width:800px;margin:0 auto}h1{font-size:24px;margin-bottom:6px}p.meta{color:#888;font-size:11px;margin-bottom:24px}h2{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:#666;margin-top:18px;border-bottom:1px solid #ccc;padding-bottom:4px}dt{font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#444;margin-top:8px}dd{margin-left:0;font-size:13px}ul{padding-left:18px;margin:4px 0}@media print{body{padding:8px}}';
-    const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(name)+'</title><style>'+css+'</style></head><body><h1>'+esc(name)+'</h1><p class="meta">Gerado: '+esc(new Date().toLocaleString('pt-BR'))+' · Ficha Eclipse v'+VER+'</p>'+dump(data)+'</body></html>';
-    try{w.document.open();w.document.write(html);w.document.close();}
-    catch(e){_toast('Falha ao abrir print','error');return}
-    // Print disparado do contexto pai — popup nem precisa de seu próprio script.
-    setTimeout(function(){try{w.focus();w.print()}catch(e){console.warn('print fail',e)}},350);
+    let host=document.getElementById('ecx3-print-host');
+    if(host)host.remove();
+    host=document.createElement('div');
+    host.id='ecx3-print-host';
+    const h1=document.createElement('h1');h1.textContent=name;
+    const meta=document.createElement('p');meta.className='meta';
+    meta.textContent='Gerado: '+new Date().toLocaleString('pt-BR')+' · Ficha Eclipse v'+VER;
+    host.appendChild(h1);host.appendChild(meta);host.appendChild(buildPrintNode(data));
+    document.body.appendChild(host);
+    const cleanup=()=>{try{host.remove()}catch(_){}window.removeEventListener('afterprint',cleanup)};
+    window.addEventListener('afterprint',cleanup);
+    setTimeout(()=>{try{window.print()}catch(e){console.warn('print fail',e);cleanup()}},50);
+    setTimeout(cleanup,60000);
   }
 
   // ═══ 7. Service worker manual update ═══
@@ -27402,11 +27454,10 @@ document.addEventListener('pointerout',e=>{
   // ═══ Inicialização ═══
   function init(){
     safe(injectSaveDot,'save-dot');
-    safe(injectBackupBadge,'bkp-badge');
+    safe(refreshBackupBadge,'bkp-refresh');
     safe(setupOnlineIndicator,'online');
     safe(checkStorageCap,'storage-cap');
-    // Refresh badge periódico
-    setInterval(refreshBackupBadge,60000);
+    setInterval(()=>safe(refreshBackupBadge,'bkp-refresh-loop'),60000);
     // Storage cap a cada 5 min
     setInterval(()=>safe(checkStorageCap,'storage-cap-loop'),5*60*1000);
   }

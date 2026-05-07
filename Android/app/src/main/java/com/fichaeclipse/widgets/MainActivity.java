@@ -40,11 +40,18 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.SharedPreferences;
+import android.content.ContentValues;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import androidx.documentfile.provider.DocumentFile;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
+import android.util.Base64;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import androidx.core.app.NotificationCompat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -906,5 +913,84 @@ public class MainActivity extends Activity {
                 return false;
             }
         }
+
+        @JavascriptInterface
+        public String saveImage(String filename, String base64) {
+            if (filename == null || base64 == null) return "";
+            try {
+                int comma = base64.indexOf(',');
+                if (comma >= 0) base64 = base64.substring(comma + 1);
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                String savedPath;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ContentValues v = new ContentValues();
+                    v.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+                    v.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                    v.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Eclipse");
+                    Uri u = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, v);
+                    if (u == null) return "";
+                    OutputStream os = getContentResolver().openOutputStream(u);
+                    if (os == null) return "";
+                    os.write(bytes); os.flush(); os.close();
+                    savedPath = "Pictures/Eclipse/" + filename;
+                    _notifySaved(filename, savedPath, u);
+                } else {
+                    if (!_hasManageStorage()) return "";
+                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eclipse");
+                    if (!dir.exists()) dir.mkdirs();
+                    File out = new File(dir, filename);
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(out, false);
+                    fos.write(bytes); fos.flush(); fos.close();
+                    savedPath = out.getAbsolutePath();
+                    try {
+                        Intent scan = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        scan.setData(Uri.fromFile(out));
+                        sendBroadcast(scan);
+                    } catch (Exception ignored) {}
+                    _notifySaved(filename, savedPath, Uri.fromFile(out));
+                }
+                return savedPath;
+            } catch (Exception e) {
+                return "";
+            }
+        }
+    }
+
+    private static final String SAVE_CHANNEL_ID = "eclipse_saves";
+    private static final int SAVE_NOTIF_ID = 5821;
+
+    private void _ensureSaveChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm == null) return;
+        NotificationChannel ch = nm.getNotificationChannel(SAVE_CHANNEL_ID);
+        if (ch == null) {
+            ch = new NotificationChannel(SAVE_CHANNEL_ID, "Salvamentos", NotificationManager.IMPORTANCE_LOW);
+            ch.setDescription("Notificações quando arquivos são salvos no celular");
+            nm.createNotificationChannel(ch);
+        }
+    }
+
+    private void _notifySaved(String filename, String relPath, Uri contentUri) {
+        try {
+            _ensureSaveChannel();
+            Intent open = new Intent(Intent.ACTION_VIEW);
+            open.setDataAndType(contentUri, "image/png");
+            open.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            int piFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    ? PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                    : PendingIntent.FLAG_UPDATE_CURRENT;
+            PendingIntent pi = PendingIntent.getActivity(this, 0, open, piFlags);
+            NotificationCompat.Builder b = new NotificationCompat.Builder(this, SAVE_CHANNEL_ID)
+                    .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                    .setContentTitle("Cartão salvo")
+                    .setContentText(relPath)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(relPath))
+                    .setAutoCancel(true)
+                    .setContentIntent(pi)
+                    .setPriority(NotificationCompat.PRIORITY_LOW);
+            NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nm != null) nm.notify(SAVE_NOTIF_ID + (int)(System.currentTimeMillis() % 1000), b.build());
+        } catch (Exception ignored) {}
     }
 }

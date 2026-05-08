@@ -59,6 +59,9 @@ public class MainActivity extends Activity {
 
     private static final String APP_URL = "file:///android_asset/www/index.html";
     private static final int REQ_NOTIF_PERM = 9100;
+    private static final int REQ_STORAGE_PERM = 9101;
+    private static final int REQ_FILE_CHOOSER = 9301;
+    private android.webkit.ValueCallback<Uri[]> _filePathCallback;
     private WebView webView;
     private FrameLayout splash;
     private FrameLayout offline;
@@ -103,6 +106,25 @@ public class MainActivity extends Activity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQ_NOTIF_PERM);
             }
+        }
+        // Permissão de armazenamento: SDK<29 precisa runtime; SDK>=29 MediaStore não precisa.
+        // Aqui pedimos READ_EXTERNAL_STORAGE em SDK 23-28 para galeria de imagens funcionar.
+        if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_STORAGE_PERM);
+            }
+        }
+        // SDK 33+ (Android 14): READ_MEDIA_IMAGES pra galeria
+        if (Build.VERSION.SDK_INT >= 33) {
+            try {
+                String permImg = "android.permission.READ_MEDIA_IMAGES";
+                if (checkSelfPermission(permImg) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{permImg}, REQ_STORAGE_PERM);
+                }
+            } catch (Exception ignored) {}
         }
 
         handleOtaIntent(getIntent());
@@ -202,7 +224,25 @@ public class MainActivity extends Activity {
             }
         });
 
-        wv.setWebChromeClient(new WebChromeClient());
+        wv.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public boolean onShowFileChooser(WebView wv, android.webkit.ValueCallback<Uri[]> filePathCallback,
+                                              FileChooserParams fileChooserParams){
+                if(_filePathCallback!=null){
+                    try{_filePathCallback.onReceiveValue(null);}catch(Exception ignored){}
+                }
+                _filePathCallback=filePathCallback;
+                try{
+                    Intent i=fileChooserParams.createIntent();
+                    i.addCategory(Intent.CATEGORY_OPENABLE);
+                    if(i.getType()==null||i.getType().isEmpty())i.setType("image/*");
+                    startActivityForResult(Intent.createChooser(i,"Escolher imagem"),REQ_FILE_CHOOSER);
+                }catch(Exception e){
+                    _filePathCallback=null;return false;
+                }
+                return true;
+            }
+        });
 
         wv.setDownloadListener(new DownloadListener() {
             @Override
@@ -351,11 +391,34 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView != null && webView.canGoBack()) {
-            webView.goBack();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        _confirmExit();
+    }
+
+    private void _confirmExit() {
+        try {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("Fechar app?")
+                    .setMessage("Deseja sair da Ficha Eclipse?")
+                    .setPositiveButton("Sair", (d, w) -> finish())
+                    .setNegativeButton("Cancelar", (d, w) -> d.dismiss())
+                    .setCancelable(true)
+                    .show();
+        } catch (Exception e) {
+            finish();
+        }
     }
 
     @Override
@@ -367,13 +430,58 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (webView != null) webView.onPause();
+        // Persist estado JS antes de qualquer chance do SO matar processo
+        if (webView != null) {
+            try {
+                webView.evaluateJavascript(
+                    "(function(){try{if(typeof autosaveNow==='function')autosaveNow();" +
+                    "sessionStorage.setItem('eclipse_lasttab',document.querySelector('.tab-content.active')?.id||'');" +
+                    "}catch(_){}})()", null);
+            } catch (Exception ignored) {}
+            webView.onPause();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (webView != null) webView.onResume();
+        if (webView != null) {
+            webView.onResume();
+            // Restaura aba se foi salva
+            try {
+                webView.evaluateJavascript(
+                    "(function(){try{var t=sessionStorage.getItem('eclipse_lasttab');" +
+                    "if(t&&typeof switchTab==='function'){var btn=document.querySelector('.sidebar-btn[data-tab=\"'+t.replace('tab-','')+'\"]');" +
+                    "if(btn)btn.click()}}catch(_){}})()", null);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // WebView state — preserva DOM + scroll em recriação de Activity
+        if (webView != null) try { webView.saveState(outState); } catch (Exception ignored) {}
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (webView != null) try { webView.restoreState(savedInstanceState); } catch (Exception ignored) {}
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        // Reduz pressão de memória sem matar app — limpa caches WebView, mantém DOM
+        if (webView != null && level >= TRIM_MEMORY_RUNNING_MODERATE) {
+            try { webView.clearMatches(); } catch (Exception ignored) {}
+            // Força save no JS antes do SO possivelmente matar
+            try {
+                webView.evaluateJavascript(
+                    "(function(){try{if(typeof autosaveNow==='function')autosaveNow()}catch(_){}})()", null);
+            } catch (Exception ignored) {}
+        }
     }
 
     @Override
@@ -601,6 +709,24 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_FILE_CHOOSER) {
+            if (_filePathCallback == null) return;
+            Uri[] results = null;
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    if (data.getDataString() != null) {
+                        results = new Uri[]{Uri.parse(data.getDataString())};
+                    } else if (data.getClipData() != null) {
+                        int n = data.getClipData().getItemCount();
+                        results = new Uri[n];
+                        for (int i = 0; i < n; i++) results[i] = data.getClipData().getItemAt(i).getUri();
+                    }
+                }
+            }
+            _filePathCallback.onReceiveValue(results);
+            _filePathCallback = null;
+            return;
+        }
         if (requestCode == REQ_MANAGE_STORAGE) {
             boolean ok = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ok = Environment.isExternalStorageManager();

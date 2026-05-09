@@ -1,10 +1,9 @@
 /* Ficha Eclipse — service worker */
-const VERSION = 'v3.8.13';
+const VERSION = 'v3.8.14';
 const CACHE = 'ficha-eclipse-' + VERSION;
 const ASSETS = [
   './',
   './index.html',
-  './calendario.html',
   './manifest.webmanifest',
   './icons/icon.svg',
   './icons/icon-maskable.svg',
@@ -16,12 +15,7 @@ const ASSETS = [
   './icons/equip/pescoco.svg',
   './icons/equip/torso.svg',
   './icons/equip/pernas.svg',
-  './icons/equip/pes.svg',
-  './widgets/dice.html',
-  './widgets/timer.html',
-  './widgets/level.html',
-  './widgets/notes.html',
-  './widgets/init.html'
+  './icons/equip/pes.svg'
 ];
 
 self.addEventListener('install', e => {
@@ -56,14 +50,18 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
-  // Network-first same-origin: HTML/SVG/JS/CSS sempre frescos. Cache só fallback offline.
+  // Stale-while-revalidate: serve cache imediato, atualiza em background.
+  // Cache vive 1 versão (CACHE muda em VERSION bump → activate limpa antigos).
   e.respondWith(
-    fetch(req).then(resp => {
-      if (resp && resp.status === 200 && resp.type === 'basic') {
-        const clone = resp.clone();
-        caches.open(CACHE).then(c => c.put(req, clone)).catch(()=>{});
-      }
-      return resp;
-    }).catch(() => caches.match(req).then(c => c || (req.mode === 'navigate' ? caches.match('./index.html') : undefined)))
+    caches.match(req).then(cached => {
+      const fetchPromise = fetch(req).then(resp => {
+        if (resp && resp.status === 200 && resp.type === 'basic') {
+          const clone = resp.clone();
+          caches.open(CACHE).then(c => c.put(req, clone)).catch(()=>{});
+        }
+        return resp;
+      }).catch(() => cached || (req.mode === 'navigate' ? caches.match('./index.html') : undefined));
+      return cached || fetchPromise;
+    })
   );
 });

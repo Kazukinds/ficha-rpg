@@ -7,12 +7,10 @@ DST=$(dirname "$(realpath "$0")")/app/src/main/assets/www
 rm -rf "$DST"
 mkdir -p "$DST/icons"
 cp "$SRC/index.html" "$DST/"
-[ -f "$SRC/calendario.html" ] && cp "$SRC/calendario.html" "$DST/" || true
 # weapon-test.html é apenas de dev — não vai pro bundle do APK.
 cp "$SRC/manifest.webmanifest" "$DST/"
 cp "$SRC/sw.js" "$DST/"
 cp -r "$SRC/icons/." "$DST/icons/"
-mkdir -p "$DST/icons/weapons" "$DST/widgets"
+mkdir -p "$DST/icons/weapons"
 cp -r "$SRC/icons/weapons/." "$DST/icons/weapons/" 2>/dev/null || true
-cp -r "$SRC/widgets/." "$DST/widgets/" 2>/dev/null || true
 echo "Bundled → $DST"

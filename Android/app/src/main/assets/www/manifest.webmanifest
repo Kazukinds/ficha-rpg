@@ -27,11 +27,6 @@
     }
   ],
   "shortcuts": [
-    {"name":"Dados","short_name":"Dados","url":"./widgets/dice.html","description":"Rolagem rápida d4-d20","icons":[{"src":"icons/icon.svg","sizes":"any"}]},
-    {"name":"Sessão","short_name":"Timer","url":"./widgets/timer.html","description":"Cronômetro de sessão","icons":[{"src":"icons/icon.svg","sizes":"any"}]},
-    {"name":"Progressão","short_name":"Nível","url":"./widgets/level.html","description":"Nível e XP","icons":[{"src":"icons/icon.svg","sizes":"any"}]},
-    {"name":"Notas","short_name":"Notas","url":"./widgets/notes.html","description":"Bloco de notas rápidas","icons":[{"src":"icons/icon.svg","sizes":"any"}]},
-    {"name":"Iniciativa","short_name":"Init","url":"./widgets/init.html","description":"Tracker de iniciativa de combate","icons":[{"src":"icons/icon.svg","sizes":"any"}]},
     {"name":"Salvar Ficha","url":"./?action=save","description":"Exporta a ficha atual"},
     {"name":"Importar Ficha","url":"./?action=import","description":"Importa uma ficha"}
   ],

@@ -5981,7 +5981,7 @@ body[data-cam-debug="1"]::before{content:'';position:fixed;top:env(safe-area-ins
 @keyframes splash-bolt-pulse{0%,100%{box-shadow:0 0 0 1px rgba(var(--magenta-rgb),.12),0 0 40px rgba(var(--magenta-rgb),.22),inset 0 1px 0 rgba(255,255,255,.05)}50%{box-shadow:0 0 0 1px rgba(var(--magenta-rgb),.2),0 0 60px rgba(var(--magenta-rgb),.45),inset 0 1px 0 rgba(255,255,255,.08)}}
 @keyframes splash-text-in{0%{opacity:0;letter-spacing:12px}100%{opacity:1;letter-spacing:6px}}
 @keyframes splash-out{0%{opacity:1}100%{opacity:0;visibility:hidden}}
-.app-fade-in{animation:none}
+.app-fade-in{animation:app-fade-in .2s ease-out both}
 @keyframes app-fade-in{0%{opacity:0}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.app-splash{animation-duration:.2s;animation-delay:.3s}.app-splash .splash-bolt,.app-splash .splash-name{animation:none;opacity:1}.app-fade-in{animation:none}}
 
@@ -8883,6 +8883,8 @@ body[data-perf-low] *,body[data-perf-low] *::before,body[data-perf-low] *::after
     else document.body.style.animationPlayState='';
   });
 }catch(_){}})();
+// Hide native Android splash assim que HTML parsed (não espera recursos)
+try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()}catch(_){}
 </script>
 <noscript><div style="position:fixed;inset:0;background:#0a0a0b;color:#e4e4e7;display:flex;align-items:center;justify-content:center;padding:24px;font-family:system-ui,sans-serif;text-align:center;z-index:99999"><div><h1 style="color:#bef264;margin:0 0 12px;font-size:22px">JavaScript necessário</h1><p style="margin:0;font-size:14px;line-height:1.6;max-width:380px">Ficha Eclipse precisa de JavaScript ativado para funcionar. Habilite nas configurações do navegador e recarregue.</p></div></div></noscript>
 <div class="eclipse-onboard" id="eclipse-onboard" role="dialog" aria-modal="true" aria-label="Bem-vindo ao Eclipse">
@@ -9851,7 +9853,7 @@ body[data-perf-low] *,body[data-perf-low] *::before,body[data-perf-low] *::after
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.14</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.15</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -14656,7 +14658,7 @@ window.invSetFilter=function(f){
 window.openRegister=function(){if(typeof openModal==='function')openModal('item')};
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.inv-filter-pill').forEach(p=>p.addEventListener('click',()=>invSetFilter(p.dataset.f)));
-  // renderInvTab adiado — switchTab('inventory') chama on-demand
+  renderInvTab();
 });
 
 function _calcInvWeight(items){
@@ -22441,22 +22443,12 @@ window.addEventListener('load',()=>{try{renderThemeSlots()}catch(_){}});
 try{localStorage.removeItem('eclipse_cam_vit')}catch(_){}
 
 function refreshAll(){
-  // Síncrono: só dashboard visível
-  renderSummary();renderXP();renderStatus();renderAttrs();renderDashLists();renderGroup();renderAch();
+  renderGrid();renderDashLists();renderXP();renderSkills();renderAttrs();renderAch();renderGroup();
+  renderCaseSelector();renderStatus();renderProficiencias();renderSummary();
   if(typeof renderCredit==='function')renderCredit();
-  drawChart(false);
-  // Idle: tabs não-dashboard + cosméticos
-  const tasks=[
-    ()=>renderCaseSelector(),
-    ()=>renderGrid(),
-    ()=>renderSkills(),
-    ()=>renderProficiencias(),
-    ()=>{if(typeof renderProfile==='function')renderProfile()},
-    ()=>{if(typeof rebuildLid==='function'){rebuildLid();applySuitcaseColor(suitcaseColor)}}
-  ];
-  const ric=window.requestIdleCallback||(f=>setTimeout(f,0));
-  const next=()=>{const t=tasks.shift();if(!t)return;try{t()}catch(_){}ric(next)};
-  ric(next);
+  if(typeof renderProfile==='function')renderProfile();
+  if(typeof rebuildLid==='function'){rebuildLid();applySuitcaseColor(suitcaseColor)}
+  setTimeout(()=>drawChart(false),50);
 }
 
 function saveToFile(){
@@ -25934,7 +25926,7 @@ window.closeBiblioReader=function(){
   },900);
 };
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('biblio-reader')?.classList.contains('show'))closeBiblioReader()});
-// renderBiblioGrid/renderFeitTab adiados — switchTab chama on-demand
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{try{renderBiblioGrid();renderFeitTab()}catch(_){}},50)});
 document.addEventListener('DOMContentLoaded',()=>{
   renderFicha();
   document.querySelectorAll('[data-ficha]').forEach(el=>{
@@ -26525,9 +26517,10 @@ function tryRestoreAutosave(){
   }catch(err){console.warn('Restore autosave falhou:',err&&err.message);return false}
 }
 
-// Restaura no boot (silencioso — sem toast). DOMContentLoaded pra dashboard pintar populado no primeiro paint.
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tryRestoreAutosave,{once:true});
-else tryRestoreAutosave();
+// Restaura no boot (silencioso — sem toast)
+window.addEventListener('load',()=>{
+  tryRestoreAutosave();
+});
 
 // Salva periodicamente enquanto o app está aberto (pula se aba não visível)
 setInterval(()=>{if(document.visibilityState==='visible')autosaveNow()},15000);
@@ -26603,17 +26596,19 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
-  {version:'v3.8.14',date:'2026-05-09',title:'Boot rápido — splash off, init paralelo, refreshAll chunked',items:[
-    {tag:'perf',text:'Splash + body fade-in matados (display:none / animation:none) — economiza ~1.4s perceived na primeira tela. App pinta direto sem cortinas.'},
-    {tag:'perf',text:'tryRestoreAutosave movido de window.load → DOMContentLoaded. Dashboard pinta populado no primeiro paint (antes mostrava zeros até load completar).'},
-    {tag:'perf',text:'refreshAll chunked: sync só renderiza dashboard (Summary/XP/Status/Attrs/DashLists/Group/Ach/Credit/Chart). Idle: renderGrid (100+ células), CaseSelector, Skills, Proficiências, Profile, rebuildLid.'},
+  {version:'v3.8.15',date:'2026-05-09',title:'Boot mobile rápido — bridge splash + init waits cortados',items:[
+    {tag:'perf',text:'Android splash hide via JS bridge EclipseNative.hideSplash() chamado logo após HTML parsed (não espera resources). Antes só sumia em onPageFinished (full load). Saved ~1-2s no app.'},
     {tag:'perf',text:'Init waits artificiais eliminados: 200/300/400/500/1500ms setTimeouts → requestIdleCallback. Total ~3s de delays removidos.'},
     {tag:'perf',text:'data-perf-low aplica por padrão no boot (kill anims/blur/filter). Remove pós-load só em desktop high-perf no modo auto.'},
-    {tag:'perf',text:'Fontes Google: 47 → 17 arquivos (cortados pesos raros 300/500/900 + variantes ital). Inter/JetBrains/Orbitron/Playfair/Cinzel/Montserrat/Lato/Cormorant.'},
-    {tag:'perf',text:'Popover arquétipo (gear menu): backdrop-filter blur 18→8 + saturate removido, transitions 240-280ms → 140-160ms, requestAnimationFrame substituído por reflow forçado. Abre em ~150ms vs ~300ms.'},
-    {tag:'perf',text:'5 keyframes infinite removidos dos cards arquétipo: agmCustomGlow, agmCustomSweep (conic + @property GPU-pesado), agmLogPulse, agmInsPulse, agmVigBeat. Custom card vira glow estático.'},
-    {tag:'fix',text:'Header "Configurações" + header "Perícias [DT 15]" removidos. DT vira input hidden (JS continua lendo via #dt-value).'},
-    {tag:'fix',text:'Card Perícias estica até bottom da coluna direita (align-items:stretch + align-self:stretch).'}
+    {tag:'perf',text:'Fontes Google: 47 → 17 arquivos (cortados pesos raros 300/500/900 + variantes ital).'},
+    {tag:'perf',text:'Popover arquétipo (gear menu): backdrop-filter blur 18→8, saturate removido, transitions 240-280ms → 140-160ms. Abre ~2× mais rápido.'},
+    {tag:'perf',text:'5 keyframes infinite removidos dos cards arquétipo (agmCustomGlow/Sweep + Log/Ins/VigPulse). GPU livre.'},
+    {tag:'perf',text:'app-fade-in body: 800ms delay+600ms anim → 200ms anim. Splash CSS web matado.'},
+    {tag:'fix',text:'Header "Configurações" + header "Perícias [DT 15]" removidos. DT vira input hidden.'},
+    {tag:'fix',text:'Card Perícias estica até bottom (align-items:stretch).'}
+  ]},
+  {version:'v3.8.14',date:'2026-05-09',title:'(skipped — incluído em v3.8.15)',items:[
+    {tag:'perf',text:'Bump intermediário consolidado em v3.8.15.'}
   ]},
   {version:'v3.8.12',date:'2026-05-07',title:'Animações suaves — painel equip + drag card no mobile',items:[
     {tag:'feat',text:'Painel cabide: agora desliza com transform translate3d (sem layout shift). Position fixed à direita, drop shadow, border-radius. Mobile: drawer 84vw com backdrop blur. Animação 0.42s easing nítido.'},

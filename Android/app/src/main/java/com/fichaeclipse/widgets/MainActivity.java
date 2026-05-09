@@ -204,8 +204,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (splash != null) {
-                    splash.animate().alpha(0f).setDuration(350).withEndAction(() -> splash.setVisibility(View.GONE)).start();
+                if (splash != null && splash.getVisibility() == View.VISIBLE) {
+                    splash.animate().alpha(0f).setDuration(150).withEndAction(() -> splash.setVisibility(View.GONE)).start();
                 }
                 offline.setVisibility(View.GONE);
                 if (pendingOtaTrigger) {
@@ -512,6 +512,15 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void downloadAndInstall(String apkUrl) {
             runOnUiThread(() -> _doDownload(apkUrl));
+        }
+
+        @JavascriptInterface
+        public void hideSplash() {
+            runOnUiThread(() -> {
+                if (splash != null && splash.getVisibility() == View.VISIBLE) {
+                    splash.animate().alpha(0f).setDuration(180).withEndAction(() -> splash.setVisibility(View.GONE)).start();
+                }
+            });
         }
     }
 

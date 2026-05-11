@@ -541,7 +541,7 @@ body:has(.sidebar.open) .main-wrapper *{pointer-events:none}
 .minical-composer-time::placeholder{color:var(--text-dim)}
 .minical-composer-bar{display:flex;align-items:center;gap:8px;padding:8px 12px 10px;border-top:1px solid var(--border);background:var(--bg-input);flex-wrap:wrap}
 .minical-swatches{display:flex;gap:5px;align-items:center}
-.mc-swatch{width:22px;height:22px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;padding:0;position:relative}
+.mc-swatch{width:22px;height:22px;flex:0 0 22px;aspect-ratio:1;box-sizing:border-box;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;padding:0;position:relative}
 .mc-swatch:hover{transform:scale(1.08)}
 .mc-swatch.s-sessao{background:var(--blue)}
 .mc-swatch.s-combate{background:var(--red)}
@@ -8873,8 +8873,7 @@ body[data-perf-low] *,body[data-perf-low] *::before,body[data-perf-low] *::after
 /* 16. Mobile: kill backdrop-filter total (GPU killer Android WebView) */
 @media(max-width:900px){
   *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-  .modal-overlay,.lout-overlay,.bag-overlay,.app-confirm-overlay,
-  .perf-modal-overlay{background:rgba(0,0,0,.78)!important}
+  .modal-overlay,.lout-overlay,.bag-overlay,.app-confirm-overlay{background:rgba(0,0,0,.78)!important}
 }
 
 /* 17. Reduce paint: simplifica box-shadow em listas longas mobile */
@@ -10118,19 +10117,65 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.16</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.21</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
-            <div class="cfg-block">
-              <h4 class="cfg-block-title">Performance</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Modo</span>
-                <select id="cfg-perf-mode" onchange="setPerfMode(this.value)">
-                  <option value="auto">Automático</option>
-                  <option value="low">Baixo (anims off)</option>
-                  <option value="high">Alto (anims completas)</option>
-                </select>
+          </div>
+          <div class="perf-pane cfg-block perf-pane-block">
+            <h4 class="cfg-block-title">Performance</h4>
+            <div class="pm-modes" id="perf-mode-buttons">
+              <button class="perf-mode-btn" data-mode="auto" type="button" title="Detecta hardware e ajusta sozinho">
+                <span class="pm-tag">Auto</span>
+              </button>
+              <button class="perf-mode-btn" data-mode="baixo" type="button" title="Animações curtas, blur reduzido">
+                <span class="pm-tag">Baixo</span>
+              </button>
+              <button class="perf-mode-btn" data-mode="minimo" type="button" title="Sem animação, sem blur, sem sombra">
+                <span class="pm-tag">Mínimo</span>
+              </button>
+              <button class="perf-mode-btn" data-mode="custom" type="button" title="Você escolhe o que ativar">
+                <span class="pm-tag">Custom</span>
+              </button>
+            </div>
+
+            <div class="perf-live">
+              <div class="perf-live-stats">
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps">--</div><div class="pm-stat-lbl">FPS atual</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps-avg">--</div><div class="pm-stat-lbl">Média 5s</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps-min">--</div><div class="pm-stat-lbl">Mín</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps-max">--</div><div class="pm-stat-lbl">Máx</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps-target">60</div><div class="pm-stat-lbl">Alvo</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-mem">--</div><div class="pm-stat-lbl">RAM</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-jank">0</div><div class="pm-stat-lbl">Jank/min</div></div>
+                <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-uptime">0s</div><div class="pm-stat-lbl">Sessão</div></div>
               </div>
+              <div class="perf-chart-wrap">
+                <div class="perf-chart-head">
+                  <span class="perf-chart-title">FPS — últimos 60s</span>
+                  <span class="perf-chart-legend"><i class="dot ok"></i>≥50 <i class="dot warn"></i>30-49 <i class="dot bad"></i>&lt;30</span>
+                </div>
+                <canvas id="perf-chart" width="600" height="120"></canvas>
+              </div>
+            </div>
+
+            <div class="pm-section" id="perf-custom-section">
+              <div class="pm-section-title">Animações por interface</div>
+              <div class="pm-toggle-list" id="perf-toggle-list">
+                <div class="perf-toggle on" data-key="shine" title="Shine em itens lendários, gemas, XP fill"><div class="pt-lbl">Brilho raridade</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="pulse" title="Botões piscando, ícones de aviso, splash"><div class="pt-lbl">Pulsos / CTAs</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="hover3d" title="Cards inclinam, livro abre em 3D"><div class="pt-lbl">Hover 3D</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="blur" title="Backdrop-filter — caro em GPU fraca"><div class="pt-lbl">Blur modais</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="shadows" title="Box-shadow + filter em SVG/cards"><div class="pt-lbl">Sombras</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="transitions" title="Color/border fade ao interagir"><div class="pt-lbl">Transições</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="spin" title="Spinner, dado, ícone arquétipo"><div class="pt-lbl">Rotações</div><div class="pt-sw"></div></div>
+                <div class="perf-toggle on" data-key="tabswitch" title="Fade-in + nav-anim na sidebar"><div class="pt-lbl">Troca de aba</div><div class="pt-sw"></div></div>
+              </div>
+            </div>
+
+            <div class="pm-section">
+              <div class="pm-section-title">HUD de FPS</div>
+              <div class="perf-toggle on" data-key="hud" title="Indicador flutuante no canto superior"><div class="pt-lbl">Contador de FPS</div><div class="pt-sw"></div></div>
             </div>
           </div>
         </div>
@@ -16836,7 +16881,8 @@ window._pickItemImage=function(id,variant){
   const it=inventory.find(x=>x.id===id);if(!it)return;
   if(!variant||variant==='auto')variant=window._normRotKey(it.rot);
   const inp=document.createElement('input');
-  inp.type='file';inp.accept='.svg,.png,.jpg,.jpeg,.webp,.gif,image/*';
+  // Sem image/* → Android abre file manager (pasta) ao invés da galeria
+  inp.type='file';inp.accept='.svg,.png,.jpg,.jpeg,.webp,.gif';
   inp.onchange=e=>{
     const f=e.target.files[0];if(!f)return;
     if(f.size>16*1024*1024){toast('Imagem muito grande (max 16MB)');return}
@@ -17302,14 +17348,14 @@ function renderItemDetail(){
       <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px">
         <div class="rid-subtitle" style="margin:0">Descrição</div>
         <div style="display:flex;gap:6px">
-        <button type="button" class="rid-img-icon-btn" onclick="event.stopPropagation();window._openItemImageEditor(${it.id})" title="Editor avançado" style="background:rgba(var(--magenta-rgb),.12);border:1px solid rgba(var(--magenta-rgb),.35);color:var(--magenta);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,transform .12s" onmouseover="this.style.background='rgba(var(--magenta-rgb),.22)';this.style.transform='scale(1.08)'" onmouseout="this.style.background='rgba(var(--magenta-rgb),.12)';this.style.transform=''">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <button type="button" class="rid-img-icon-btn" onclick="event.stopPropagation();window._openItemImageEditor(${it.id})" title="Editor avançado" style="background:rgba(var(--magenta-rgb),.12);border:1px solid rgba(var(--magenta-rgb),.35);color:var(--magenta);width:44px;height:44px;flex:0 0 44px;aspect-ratio:1/1;box-sizing:border-box;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,transform .12s;padding:0" onmouseover="this.style.background='rgba(var(--magenta-rgb),.22)';this.style.transform='scale(1.08)'" onmouseout="this.style.background='rgba(var(--magenta-rgb),.12)';this.style.transform=''">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
-        <button type="button" class="rid-codesvg-btn" onclick="event.stopPropagation();window._pasteItemSvg&&window._pasteItemSvg(${it.id})" title="Colar código SVG" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <button type="button" class="rid-codesvg-btn" onclick="event.stopPropagation();window._pasteItemSvg&&window._pasteItemSvg(${it.id})" title="Colar código SVG" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);width:44px;height:44px;flex:0 0 44px;aspect-ratio:1/1;box-sizing:border-box;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;padding:0">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </button>
-        <button type="button" class="rid-loadimg-btn" onclick="event.stopPropagation();window._pickItemImage&&window._pickItemImage(${it.id})" title="Importar imagem do dispositivo" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <button type="button" class="rid-loadimg-btn" onclick="event.stopPropagation();window._pickItemImage&&window._pickItemImage(${it.id})" title="Importar imagem da pasta" style="background:var(--bg-input);border:1px solid var(--border);color:var(--text-secondary);width:44px;height:44px;flex:0 0 44px;aspect-ratio:1/1;box-sizing:border-box;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;padding:0">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         </button>
         </div>
       </div>
@@ -26785,8 +26831,6 @@ function switchToConfig(){
     const ss=document.getElementById('profile-sound-sub');if(ss)ss.textContent=muted?'Desativado':'Ativado';
     const isAndroid=/android/i.test(navigator.userAgent);
     const cp=document.getElementById('cfg-app-plat');if(cp)cp.textContent=isAndroid?'Android':'Web';
-    const pm=document.getElementById('cfg-perf-mode');
-    if(pm){pm.value=localStorage.getItem('eclipse_perf_mode')||'auto'}
     // Versão + Build dinâmicos: usa EclipseNative.appVersion() (Android) OU SW VERSION (Web)
     const cv=document.getElementById('cfg-app-ver');
     const cb=document.getElementById('cfg-app-build');
@@ -33205,40 +33249,52 @@ document.addEventListener('pointerout',e=>{
 .perf-fps-hud.hidden{display:none}
 body[data-perf-low] .perf-fps-hud{backdrop-filter:none;-webkit-backdrop-filter:none}
 
-.perf-modal-overlay{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;animation:perfFadeIn .2s ease both}
-.perf-modal-overlay.show{display:flex}
-@keyframes perfFadeIn{from{opacity:0}to{opacity:1}}
-.perf-modal{background:linear-gradient(180deg,#16161a,#0c0c10);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:22px 20px;width:min(480px,92vw);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.6);font-family:Inter,system-ui,sans-serif;color:#e4e4e7}
-.perf-modal h3{font-size:18px;font-weight:800;margin:0 0 4px;color:#fff;display:flex;align-items:center;gap:8px}
-.perf-modal h3 svg{width:20px;height:20px;stroke:#a78bfa;fill:none;stroke-width:2}
-.perf-modal .pm-sub{font-size:12px;color:#9ca3af;margin-bottom:18px}
-.perf-modal .pm-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.perf-mode-btn{padding:12px 10px;background:#1a1a20;border:1px solid rgba(255,255,255,.08);border-radius:12px;color:#e4e4e7;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left}
-.perf-mode-btn:hover{border-color:rgba(167,139,250,.4);background:#1f1f26}
-.perf-mode-btn:active{transform:scale(.98)}
-.perf-mode-btn.active{border-color:#a78bfa;background:rgba(167,139,250,.12);box-shadow:0 0 0 1px rgba(167,139,250,.4)}
-.perf-mode-btn .pm-tag{font-size:14px;font-weight:800;color:#fff}
-.perf-mode-btn .pm-desc{font-size:10px;color:#9ca3af;line-height:1.3}
-.perf-modal .pm-section{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
-.perf-modal .pm-section-title{font-size:11px;font-weight:700;letter-spacing:.18em;color:#a78bfa;text-transform:uppercase;margin-bottom:10px}
-.perf-modal .pm-toggle-list{display:flex;flex-direction:column;gap:6px}
-.perf-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#1a1a20;border:1px solid rgba(255,255,255,.06);border-radius:10px;cursor:pointer;transition:border-color .15s,background .15s}
-.perf-toggle:hover{border-color:rgba(167,139,250,.3)}
-.perf-toggle .pt-lbl{font-size:13px;font-weight:600;color:#e4e4e7}
-.perf-toggle .pt-desc{font-size:10px;color:#71717a;margin-top:1px}
-.perf-toggle .pt-sw{position:relative;width:38px;height:22px;background:#3a3a45;border-radius:999px;transition:background .2s;flex-shrink:0}
-.perf-toggle .pt-sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s}
-.perf-toggle.on .pt-sw{background:#a78bfa}
-.perf-toggle.on .pt-sw::after{transform:translateX(16px)}
+.perf-pane{color:var(--text-primary);font-family:inherit}
+.perf-pane-block{margin-top:10px;padding:12px 14px}
+.perf-pane-block>.cfg-block-title{margin-bottom:10px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--magenta);display:flex;align-items:center;gap:6px}
+.perf-pane-block>.cfg-block-title::before{content:"";width:4px;height:12px;background:var(--magenta);border-radius:2px}
+.perf-pane .pm-modes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:10px}
+.perf-live{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);gap:10px;margin:8px 0 4px;padding:10px;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:10px}
+.perf-live-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;align-content:start}
+.perf-live .pm-stat{padding:5px 6px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;gap:0}
+.perf-live .pm-stat-val{font-size:13px}
+.perf-live .pm-stat-lbl{font-size:8px}
+.perf-chart-wrap{display:flex;flex-direction:column;gap:4px;min-width:0}
+.perf-chart-head{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+.perf-chart-legend{display:flex;align-items:center;gap:6px;font-size:8px;text-transform:none;letter-spacing:0;color:var(--text-dim)}
+.perf-chart-legend .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:2px;vertical-align:-1px}
+.perf-chart-legend .dot.ok{background:#34d399}
+.perf-chart-legend .dot.warn{background:#fbbf24}
+.perf-chart-legend .dot.bad{background:#f87171}
+#perf-chart{width:100%;height:70px;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px}
+.perf-mode-btn{padding:6px 6px;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;display:flex;flex-direction:column;align-items:center;gap:1px;text-align:center;min-height:36px;justify-content:center}
+.perf-mode-btn:hover{border-color:color-mix(in srgb,var(--magenta) 40%,var(--border));background:color-mix(in srgb,var(--magenta) 6%,var(--bg-card-inner))}
+.perf-mode-btn:active{transform:scale(.97)}
+.perf-mode-btn.active{border-color:var(--magenta);background:color-mix(in srgb,var(--magenta) 12%,var(--bg-card-inner));box-shadow:0 0 0 1px color-mix(in srgb,var(--magenta) 40%,transparent)}
+.perf-mode-btn .pm-tag{font-size:11px;font-weight:700;color:var(--text-primary);line-height:1.1}
+.perf-mode-btn .pm-desc{display:none}
+.perf-pane .pm-section{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.perf-pane .pm-section-title{font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--magenta);text-transform:uppercase;margin-bottom:6px}
+.perf-pane .pm-toggle-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px}
+.perf-toggle{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg-card-inner);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color .15s,background .15s;gap:6px}
+.perf-toggle:hover{border-color:color-mix(in srgb,var(--magenta) 30%,var(--border))}
+.perf-toggle .pt-lbl{font-size:11px;font-weight:600;color:var(--text-primary);line-height:1.2}
+.perf-toggle .pt-desc{display:none}
+.perf-toggle .pt-sw{position:relative;width:28px;height:16px;background:#3a3a45;border-radius:999px;transition:background .2s;flex-shrink:0}
+.perf-toggle .pt-sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;background:#fff;border-radius:50%;transition:transform .2s}
+.perf-toggle.on .pt-sw{background:var(--magenta)}
+.perf-toggle.on .pt-sw::after{transform:translateX(12px)}
 .perf-toggle[data-disabled]{opacity:.4;pointer-events:none}
-.perf-modal .pm-actions{display:flex;gap:8px;margin-top:18px}
-.perf-modal .pm-btn{flex:1;padding:11px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:filter .2s,transform .1s}
-.perf-modal .pm-btn-close{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#e4e4e7}
-.perf-modal .pm-btn-close:hover{background:rgba(255,255,255,.1)}
-.perf-modal .pm-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;padding:12px;background:#0a0a0d;border-radius:10px;border:1px solid rgba(255,255,255,.05)}
-.perf-modal .pm-stat{display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center}
-.perf-modal .pm-stat-val{font-size:18px;font-weight:800;color:#34d399;font-family:'JetBrains Mono',monospace}
-.perf-modal .pm-stat-lbl{font-size:9px;color:#71717a;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.perf-pane .pm-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px;padding:8px;background:var(--bg-card-inner);border-radius:8px;border:1px solid var(--border)}
+.perf-pane .pm-stat{display:flex;flex-direction:column;gap:1px;align-items:center;text-align:center}
+.perf-pane .pm-stat-val{font-size:13px;font-weight:800;color:#34d399;font-family:'JetBrains Mono',monospace;line-height:1.1}
+.perf-pane .pm-stat-lbl{font-size:8px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;font-weight:600;line-height:1.1}
+@media(max-width:520px){
+  .perf-pane .pm-modes{grid-template-columns:repeat(2,1fr)}
+  .perf-live{grid-template-columns:1fr}
+  .perf-live-stats{grid-template-columns:repeat(4,1fr)}
+  #perf-chart{height:60px}
+}
 
 /* ─── Modos aplicados via [data-perf-mode] no body ─── */
 body[data-perf-mode="baixo"] *{animation-iteration-count:1!important;transition-duration:.15s!important}
@@ -33283,63 +33339,8 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
   <span class="pf-lbl">FPS</span>
 </div>
 
-<div class="perf-modal-overlay" id="perf-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="perf-modal-title">
-  <div class="perf-modal" onclick="event.stopPropagation()">
-    <h3 id="perf-modal-title"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>Performance</h3>
-    <div class="pm-sub">Configure o modo de desempenho do app.</div>
-
-    <div class="pm-modes" id="perf-mode-buttons">
-      <button class="perf-mode-btn" data-mode="auto" type="button">
-        <span class="pm-tag">Automático</span>
-        <span class="pm-desc">Detecta hardware e ajusta sozinho.</span>
-      </button>
-      <button class="perf-mode-btn" data-mode="baixo" type="button">
-        <span class="pm-tag">Baixo</span>
-        <span class="pm-desc">Animações curtas, blur reduzido.</span>
-      </button>
-      <button class="perf-mode-btn" data-mode="minimo" type="button">
-        <span class="pm-tag">Mínimo</span>
-        <span class="pm-desc">Sem animação, sem blur, sem sombra.</span>
-      </button>
-      <button class="perf-mode-btn" data-mode="custom" type="button">
-        <span class="pm-tag">Personalizado</span>
-        <span class="pm-desc">Você escolhe o que ativar.</span>
-      </button>
-    </div>
-
-    <div class="pm-stats">
-      <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps">--</div><div class="pm-stat-lbl">FPS atual</div></div>
-      <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-fps-target">60</div><div class="pm-stat-lbl">Alvo</div></div>
-      <div class="pm-stat"><div class="pm-stat-val" id="pm-stat-mem">--</div><div class="pm-stat-lbl">RAM</div></div>
-    </div>
-
-    <div class="pm-section" id="perf-custom-section">
-      <div class="pm-section-title">Animações por interface</div>
-      <div class="pm-toggle-list" id="perf-toggle-list">
-        <div class="perf-toggle on" data-key="shine"><div><div class="pt-lbl">Brilho de raridade</div><div class="pt-desc">Shine em itens lendários, gemas, XP fill</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="pulse"><div><div class="pt-lbl">Pulsos e CTAs</div><div class="pt-desc">Botões piscando, ícones de aviso, splash</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="hover3d"><div><div class="pt-lbl">Efeito 3D no hover</div><div class="pt-desc">Cards inclinam, livro abre em 3D</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="blur"><div><div class="pt-lbl">Desfoque (blur) em modais</div><div class="pt-desc">Backdrop-filter — caro em GPU fraca</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="shadows"><div><div class="pt-lbl">Sombras e drop-shadow</div><div class="pt-desc">Box-shadow + filter em SVG/cards</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="transitions"><div><div class="pt-lbl">Transições suaves</div><div class="pt-desc">Color/border fade ao interagir</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="spin"><div><div class="pt-lbl">Rotações infinitas</div><div class="pt-desc">Spinner, dado, ícone arquétipo</div></div><div class="pt-sw"></div></div>
-        <div class="perf-toggle on" data-key="tabswitch"><div><div class="pt-lbl">Animação ao trocar aba</div><div class="pt-desc">Fade-in + nav-anim na sidebar</div></div><div class="pt-sw"></div></div>
-      </div>
-    </div>
-
-    <div class="pm-section">
-      <div class="pm-section-title">HUD de FPS</div>
-      <div class="perf-toggle on" data-key="hud"><div><div class="pt-lbl">Mostrar contador de FPS</div><div class="pt-desc">Indicador flutuante no canto superior</div></div><div class="pt-sw"></div></div>
-    </div>
-
-    <div class="pm-actions">
-      <button class="pm-btn pm-btn-close" type="button" onclick="window.__perfModal.close()">Fechar</button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ═══ FPS HUD + Performance Modal — controllers ═══ */
+/* ═══ FPS HUD + Performance Sub-tab — controllers ═══ */
 (function perfHud(){
   'use strict';
   const PERF_KEY='ficha-eclipse-perf-cfg';
@@ -33350,13 +33351,18 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
 
   const hud=document.getElementById('perf-fps-hud');
   const numEl=document.getElementById('perf-fps-num');
-  const overlay=document.getElementById('perf-modal-overlay');
   const modeBtns=document.querySelectorAll('.perf-mode-btn');
   const toggles=document.querySelectorAll('.perf-toggle');
   const customSection=document.getElementById('perf-custom-section');
   const fpsTargetEl=document.getElementById('pm-stat-fps-target');
   const fpsCurEl=document.getElementById('pm-stat-fps');
+  const fpsAvgEl=document.getElementById('pm-stat-fps-avg');
+  const fpsMinEl=document.getElementById('pm-stat-fps-min');
+  const fpsMaxEl=document.getElementById('pm-stat-fps-max');
   const memEl=document.getElementById('pm-stat-mem');
+  const jankEl=document.getElementById('pm-stat-jank');
+  const uptimeEl=document.getElementById('pm-stat-uptime');
+  const chartCv=document.getElementById('perf-chart');
 
   function save(){try{localStorage.setItem(PERF_KEY,JSON.stringify(cfg))}catch(_){}}
 
@@ -33401,13 +33407,22 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
     });
   }
 
-  // ─── FPS counter via rAF ───
+  // ─── FPS counter + history buffer ───
+  const HIST_MAX=120;            // 60s @ 500ms cada amostra
+  const hist=[];                 // {t, fps}
+  const sessionStart=performance.now();
   let fps=0,frames=0,lastT=performance.now(),rafId=0;
+  let jankCount=0,lastFrameT=performance.now();
   function tickFps(t){
     frames++;
+    const frameDt=t-lastFrameT;
+    if(frameDt>50)jankCount++; // frame > 50ms = jank
+    lastFrameT=t;
     if(t-lastT>=500){
       fps=Math.round(frames*1000/(t-lastT));
       frames=0;lastT=t;
+      hist.push({t,fps});
+      if(hist.length>HIST_MAX)hist.shift();
       if(numEl)numEl.textContent=fps;
       if(fpsCurEl)fpsCurEl.textContent=fps;
       if(hud){
@@ -33415,10 +33430,94 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
         if(fps<30)hud.classList.add('bad');
         else if(fps<50)hud.classList.add('warn');
       }
+      updateStats(t);
+      drawChart();
     }
     rafId=requestAnimationFrame(tickFps);
   }
   rafId=requestAnimationFrame(tickFps);
+
+  function updateStats(t){
+    if(!hist.length)return;
+    const win=hist.slice(-10); // últimos 5s
+    const avg=Math.round(win.reduce((a,b)=>a+b.fps,0)/win.length);
+    const mn=Math.min(...hist.map(s=>s.fps));
+    const mx=Math.max(...hist.map(s=>s.fps));
+    if(fpsAvgEl)fpsAvgEl.textContent=avg;
+    if(fpsMinEl)fpsMinEl.textContent=mn;
+    if(fpsMaxEl)fpsMaxEl.textContent=mx;
+    const upS=Math.round((t-sessionStart)/1000);
+    if(uptimeEl){
+      const h=Math.floor(upS/3600),m=Math.floor(upS%3600/60),s=upS%60;
+      uptimeEl.textContent=h?`${h}h${m}m`:m?`${m}m${s}s`:`${s}s`;
+    }
+    if(jankEl){
+      const minutes=Math.max(1/60,upS/60);
+      jankEl.textContent=Math.round(jankCount/minutes);
+    }
+  }
+
+  // ─── Chart ───
+  let chartCtx=chartCv?chartCv.getContext('2d'):null;
+  let _chartDirty=false;
+  function fitCanvas(){
+    if(!chartCv)return;
+    const dpr=window.devicePixelRatio||1;
+    const rect=chartCv.getBoundingClientRect();
+    if(!rect.width)return;
+    const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);
+    if(chartCv.width!==w||chartCv.height!==h){chartCv.width=w;chartCv.height=h}
+  }
+  function drawChart(){
+    if(!chartCtx||!chartCv)return;
+    fitCanvas();
+    const W=chartCv.width,H=chartCv.height;
+    const ctx=chartCtx;
+    ctx.clearRect(0,0,W,H);
+    // bg grid
+    ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
+    const tgt=parseInt(fpsTargetEl&&fpsTargetEl.textContent)||60;
+    const maxY=Math.max(60,tgt);
+    [30,maxY].forEach(v=>{
+      const y=H-(v/maxY)*H*.9-6;
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    });
+    // labels
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font=`${10*(window.devicePixelRatio||1)}px JetBrains Mono,monospace`;
+    ctx.fillText('30',4,H-(30/maxY)*H*.9-8);
+    ctx.fillText(String(maxY),4,H-(maxY/maxY)*H*.9-8);
+    if(hist.length<2)return;
+    // line + fill
+    const stepX=W/(HIST_MAX-1);
+    const pts=hist.map((s,i)=>{
+      const x=(HIST_MAX-hist.length+i)*stepX;
+      const y=H-(Math.min(s.fps,maxY)/maxY)*H*.9-6;
+      return {x,y,fps:s.fps};
+    });
+    // gradient fill
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'rgba(52,211,153,.35)');
+    grad.addColorStop(1,'rgba(52,211,153,0)');
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x,H);
+    pts.forEach(p=>ctx.lineTo(p.x,p.y));
+    ctx.lineTo(pts[pts.length-1].x,H);
+    ctx.closePath();ctx.fill();
+    // line segmented by color
+    ctx.lineWidth=2*(window.devicePixelRatio||1);
+    for(let i=1;i<pts.length;i++){
+      const a=pts[i-1],b=pts[i];
+      const v=b.fps;
+      ctx.strokeStyle=v<30?'#f87171':v<50?'#fbbf24':'#34d399';
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    // current dot
+    const last=pts[pts.length-1];
+    ctx.fillStyle=last.fps<30?'#f87171':last.fps<50?'#fbbf24':'#34d399';
+    ctx.beginPath();ctx.arc(last.x,last.y,3*(window.devicePixelRatio||1),0,Math.PI*2);ctx.fill();
+  }
+  window.addEventListener('resize',()=>{fitCanvas();drawChart()});
 
   // Detect monitor refresh rate (estimate via rAF deltas) → set target
   let _refreshSamples=[],_refreshDone=false;
@@ -33450,12 +33549,22 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
     },2000);
   } else if(memEl) memEl.textContent='n/a';
 
-  // ─── Open/close modal ───
-  function open(){overlay.classList.add('show')}
-  function close(){overlay.classList.remove('show')}
+  // ─── HUD → abre Configurações > App e rola até bloco Performance ───
+  function open(){
+    try{
+      if(typeof switchToConfig==='function'){
+        if(!document.getElementById('tab-config').classList.contains('active'))switchToConfig();
+      }
+      const tabBtn=document.querySelector('#tab-config .cfg-tab[data-cfg-tab="app"]');
+      if(tabBtn)tabBtn.click();
+      setTimeout(()=>{
+        const block=document.querySelector('.perf-pane-block');
+        if(block)block.scrollIntoView({behavior:'smooth',block:'start'});
+      },80);
+    }catch(_){}
+  }
+  function close(){}
   hud.addEventListener('click',open);
-  overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('show'))close()});
 
   // Mode buttons
   modeBtns.forEach(b=>b.addEventListener('click',()=>{

@@ -1997,7 +1997,8 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .credit-top-change .change-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
 .credit-top-change .change-badge.up{background:var(--green-dim);color:var(--green)}
 .credit-top-change .change-badge.down{background:var(--red-dim);color:var(--red)}
-.credit-top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.credit-top-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;align-content:flex-start}
+.credit-pill{flex-shrink:0;min-height:36px;max-height:48px;height:auto}
 .credit-pill{display:flex;align-items:center;gap:6px;padding:8px 18px;font-family:inherit;font-size:12px;font-weight:700;border-radius:20px;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
 .credit-pill svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 .credit-pill.primary{background:var(--yellow);color:#09090b;border:none}
@@ -6322,8 +6323,8 @@ html.app-booting #toast,html.app-booting .save-toast,html.app-booting .update-ba
   .credit-top-label{font-size:11px}
   .credit-top-val{font-size:30px}
   .credit-top-val .currency-symbol{font-size:20px}
-  .credit-top-actions{gap:6px;flex-wrap:wrap}
-  .credit-top-actions .credit-pill{flex:1;min-width:calc(50% - 3px);padding:8px 10px;font-size:11px;justify-content:center}
+  .credit-top-actions{gap:6px;flex-wrap:wrap;align-items:flex-start;align-content:flex-start}
+  .credit-top-actions .credit-pill{flex:1 1 calc(50% - 3px);min-width:calc(50% - 3px);max-width:calc(50% - 3px);min-height:38px;max-height:44px;height:38px;padding:8px 10px;font-size:11px;justify-content:center;align-self:auto}
   .credit-body{grid-template-columns:1fr!important;gap:12px}
 
   /* Veículo — foto/integridade no retrato */
@@ -10111,7 +10112,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.32</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.33</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -24940,7 +24941,104 @@ window.POWER_OVERRIDES=window.POWER_OVERRIDES||{
   "vento cortante":{req:"Nível 3 e Motoras III",_auto:true,_orig:"Motoras III",_tier:"tatico"},
   "visada letal":{req:"Nível 3 e Motoras IV",_auto:true,_orig:"Motoras IV",_tier:"tatico"},
   // ─── v3.8.32 LOTE 5/5: poderes pwv/vers — 1 override (42 processados, final) ───
-  "salto agressivo":{req:"Nível 3 e Físico II · Treinado em Acrobacia ou Atletismo",_auto:true,_orig:"Acrobacia ou Atletismo Treinado",_tier:"tatico"}
+  "salto agressivo":{req:"Nível 3 e Físico II · Treinado em Acrobacia ou Atletismo",_auto:true,_orig:"Acrobacia ou Atletismo Treinado",_tier:"tatico"},
+  // ═══ v3.8.33 BALANCE INTERNO — desc rewrite (numbers/custo/uso) ═══
+  // Foco: arquétipos/habilidades onde dano-vs-custo, frequência ou efeito acumulado estava quebrado
+  'gravidade guiada':{
+    req:'Nível 8 e Motoras IV',
+    desc:'Ao deslizar ou escorregar por superfícies inclinadas, gaste 3 Esforço para se deslocar até +6m extras na descida (não dobra a distância base). Se realizar um ataque corpo a corpo ao final do movimento, esse ataque recebe +1 Passo de dano. Uso: 1×/cena. Mecânica: bônus de dist fixo (+6m) em vez de "dobra"; Passo limitado a 1×/cena pra evitar cumulativo abusivo. Observação: custo subiu (2→3 Esforço) + cap por cena adicionado.',
+    _auto:true,_balance:'cost+cap',_orig:'dobra distância + Passo dano · 2 Esforço · sem limite'
+  },
+  'ponto vital':{
+    req:'Nível 6 e Ninja Urbano OU Intelecto III',
+    desc:'Ao causar acerto crítico com arma perfurante, gaste 3 Foco para ignorar RD igual ao Intelecto (não dobro). Armas perfurantes causam +1 de dano base, aumentado para +2 no Nível 14. Uso: 1×/cena. Mecânica: RD ignorada = 1× Intelecto (era 2×); base +1 (era +2). Observação: efeito ainda forte, mas escala linear evita combo com builds high-Int.',
+    _auto:true,_balance:'effect-down',_orig:'ignora RD 2× Intelecto · base +2/+4 · 2 Foco · sem limite'
+  },
+  'compasso de mira':{
+    req:'Nível 8 e Precisão Perita (poder prévio) OU Motoras IV',
+    desc:'Se permanecer imóvel até o ataque, gaste 2 Foco para receber +1 Passo de dano no próximo ataque à distância e ignorar cobertura leve. Uso: 1×/turno e máx 2×/cena. Mecânica: cap de 2×/cena adicionado pra evitar spam. Observação: já tinha 1×/turno mas faltava limite cena.',
+    _auto:true,_balance:'frequency-cap',_orig:'1×/turno sem cap cena'
+  },
+  'reflexo carniceiro':{
+    req:'Nível 5 e Físico II',
+    desc:'Quando sofrer dano corpo a corpo, gaste 3 Esforço para liberar uma resposta muscular violenta. O atacante sofre 1d4 de dano e recebe –1 no próximo ataque até o fim do turno. Uso: 1×/rodada (não cumulativo se atacado por múltiplos inimigos). Mecânica: custo 2→3 Esforço + cap por rodada. Observação: prevenia spam reativo em encontros com várias armas.',
+    _auto:true,_balance:'cost+freq',_orig:'2 Esforço · sem cap rodada'
+  },
+  'arranco brutal':{
+    req:'Nível 3 e Físico II',
+    desc:'Ao iniciar o turno adjacente a um inimigo, gaste 2 Esforço para receber +2 no próximo teste de Luta até o fim do turno. Se acertar, causa +2 de dano. Uso: 1×/turno e máx 3×/cena. Mecânica: cap por cena adicionado.',
+    _auto:true,_balance:'cap',_orig:'1×/turno sem cap cena'
+  },
+  'corte técnico':{
+    req:'Nível 4 e Motoras III · Treinado em Luta ou Precisão',
+    desc:'Ao atacar com arma leve, precisa ou tática, gaste 2 Foco para trocar +2 de dano por -2 em um teste físico do alvo até o próximo turno. Uso: 1×/turno e máx 2×/cena. Mecânica: cap cena adicionado, floor de Nível.',
+    _auto:true,_balance:'cap+floor',_orig:'1×/turno sem cap cena · sem Nv floor'
+  },
+  'impacto contínuo':{
+    req:'Nível 8 e Físico IV',
+    desc:'Se acertar ataque corpo a corpo em alvo já ferido por você na cena, gaste 2 Esforço para causar +2 de dano e recuperar 1 Esforço. Uso: 1×/turno e máx Físico-vezes por cena. Mecânica: cap por cena = atributo (não infinito).',
+    _auto:true,_balance:'cap',_orig:'1×/turno sem cap cena'
+  },
+  'instinto de cerco':{
+    req:'Nível 5 e Psique II · Treinado em Tática (opcional)',
+    desc:'Enquanto inimigo adjacente a você e a um aliado, gaste 2 Esforço para receber +1 no ataque e +1d4 no dano contra esse alvo. Uso: 1×/turno e máx 3×/cena. Mecânica: cap cena + floor Nível.',
+    _auto:true,_balance:'cap+floor',_orig:'1×/turno sem cap cena · sem Nv floor'
+  },
+  'demolidor especializado':{
+    req:'Nível 3 e Físico II · Treinado em Luta',
+    desc:'Ao atacar objetos ou estruturas, gaste 2 Esforço para causar +4 de dano adicional, explorando suportes críticos e áreas vulneráveis. Não se aplica contra criaturas vivas. Uso: 1×/cena. Mecânica: limitação a objetos/estruturas (não vira fonte de dano em criatura) + cap.',
+    _auto:true,_balance:'scope+cap',_orig:'+4 dano · sem limite uso · sem clarificar escopo'
+  },
+  'inércia calculada':{
+    req:'Nível 3 e Motoras III',
+    desc:'Sempre que se mover pelo menos 3 metros antes de atacar, gaste 2 Esforço para adicionar +1 Passo de dano ao ataque. Se for crítico, recebe +1 em Defesa até o fim do próximo turno. Uso: 1×/turno e máx Motoras-vezes por cena. Mecânica: cap por cena = atributo.',
+    _auto:true,_balance:'cap',_orig:'sem cap cena'
+  },
+  'mãos que nascem':{
+    req:'Nível 4 e Físico II',
+    desc:'Uma vez por cena, gaste 3 Esforço para fazer brotar apêndices funcionais temporários. Permite realizar uma ação simples adicional (manipulação, escrita, uso de item, ritual breve OU ataque rápido com -2 no rolamento de dano). Mecânica: custo 2→3 Esforço; ataque opcional tem penalidade em vez de "sem bônus extra".',
+    _auto:true,_balance:'cost+nerf-attack',_orig:'2 Esforço · ataque sem penalidade'
+  },
+  'hipertrofia monstruosa':{
+    req:'Nível 4 e Carne Condutora (poder prévio) OU Físico III',
+    desc:'Gaste 3 Esforço para forçar crescimento muscular. Até o fim do turno, recebe +2 em Atletismo, Luta OU Resistência (escolher uma só, não todas) e pode empurrar/agarrar alvos uma categoria maior sem penalidade. Uso: 1×/cena. Mecânica: escolha 1 perícia (não 3); empurrar limitado a +1 categoria (era 2×).',
+    _auto:true,_balance:'scope+effect-down',_orig:'+2 em 3 perícias simultâneo · dobro tamanho · sem cap'
+  },
+  'carne maleável':{
+    req:'Nível 5 e Hipertrofia Monstruosa (poder prévio) OU Físico III',
+    desc:'Ao gastar 2 Esforço, atravessa espaços estreitos como categoria menor e ignora penalidades de Espremido OU Caído (escolher uma) até o fim da rodada. Uso: 1×/cena. Mecânica: ignora uma condição por uso (era ambas).',
+    _auto:true,_balance:'scope-down',_orig:'ignora Espremido E Caído simultâneo'
+  },
+  'cálculo visual':{
+    req:'Nível 3 e Intelecto III',
+    desc:'Recebe +2 em Percepção. Uma vez por cena, gaste 2 Foco para conceder +2 de dano a um ataque à distância no mesmo turno. Alvo deve estar visível no momento do disparo. Mecânica: req floor adicionado.',
+    _auto:true,_balance:'floor',_orig:'sem Nv floor'
+  },
+  'liderança tática':{
+    req:'Nível 5 e Intelecto III · Treinado em Tática (opcional)',
+    desc:'No início da cena, escolha até 2 aliados em alcance médio. Enquanto puder vê-los, gaste 3 Foco para conceder +1 em ataque, Defesa OU resistência a ambos até o fim da rodada (escolher uma categoria). Uso: 1×/cena. Mecânica: custo 2→3 Foco + cap cena + escolha de categoria (não 3 simultâneas).',
+    _auto:true,_balance:'cost+cap+scope',_orig:'2 Foco · escolha categoria por ativação · sem cap'
+  },
+  'lâmina registrada.':{
+    req:'Nível 3 e Físico II · Treinado em Luta',
+    desc:'Ataques corpo a corpo com armas causam +1d6 de dano adicional (era 1d8). Ao alcançar proficiência avançada (Nível 8), seus ataques básicos causam +1d8 de dano adicional e ignoram 2 de RD físico. Mecânica: dado base baixado pra alinhar com escala de outros estilos; ignorar RD movido pra Nv 8.',
+    _auto:true,_balance:'dmg-down+gate',_orig:'1d8 base, 1d10+RD na "proficiência"'
+  },
+  'balística catalogada.':{
+    req:'Nível 3 e Motoras II · Treinado em Pontaria',
+    desc:'Ataques à distância causam +1d6 de dano adicional (era 1d8). Ao alcançar proficiência avançada (Nível 8), seus ataques básicos causam +1d8 de dano e ignoram cobertura parcial. Mecânica: dado base baixado; cobertura parcial gated em Nv 8.',
+    _auto:true,_balance:'dmg-down+gate',_orig:'1d8 base, 1d10+cobertura na "proficiência"'
+  },
+  'alvo travado':{
+    req:'Nível 4 e Motoras III',
+    desc:'Como ação decisiva, gaste 3 Esforço para testar Precisão contra a Vontade de um inimigo em alcance médio. Sucesso: alvo não pode se mover e sofre -2 nos ataques até o próximo turno. Crítico: também fica Abalado. Uso: 1×/cena. Mecânica: custo 2→3 Esforço + cap cena (era 1×/turno sem cena).',
+    _auto:true,_balance:'cost+cap',_orig:'2 Esforço · 1×/turno sem cap cena'
+  },
+  'lógica distorcida':{
+    req:'Nível 1',
+    desc:'Sob estresse intenso, perigo iminente ou situações perturbadoras, recebe +1 (era +2) em testes de Vontade OU Intuição relacionados a resistir efeitos mentais, ignorar medo ou interpretar situações estranhas. Mecânica: bônus reduzido pra alinhar com outros traços de Passado.',
+    _auto:true,_balance:'bonus-down',_orig:'+2 em ambas (Vontade E Intuição) · cumulativo possível'
+  }
 };
 
 function _applyPowerOverride(power){
@@ -25143,8 +25241,8 @@ const MALD_ELEMENTS=[
   {id:'kaos',l:'Kaos',c:'#7c3aed'}
 ];
 const MALD_CATALOG=[
-  {name:'Aprender Feitiços',el:'geral',desc:'Você domina os fundamentos de um ritual oculto. Escolha um ritual de 1° Grau para aprender e usar normalmente. Ao ganhar um novo poder paranormal, pode trocá-lo por outro do mesmo Grau. A partir do Nível 4, pode substituí-lo por um de 2° Grau. Pode ser adquirido uma vez por Essência e conta como um poder daquela Essência. Afinidade: Você aprende dois rituais de até 2° Grau da mesma Essência, podendo trocá-lo ao adquirir um novo poder paranormal. A partir do Nível 8, pode substituí-lo por um ritual de 3° Grau, ritual de 4° Grau só da essência escolhida.'},
-  {name:'Resistência Essencial',el:'geral',desc:'Você endurece seu corpo e mente contra uma das Essências. Escolha uma Essência (Alba, Carmim, Ruína, Ethernus, Lúmen ou Kaos). Você recebe resistência a dano 2 contra efeitos desta Essência. Afinidade: A resistência aumenta para 4.'},
+  {name:'Aprender Feitiços',el:'geral',desc:'Você domina os fundamentos de um ritual oculto. Escolha um ritual de 1° Grau para aprender e usar normalmente. Ao ganhar um novo poder paranormal, pode trocá-lo por outro do mesmo Grau. A partir do Nível 4, pode substituí-lo por um de 2° Grau. Ao adquirir esta maldição, escolha uma Essência: ela conta como 1 poder daquela Essência (vincula ao pick). Pode ser adquirida uma vez por Essência. Afinidade: Você aprende 2 rituais de até 2° Grau da Essência escolhida, podendo trocá-los ao adquirir novo poder paranormal. A partir do Nível 8, pode substituir por ritual de 3° Grau; ritual de 4° Grau só da Essência escolhida.'},
+  {name:'Resistência Essencial',el:'geral',desc:'Você endurece corpo e mente contra a Essência escolhida (defina no pick). Recebe resistência a dano 2 contra efeitos da Essência escolhida. Vincula como 1 poder daquela Essência. Afinidade: A resistência aumenta para 4.'},
   {name:'Assimilação Vital',el:'alba',req:'Alba II (afinidade)',desc:'Sempre que causar dano corpo a corpo ou tocar voluntariamente uma criatura viva, o usuário pode gastar 2 Esforço para assimilar temporariamente uma característica física ou funcional do alvo, concedendo +2 em uma perícia ou um benefício narrativo até o fim da cena. Afinidade: Uma vez por missão, o usuário pode tornar permanente uma característica assimilada, em forma atenuada, mantendo o benefício narrativo e um bônus reduzido de +1 relacionado à adaptação.'},
   {name:'Carne em Comunhão',el:'alba',req:'Alba I',desc:'Ao gastar 2 Esforço, o usuário e aliados em alcance curto compartilham adaptações simples, recebendo +1 em testes físicos e ignorando penalidades leves de terreno ou ambiente até o fim da cena. Afinidade: Enquanto o efeito durar, aliados podem usar a melhor Percepção do grupo e recebem resistência leve a dano ambiental.'},
   {name:'Assimilação Instintiva',el:'alba',desc:'Enquanto estiver em um ambiente com criaturas vivas, o usuário recebe +1 em testes físicos de movimento ou resistência enquanto permanecer no local. Afinidade: A adaptação se torna consciente, permitindo ao usuário escolher receber +2 em um único teste físico por rodada enquanto estiver em contato com outros seres vivos.'},
@@ -25332,15 +25430,40 @@ const MALD_CATALOG=[
   {name:'Avatar do Conhecimento',el:'lumen',req:'Lúmen V',desc:'Uma vez por missão, o usuário se torna foco absoluto: por 1d4 cenas, todas as perícias são tratadas como treinadas e recebe +2 em testes de Intelecto. Afinidade: Duração aumenta para 1d6 cenas.'}, // new
   {name:'Olho da Razão',el:'lumen',req:'Lúmen V',desc:'O usuário pode ver através de ilusões e disfarces como ação livre. Afinidade: Também identifica origem (Essência ou Grau) de efeitos paranormais que observe.'}, // new
   {name:'Última Tese',el:'lumen',req:'Lúmen V',desc:'Uma vez por missão, ao gastar 6 Esforço, o usuário forma uma tese inquestionável. Pelo resto da cena, NPCs aceitam a tese como fato (não combate, não autoridades hostis). Afinidade: A tese pode ser mantida até o próximo descanso longo.'}, // new
-  // ─── GERAL (cross-essência) — 8 novas ───
-  {name:'Marca Estável',el:'geral',desc:'O usuário marca-se com um símbolo que serve de foco. Recebe +1 em testes contra efeitos que tentem confundi-lo. Afinidade: O bônus aumenta para +2 e também concede +1 contra ilusões.'}, // new
-  {name:'Pulso Adaptativo',el:'geral',req:'Qualquer essência I',desc:'O usuário escolhe uma Essência por cena. Recebe +1 em testes relacionados a essa Essência até o fim da cena. Afinidade: O bônus aumenta para +2.'}, // new
-  {name:'Companheiro Vinculado',el:'geral',req:'Qualquer essência II',desc:'O usuário liga-se a um aliado: ambos sentem direção e estado geral um do outro em alcance ilimitado. Afinidade: Também podem se comunicar telepaticamente por palavras curtas.'}, // new
-  {name:'Reserva Comum',el:'geral',req:'Qualquer essência II',desc:'Uma vez por cena, o usuário pode transferir 2 Esforço para aliado adjacente. Afinidade: Pode transferir até 4 Esforço e funciona em alcance curto.'}, // new
-  {name:'Sigilo de Boas-Vindas',el:'geral',req:'Qualquer essência III',desc:'O usuário marca um local. Ao retornar, recupera 5 Esforço uma vez por cena. Afinidade: A recuperação aumenta para 8 Esforço e também recupera 1d6 Vitalidade.'}, // new
-  {name:'Pacto de Sangue Pleno',el:'geral',req:'Qualquer essência III',desc:'Dois personagens compartilham permanentemente uma maldição comum. Ambos pagam custos juntos mas efeitos se aplicam aos dois. Afinidade: Apenas um precisa pagar custo enquanto ambos estão em alcance curto.'}, // new
-  {name:'Espelho do Aprendizado',el:'geral',req:'Qualquer essência IV',desc:'Após observar um aliado usar maldição na cena, o usuário pode replicar o efeito uma vez gastando o dobro do Esforço. Afinidade: O custo é normal (não dobrado).'}, // new
-  {name:'Convergência Essencial',el:'geral',req:'Qualquer essência V',desc:'Uma vez por missão, ao gastar 7 Esforço, o usuário ativa simultaneamente uma maldição de cada essência que possui por 1 cena. Afinidade: Pode incluir todas as maldições de Afinidade que possui.'}  // new
+  // ─── GERAL — 30 maldições TEMPLATE (vinculam à Essência escolhida no pick, contam como 1 daquela Ess) ───
+  // Geral funciona como base: jogador escolhe Essência ao adquirir; efeito se torna específico da Essência escolhida.
+  // Cada Geral conta como 1 poder/maldição da Essência escolhida (pra requisitos tipo "2 Alba").
+  // Padrão "Essência escolhida" no texto = será substituído narrativamente pela Essência pickada via _openElementPickModal.
+  {name:'Adaptação Essencial',el:'geral',desc:'Você sintoniza-se passivamente com a Essência escolhida (definir no pick). Recebe +1 em testes de atributo associado à Essência escolhida. Conta como 1 poder daquela Essência. Afinidade: O bônus aumenta para +2 e pode ser usado para reroll 1×/cena.'},
+  {name:'Toque Essencial',el:'geral',desc:'Ao tocar voluntariamente uma criatura ou objeto, gaste 1 Esforço para infundir momentaneamente com a Essência escolhida. Causa efeito narrativo leve da Essência escolhida (luminescência, calor, peso, etc). Conta como 1 poder daquela Essência. Afinidade: Pode também causar 1d4 de dano do tipo da Essência escolhida.'},
+  {name:'Marca Essencial',el:'geral',desc:'Você marca-se com símbolo da Essência escolhida que serve de foco. Recebe +1 em testes para resistir a efeitos da Essência oposta à escolhida. Conta como 1 poder daquela Essência. Afinidade: O bônus aumenta para +2 e o símbolo é visível mesmo sob disfarces mágicos.'},
+  {name:'Reserva Essencial',el:'geral',req:'Nível 3',desc:'Uma vez por cena, gaste 1 Esforço para transferir 2 Esforço a aliado adjacente que possua maldição da Essência escolhida. Conta como 1 poder daquela Essência. Afinidade: Pode transferir até 4 Esforço e o aliado também recupera 1 Vit.'},
+  {name:'Vínculo Essencial',el:'geral',req:'Nível 4',desc:'Liga-se a aliado que possua maldição da Essência escolhida. Ambos sentem direção e estado vital um do outro em alcance ilimitado. Conta como 1 poder daquela Essência. Afinidade: Podem trocar palavras curtas mentalmente 1×/rodada.'},
+  {name:'Aprender Feitiço Maior',el:'geral',req:'Nível 5',desc:'Aprende 1 ritual adicional de 2° Grau da Essência escolhida (segue regras de troca normais ao ganhar novo poder). Conta como 1 poder daquela Essência. Afinidade: A partir do Nível 8, pode substituir por ritual de 3° Grau da mesma Essência.'},
+  {name:'Eco da Essência',el:'geral',req:'Nível 4',desc:'Sente quando outra criatura usa poder da Essência escolhida em alcance médio. Conta como 1 poder daquela Essência. Afinidade: Identifica também o tipo aproximado (passivo/ataque/cura/utilidade) do poder usado.'},
+  {name:'Reflexo Essencial',el:'geral',req:'Nível 5',desc:'Ao sofrer dano da Essência oposta à escolhida, gaste 2 Esforço para reduzir o dano à metade. Uso: 1×/rodada. Conta como 1 poder daquela Essência. Afinidade: Em sucesso, recupera 1 Esforço.'},
+  {name:'Saturação Essencial',el:'geral',req:'Nível 6',desc:'Ao gastar 3 Esforço, ambiente em alcance curto fica saturado da Essência escolhida por 1 cena (efeito narrativo + +1 em testes de aliados que tenham maldição da mesma Essência). Conta como 1 poder daquela Essência. Afinidade: O bônus aumenta para +2.'},
+  {name:'Sintonia Cumulativa',el:'geral',desc:'Para cada outra maldição da Essência escolhida que você possui, recebe +1 em testes de Vontade (máx +3). Conta como 1 poder daquela Essência. Afinidade: O cap aumenta para +5.'},
+  {name:'Voz da Essência',el:'geral',req:'Nível 3',desc:'Pode comunicar conceitos simples a outros usuários da Essência escolhida em alcance médio sem palavras (intenção, direção, alerta). Conta como 1 poder daquela Essência. Afinidade: A comunicação se estende a alcance longo e inclui frases curtas.'},
+  {name:'Foco Essencial',el:'geral',req:'Nível 1',desc:'Ao gastar 1 Esforço, recebe +1 em próximo teste relacionado à Essência escolhida. Uso: 1×/cena. Conta como 1 poder daquela Essência. Afinidade: Bônus aumenta para +2 e pode ser usado 2×/cena.'},
+  {name:'Sigilo Essencial',el:'geral',req:'Nível 3',desc:'Grava símbolo da Essência escolhida em objeto pequeno que carrega como foco. Enquanto carregar, +1 em testes contra efeitos da Essência oposta. Conta como 1 poder daquela Essência. Afinidade: Também ignora 1 condição associada à Essência oposta por cena.'},
+  {name:'Memória Essencial',el:'geral',req:'Nível 3',desc:'Pode reproduzir mentalmente o sentir físico/sensorial de um momento marcado pela Essência escolhida (até 24h atrás). Conta como 1 poder daquela Essência. Afinidade: A janela aumenta para 1 semana.'},
+  {name:'Pulso Essencial',el:'geral',req:'Nível 4',desc:'Gaste 2 Esforço para detectar quantos seres em alcance médio possuem maldição da Essência escolhida (sem identificar quais). Conta como 1 poder daquela Essência. Afinidade: Identifica também direção e estado vital aproximado.'},
+  {name:'Filtro Essencial',el:'geral',req:'Nível 4',desc:'Sente quando alguém mente diretamente em sua presença sobre tópico relacionado à Essência escolhida. Conta como 1 poder daquela Essência. Afinidade: Também detecta omissão sobre o mesmo tópico.'},
+  {name:'Refúgio Essencial',el:'geral',req:'Nível 5',desc:'Ao gastar 3 Esforço, ignora 1 condição associada à Essência oposta à escolhida até fim da cena. Uso: 1×/cena. Conta como 1 poder daquela Essência. Afinidade: Pode incluir condição complexa com mesmo custo.'},
+  {name:'Promessa Essencial',el:'geral',req:'Nível 5',desc:'Ao firmar acordo verbal selado pela Essência escolhida, ambos os participantes recebem +1 em testes para cumpri-lo. Quebrar o acordo causa 1d4 dano da Essência escolhida ao quebrador. Conta como 1 poder daquela Essência. Afinidade: Bônus +2, dano de quebra 2d6.'},
+  {name:'Núcleo Essencial',el:'geral',req:'Nível 7',desc:'Estabelece vínculo permanente com 1 aliado que possua maldição da Essência escolhida. Ambos podem trocar 2 Esforço entre si em alcance médio como ação livre. Uso: 1×/turno. Conta como 1 poder daquela Essência. Afinidade: Pode incluir 2 aliados.'},
+  {name:'Tradução Essencial',el:'geral',req:'Nível 6',desc:'Compreende intenção geral em manifestações da Essência escolhida (símbolos, vozes, vestígios). Conta como 1 poder daquela Essência. Afinidade: Inclui também compreensão de criaturas paranormais ligadas à Essência escolhida.'},
+  {name:'Restauração Essencial',el:'geral',req:'Nível 7',desc:'Ao gastar 4 Esforço, aliado em alcance curto que possua maldição da Essência escolhida recupera 1d6 Vitalidade e 1 Esforço. Uso: 1×/cena. Conta como 1 poder daquela Essência. Afinidade: Recuperação 2d6 Vit + 2 Esforço.'},
+  {name:'Memória do Local Essencial',el:'geral',req:'Nível 6',desc:'Sente vestígios da Essência escolhida em locais (até 1 semana atrás). Conta como 1 poder daquela Essência. Afinidade: Janela aumenta para 1 mês e identifica quem usou.'},
+  {name:'Bússola Essencial',el:'geral',req:'Nível 4',desc:'Sempre sabe a direção da maior concentração da Essência escolhida em alcance ilimitado. Conta como 1 poder daquela Essência. Afinidade: Também sente intensidade aproximada.'},
+  {name:'Pacto Essencial',el:'geral',req:'Nível 10',desc:'Forma vínculo permanente com 1 aliado que possua maldição da Essência escolhida. Quando um sofre dano mortal, o outro pode gastar 5 Esforço pra dividir o dano 50/50. Uso: 1×/missão. Conta como 1 poder daquela Essência. Afinidade: Pode salvar terceiro aliado adjacente.'},
+  {name:'Avatar Essencial',el:'geral',req:'Nível 10',desc:'Uma vez por missão, ao gastar 5 Esforço, projeta versão sua saturada da Essência escolhida por 1d4 cenas: +1 em todos os atributos e imune a condições simples relacionadas à Essência oposta. Conta como 1 poder daquela Essência. Afinidade: Duração 1d6 cenas.'},
+  {name:'Última Centelha Essencial',el:'geral',req:'Nível 12',desc:'Uma vez por missão, ao ser reduzido a 0 Vitalidade, libera pulso da Essência escolhida: aliados com maldição da mesma Essência em alcance curto recuperam 1d8 Vit + 2 Esforço. Conta como 1 poder daquela Essência. Afinidade: O usuário também ergue com 1 Vitalidade.'},
+  {name:'Eco do Conjunto Essencial',el:'geral',req:'Nível 8',desc:'Sente presença de aliados marcados com mesma Essência escolhida em alcance ilimitado (direção aproximada). Conta como 1 poder daquela Essência. Afinidade: Sente também estado vital aproximado.'},
+  {name:'Voz Essencial Inabalável',el:'geral',req:'Nível 8',desc:'Como ação completa, inspira aliados com maldição da Essência escolhida em alcance médio: +1 em próximo teste e ignoram 1 nível de Fadiga. Uso: 1×/cena. Conta como 1 poder daquela Essência. Afinidade: Bônus +2, ignora também Apavorado.'},
+  {name:'Convergência Essencial Local',el:'geral',req:'Nível 12',desc:'Ao gastar 6 Esforço, cria área em alcance médio onde aliados com maldição da Essência escolhida pagam 1 Esforço a menos (mín 0) em ações com custo por 1 cena. Uso: 1×/missão. Conta como 1 poder daquela Essência. Afinidade: Redução +2 Esforço.'},
+  {name:'Sentinela Essencial Coletiva',el:'geral',req:'Nível 12',desc:'Uma vez por missão, ao gastar 7 Esforço, aliados com maldição da Essência escolhida em alcance curto ficam imunes a Surpreso/Atordoado por 1d4 rodadas. Conta como 1 poder daquela Essência. Afinidade: Duração 1d6 rodadas e +1 em iniciativa pelo combate inteiro.'}
 ];
 // Expor para outros script tags (const top-level não vira window automaticamente)
 window.MALD_ELEMENTS=MALD_ELEMENTS;window.MALD_CATALOG=MALD_CATALOG;

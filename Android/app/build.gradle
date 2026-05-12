@@ -10,8 +10,8 @@ android {
         applicationId "com.fichaeclipse.widgets"
         minSdk 24
         targetSdk 34
-        versionCode 194
-        versionName "3.8.36"
+        versionCode 195
+        versionName "3.8.37"
     }
 
     signingConfigs {

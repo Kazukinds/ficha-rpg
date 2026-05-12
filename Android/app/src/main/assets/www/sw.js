@@ -1,5 +1,5 @@
 /* Ficha Eclipse — service worker */
-const VERSION = 'v3.8.21';
+const VERSION = 'v3.8.22';
 const CACHE = 'ficha-eclipse-' + VERSION;
 const ASSETS = [
   './',
@@ -12,10 +12,10 @@ const ASSETS = [
   './icons/logo-eclipse-star.svg',
   './icons/equip/cabeca.svg',
   './icons/equip/rosto.svg',
-  './icons/equip/pescoco.svg',
   './icons/equip/torso.svg',
   './icons/equip/pernas.svg',
-  './icons/equip/pes.svg'
+  './icons/equip/pes.svg',
+  './icons/equip/conjunto.svg'
 ];
 
 self.addEventListener('install', e => {

@@ -2659,7 +2659,8 @@ input[type="number"]{-moz-appearance:textfield}
 .pc-item-name-row{display:flex;align-items:center;gap:6px;min-width:0}
 .pc-item-name{font-size:12px;font-weight:700;color:var(--text-primary);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .pc-item-tag{flex-shrink:0;display:inline-block;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--magenta));padding:1px 6px;background:color-mix(in srgb,var(--c,var(--magenta)) 14%,transparent);border:1px solid color-mix(in srgb,var(--c,var(--magenta)) 32%,transparent);border-radius:4px}
-.pc-item-desc{font-size:11px;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-align:left}
+.pc-item-desc{font-size:11px;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-align:left;word-wrap:break-word;overflow-wrap:break-word}
+.pc-item.expanded .pc-item-desc{-webkit-line-clamp:unset;-webkit-box-orient:initial;display:block;overflow:visible}
 .pc-item.expanded .pc-item-desc{display:block;-webkit-line-clamp:unset;overflow:visible}
 .pc-item-more{display:inline;background:none;border:none;padding:0 0 0 4px;color:var(--c,var(--magenta));font-size:11px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .pc-item-more:hover{filter:brightness(1.2)}
@@ -9270,11 +9271,10 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
         const esc=(s)=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         const renderDesc=(desc)=>{
           if(!desc)return'';
-          const t=trunc(desc,140);
+          // Renderiza desc INTEIRA; CSS line-clamp limita visualmente.
+          // JS detecta overflow real e mostra "Ler mais" só se necessário.
           const fullEsc=esc(desc);
-          const shortEsc=esc(t.short);
-          const more=t.hasMore?` <button type="button" class="pc-item-more" data-act="more">Ler mais</button>`:'';
-          return `<div class="pc-item-desc" data-full="${fullEsc}" data-short="${shortEsc}">${shortEsc}${more}</div>`;
+          return `<div class="pc-item-desc" data-full="${fullEsc}">${fullEsc} <button type="button" class="pc-item-more" data-act="more" style="display:none">Ler mais</button></div>`;
         };
         const syncSortChips=()=>{
           document.querySelectorAll('.mald-sort-btn').forEach(b=>b.classList.toggle('active',b.dataset.sort===_maldSort));
@@ -9293,6 +9293,17 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
           return `<div class="pc-item" data-i="${i}" data-type="m" style="--c:${color}"><div class="pc-item-ico">${ICO_M}</div><div class="pc-item-info"><div class="pc-item-name-row"><span class="pc-item-name">${esc(m.name)}</span><span class="pc-item-tag">${esc(tag)}</span></div>${renderDesc(m.desc)}</div><button type="button" class="pc-item-del" data-i="${i}" title="Remover" aria-label="Remover maldição">${ICO_X}</button></div>`;
         };
         const renderCompItem=(c)=>{const i=c._i;return `<div class="pc-item" data-i="${i}" data-type="c" style="--c:#fb923c"><div class="pc-item-ico">${ICO_C}</div><div class="pc-item-info"><div class="pc-item-name-row"><span class="pc-item-name">${esc(c.name)}</span><span class="pc-item-tag">Complicação</span></div>${renderDesc(c.desc)}</div><button type="button" class="pc-item-del" data-i="${i}" title="Remover" aria-label="Remover complicação">${ICO_X}</button></div>`};
+        const _detectOverflow=(root)=>{
+          if(!root)return;
+          requestAnimationFrame(()=>{
+            root.querySelectorAll('.pc-item-desc').forEach(d=>{
+              const btn=d.querySelector('.pc-item-more');
+              if(!btn)return;
+              if(d.scrollHeight>d.clientHeight+2)btn.style.display='inline';
+              else btn.style.display='none';
+            });
+          });
+        };
         window._renderMald=()=>{
           const el=document.getElementById('mald-list');if(!el)return;
           syncSortChips();
@@ -9301,6 +9312,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
           const itemsHtml=sorted.slice(0,PREVIEW_LIMIT).map(renderMaldItem).join('');
           const more=window._malds.length>PREVIEW_LIMIT?showAllBtn(window._malds.length,'mald'):'';
           el.innerHTML=itemsHtml+more;
+          _detectOverflow(el);
           if(_allOpenType==='m')_refreshAllModal();
         };
         window._renderComp=()=>{
@@ -9311,6 +9323,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
           const itemsHtml=sorted.slice(0,PREVIEW_LIMIT).map(renderCompItem).join('');
           const more=window._comps.length>PREVIEW_LIMIT?showAllBtn(window._comps.length,'comp'):'';
           el.innerHTML=itemsHtml+more;
+          _detectOverflow(el);
           if(_allOpenType==='c')_refreshAllModal();
         };
         let _allOpenType=null;
@@ -9327,6 +9340,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             body.innerHTML=sorted.length?sorted.map(renderCompItem).join(''):'<div class="pc-empty">Sem complicações</div>';
             if(cnt)cnt.textContent=`${window._comps.length} total`;
           }
+          _detectOverflow(body);
         };
         window._openAllModal=(type)=>{
           _closeAllModal();
@@ -9376,17 +9390,14 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
               window._comps.splice(idx,1);window._saveComps();window._renderComp();return;
             }
           }
-          // Toggle Ler mais / menos inline
+          // Toggle Ler mais / menos via CSS class (texto inteiro sempre presente; clamp toggla)
           const moreBtn=e.target.closest('.pc-item-more');
           if(moreBtn){
             e.stopPropagation();
             const card=moreBtn.closest('.pc-item');
-            const descEl=moreBtn.closest('.pc-item-desc');
-            if(!card||!descEl)return;
+            if(!card)return;
             const expanded=card.classList.toggle('expanded');
-            const full=descEl.dataset.full||'';
-            const short=descEl.dataset.short||'';
-            descEl.innerHTML=(expanded?full:short)+` <button type="button" class="pc-item-more" data-act="more">${expanded?'Ler menos':'Ler mais'}</button>`;
+            moreBtn.textContent=expanded?'Ler menos':'Ler mais';
             return;
           }
           // Click no item (fora do delete) abre detail
@@ -10125,7 +10136,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.43</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.44</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>

@@ -10122,7 +10122,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.41</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.42</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -25523,12 +25523,12 @@ window.openCplMaldPicker=function(type){
     const affMatch=(p.desc||'').match(/\bAfinidade:\s*(.+)$/is);
     const baseDesc=affMatch?p.desc.slice(0,affMatch.index).trim().replace(/[.,;\s]+$/,''):(p.desc||'').trim();
     const affText=affMatch?affMatch[1].trim():'';
-    const truncated=baseDesc.length>500;
+    const truncated=baseDesc.length>200;
     let descShort=baseDesc;
     if(truncated){
-      const slice=baseDesc.slice(0,520);
+      const slice=baseDesc.slice(0,240);
       const lastDot=slice.lastIndexOf('. ');
-      const cutAt=lastDot>300?lastDot+1:500;
+      const cutAt=lastDot>100?lastDot+1:200;
       descShort=baseDesc.slice(0,cutAt).trim();
     }
     let elMeta=null,elColor=accentColor,elLabel=isMald?'MALDIÇÃO':'COMPLICAÇÃO';
@@ -25542,7 +25542,7 @@ window.openCplMaldPicker=function(type){
         <span class="hab-picker-card-chap">${elLabel}</span>
       </div>
       <div class="hab-picker-card-desc">${descShort}${truncated?` <button type="button" class="hab-picker-readmore">Ler mais</button>`:''}</div>
-      ${affText?(()=>{const _aTr=affText.length>320;const _aSlc=_aTr?(()=>{const s=affText.slice(0,340);const d=s.lastIndexOf('. ');return affText.slice(0,d>180?d+1:320).trim()+'…'})():affText;return `<div class="hab-picker-card-aff"><span class="aff-label">Afinidade</span><span class="aff-text">${_aSlc}${_aTr?' <button type="button" class="hab-picker-readmore" data-aff="1">Ler mais</button>':''}</span></div>`})():''}
+      ${affText?`<div class="hab-picker-card-aff"><span class="aff-label">Afinidade</span><span class="aff-text">${affText}</span></div>`:''}
       <div class="hab-picker-card-foot">
         ${p.req?`<span class="hab-picker-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>${p.req}</span>`:'<span class="hab-picker-ok">Disponível</span>'}
         ${owned?'<button class="hab-picker-add owned" disabled>Já tem</button>':'<button class="hab-picker-add" data-name="'+encodeURIComponent(p.name)+'">Adicionar</button>'}
@@ -25753,10 +25753,10 @@ window.openHabilidadesPicker=function(){
       // Trunca no último ponto final antes de 240 chars; se não tem, usa fim natural
       let descShort=p.desc;
       let truncated=false;
-      if(p.desc.length>500){
-        const slice=p.desc.slice(0,520);
+      if(p.desc.length>200){
+        const slice=p.desc.slice(0,240);
         const lastDot=Math.max(slice.lastIndexOf('. '),slice.lastIndexOf('.\n'),slice.lastIndexOf('. '));
-        const cutAt=lastDot>300?lastDot+1:500;
+        const cutAt=lastDot>100?lastDot+1:200;
         descShort=p.desc.slice(0,cutAt).trim();
         truncated=true;
       }

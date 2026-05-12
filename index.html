@@ -10111,7 +10111,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.25</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.26</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -24678,6 +24678,20 @@ function _biblioInjectPodAddButtons(slide){
       while(n){if(n.nodeType===3)reqText+=n.nodeValue;else if(n.nodeType===1)reqText+=n.textContent;n=n.nextSibling}
       reqText=reqText.trim();
     }
+    // Apply POWER_OVERRIDES no picker: req sobrescrito afeta lock check + display
+    const _ov=(window.POWER_OVERRIDES&&window.POWER_OVERRIDES[name.toLowerCase()])||null;
+    if(_ov&&_ov.req){
+      reqText=_ov.req;
+      // Atualiza visualmente o req-label se existir
+      if(reqLabel){
+        // Remove conteúdo antigo após o label (texto que veio do source)
+        let n=reqLabel.nextSibling;
+        while(n){const nx=n.nextSibling;n.parentNode&&n.parentNode.removeChild(n);n=nx}
+        const span=document.createElement('span');
+        span.textContent=' '+_ov.req;
+        reqLabel.parentNode.insertBefore(span,reqLabel.nextSibling);
+      }
+    }
     const lock=_podCheckLock(reqText);
     const owned=typeof skills!=='undefined'&&skills.some(s=>(s.name||'').toLowerCase()===name.toLowerCase());
     const slot=_podSlotInfo(ch.id);
@@ -24813,15 +24827,76 @@ function _parsePowerSections(text){
 
 // POWER_OVERRIDES — refina req/desc de poderes específicos sem editar BIBLIO_DATA minificado.
 // _openHabDetail consulta este map por name (case-insensitive); override.req/desc substituem; override.extra é appendado em desc.
+// Balance philosophy (v3.8.26):
+//   - Efeito simples (utilidade/+1-+2 perícia): Nv 1-3, atr I-II
+//   - Efeito tático (1×/cena, dano médio): Nv 4-7, atr II-III
+//   - Efeito forte (ignora RD, dobra recursos, ação extra): Nv 8-12, atr III-IV
+//   - Capstone (1×/missão, transfere poder, transformação): Nv 13+, atr IV-V
 window.POWER_OVERRIDES=window.POWER_OVERRIDES||{
+  // ─── pvs (Poderes Versáteis) ───
   'abraço de urso':{
     req:'Nível 8 e Físico IV',
     desc:'Ao gastar 3 Esforço, o usuário concentra o peso do próprio corpo em um impacto esmagador. Realiza um ataque corpo a corpo que ignora RD e causa dano adicional igual a 1/4 dos PV atuais do usuário, arredondado para baixo. Esse ataque não pode receber bônus de crítico nem ser combinado com outros efeitos que multipliquem dano. Mecânica: ignora RD; dano extra = floor(HP_atual / 4). Observação: req ajustado pra escalar com o impacto real do efeito.'
   },
-  // Outras anomalias de balance — adicionar conforme revisão. Schema: 'nome em lowercase':{req,desc,extra}
-  // Templates abaixo: descomentar e ajustar quando tiver dados confirmados.
-  // 'alma inquebrável':{req:'Nível 6 e Vontade III'},
-  // 'asa do vento':{req:'Nível 4 e Motoras II'},
+  // ─── pwo (Poderes Operador) ───
+  'bolsos de coleta':{
+    req:'Nível 3 e Treinado em Ofício ou Investigação',
+    extra:'Observação: req ajustado — dobra de inventário sem custo precisa de treino mínimo.'
+  },
+  'inventário de improviso':{
+    req:'Nível 6 e Intelecto II',
+    extra:'Observação: declarar item ad-hoc é poder narrativo forte — req mínimo de progressão.'
+  },
+  'passar conhecimento':{
+    req:'Nível 12 e Intelecto IV',
+    extra:'Observação: transferir poder de classe a aliado é alto impacto narrativo + mecânico — capstone de progressão.'
+  },
+  'mecânico de campo':{
+    req:'Nível 5 e Treinado em Ofício (Ferreiro, Armeiro, Técnico ou Engenheiro)',
+    extra:'Observação: dobra de durabilidade + modificação ad-hoc — req clarificado (parser anterior estava corrompendo o texto).'
+  },
+  'peça de sobressaliência':{
+    req:'Nível 4 e Treinado em Ofício (Técnico ou Engenheiro)',
+    extra:'Observação: 1×/missão peça mágica útil — req mínimo de treinamento.'
+  },
+  'ponto vital':{
+    req:'Nível 6 e Ninja Urbano (poder prévio) ou Intelecto III',
+    extra:'Observação: ignora RD = 2× Intelecto. Mantida cadeia "Ninja Urbano", alternativa Intelecto III pra build sem cadeia.'
+  },
+  'sempre alerta':{
+    req:'Nível 10 e Intelecto III',
+    extra:'Observação: bônus Defesa = 2× Intelecto pra aliado. Req já alto — clarificação textual.'
+  },
+  // ─── pwa (Poderes Aberração) ───
+  'mãos que nascem':{
+    req:'Nível 4 e Físico II',
+    extra:'Observação: ação simples adicional 1×/cena — req mínimo de progressão pra evitar trivializar economia de ações.'
+  },
+  'braços espúrios':{
+    req:'Nível 3 e Físico II',
+    extra:'Observação: interação extra 1×/cena — req leve, ainda exige progressão mínima.'
+  },
+  'carne maleável':{
+    req:'Nível 5 e Hipertrofia Monstruosa (poder prévio) ou Físico III',
+    extra:'Observação: atravessa espaços + ignora cobertura — alternativa de cadeia adicionada.'
+  },
+  'hipertrofia monstruosa':{
+    req:'Nível 4 e Carne Condutora (poder prévio) ou Físico III',
+    extra:'Observação: +2 Atletismo/Luta/Resistência. Cadeia mantida + alternativa de atributo.'
+  },
+  'fome gravitacional':{
+    req:'Nível 8 e Físico IV',
+    extra:'Observação: puxão de área + Robustez forçado — req mantido alto, atributo clarificado.'
+  },
+  // ─── pwf (Poderes Feiticeiro) ───
+  'intuição obscura':{
+    req:'Nível 4 e Intelecto II',
+    extra:'Observação: ação investigativa extra 1×/cena — req mínimo pra evitar uso trivial.'
+  },
+  'quebra de forma':{
+    req:'Nível 10 e Psique IV',
+    extra:'Observação: transformação forte — req endgame consistente com escala de efeito.'
+  }
 };
 
 function _applyPowerOverride(power){

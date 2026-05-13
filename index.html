@@ -6006,9 +6006,11 @@ button.adv-detail-hab.selected{border-color:var(--magenta);background:color-mix(
     max-width:42px;max-height:42px;
     aspect-ratio:1/1!important;flex:0 0 42px;
     border-radius:50%!important;justify-content:center;padding:0!important;
-    background:transparent;color:var(--text-secondary);
+    background:transparent;color:rgba(255,255,255,.78);
     transition:none;box-sizing:border-box
   }
+  .sidebar-btn svg,.sidebar-btn svg path{color:rgba(255,255,255,.85)!important}
+  .sidebar-btn.active svg,.sidebar-btn.active svg path{color:#0a0a0c!important}
   .sidebar-btn,.sidebar-btn svg,.sidebar-btn[data-tab].nav-anim svg,
   .sidebar-more,.sidebar-more svg,.sidebar-gear,.sidebar-gear svg{animation:none!important;transition:none!important}
   .sidebar-btn svg,.sidebar-more svg,.sidebar-gear svg{transform:none!important;filter:none!important}
@@ -6055,16 +6057,15 @@ button.adv-detail-hab.selected{border-color:var(--magenta);background:color-mix(
   [data-theme="light"] .sidebar-btn.active{background:var(--magenta)!important;color:#fff!important}
   [data-theme="light"] .sidebar-btn.active svg{stroke:#fff!important}
   [data-theme="light"] .sidebar-btn.active .sidebar-label{color:#fff!important}
-  /* Pill mobile: Dashboard + Menu radial central + Pin atalho + Config */
-  .sidebar .sidebar-nav > .sidebar-btn:not([data-mp]):not(.sidebar-more):not(.sidebar-gear):not(.sidebar-pin){display:none!important}
+  /* Pill mobile: Dashboard + Menu radial central + Config (swappable via long-press) */
+  .sidebar .sidebar-nav > .sidebar-btn:not([data-mp]):not(.sidebar-more):not(.sidebar-gear){display:none!important}
   .sidebar .sidebar-bottom{display:none!important}
   .sidebar-more{display:flex!important}
   .sidebar-gear{display:flex!important}
-  .sidebar-pin{display:flex!important}
+  .sidebar-pin{display:none!important}
   .sidebar-btn[data-tab="dashboard"]{order:1}
   .sidebar-more{order:2}
-  .sidebar-pin{order:3}
-  .sidebar-gear{order:4}
+  .sidebar-gear{order:3}
   /* Mobile pill: centralizar ícones dentro de cada botão */
   .sidebar .sidebar-nav .sidebar-btn,.sidebar-more,.sidebar-gear{justify-content:center!important;align-items:center!important;padding:0!important;gap:0!important}
   .sidebar .sidebar-nav .sidebar-btn>svg,.sidebar-more>svg,.sidebar-gear>svg{margin:0!important;display:block}
@@ -9081,7 +9082,6 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
     <button class="sidebar-btn" data-tab="inventory" title="Inventário"><svg viewBox="-45 -53 389 389" fill="currentColor" fill-rule="evenodd" stroke="none"><path d="M99.589.604c-5.38 1.371-9.084 3.882-14.747 10-7.041 7.604-7.753 10.648-7.753 33.148v16.951h-8v222h159V60.76l-3.25-.839-3.25-.839-.242-7.439c-.398-12.22-2.191-30.633-3.256-33.435-1.283-3.373-10.286-12.895-14.915-15.774-3.571-2.22-3.808-2.232-52.087-2.413-26.675-.1-49.85.163-51.5.583Zm90.708 28.315c3.125 2.048 3.476 3.638 4.318 19.534l.649 12.25h-93.335l.616-10.25c.925-15.374 1.449-18.359 3.736-21.267l2.09-2.657 39.654.337c35.427.301 39.934.52 42.272 2.053ZM19.974 62.083c-6.623 2.366-12.419 7.53-17.309 15.421L0 81.804l.294 90.2c.231 70.671.573 90.827 1.577 93.099 2.117 4.786 9.211 12.55 13.601 14.883 3.627 1.928 5.992 2.231 19.867 2.541l15.75.352V60.703l-13.75.044c-8.596.027-15.105.528-17.365 1.336Zm226.115 109.62v111l14.75-.022c12.112-.018 15.465-.348 18.75-1.845 5.825-2.656 10.337-6.814 14.674-13.523l3.826-5.92V83.013l-3.823-5.905c-4.443-6.862-9.867-11.905-15.612-14.515-3.334-1.514-6.627-1.85-18.315-1.868l-14.25-.022v111Z"/></svg><span class="sidebar-label">Inventário</span></button>
     <button class="sidebar-btn" data-tab="feiticos" title="Feitiços"><svg viewBox="-100.5 -67 581 581" fill="currentColor" fill-rule="evenodd" stroke="none"><path d="M179.948.501c-40.244 2.195-80.315 17.558-110.5 42.363-37.6 30.9-62.838 77.014-68.52 125.203-1.9 16.109-.779 43.002 2.433 58.333 6.405 30.57 20.761 60.08 40.913 84.095 4.23 5.041 9.985 11.228 12.79 13.75l5.1 4.586h255.623l5.478-5.007c14.191-12.97 31.939-37.876 40.256-56.493 4.71-10.541 10.394-28.42 13.001-40.894 3.462-16.56 4.395-44.885 2.029-61.606-6.203-43.846-25.439-81.334-57.766-112.579C289.52 22.034 249.972 4.566 204.455.87 197.416.3 190.26-.086 188.553.016c-1.708.102-5.58.32-8.605.485Zm50.78 66.58c.563.688 2.629 5.24 4.59 10.114 10.964 27.259 31.448 47.315 59.462 58.219 10.935 4.257 11.797 8.419 2.465 11.897-9.872 3.678-24.061 11.665-31.964 17.991-12.696 10.162-22.999 24.32-29.858 41.029-4.433 10.798-5.086 11.688-8.291 11.301-2.117-.256-3.026-1.641-6.105-9.301-11.876-29.538-32.305-49.633-61.605-60.596-8.737-3.268-9.555-8.441-1.732-10.949 6.574-2.107 20.871-9.578 27.82-14.537 15.411-10.996 27.192-26.422 35.421-46.376 1.668-4.046 3.535-7.96 4.148-8.699 1.4-1.687 4.303-1.735 5.649-.093Zm71.925 131c.523.688 1.75 3.412 2.727 6.055 2.721 7.363 11.346 16.032 20.177 20.28 4.04 1.943 7.625 3.985 7.966 4.537.929 1.502-2.39 4.678-5.63 5.39-4.606 1.012-14.302 7.848-17.718 12.493-1.739 2.366-4.152 6.688-5.361 9.605-3.586 8.652-6.139 8.333-10.331-1.291-3.834-8.8-11.054-16.02-19.854-19.854-9.282-4.043-9.933-6.951-2.218-9.898 10.166-3.882 19.698-13.33 22.626-22.425 1.486-4.618 2.705-6.142 4.911-6.142.965 0 2.183.563 2.705 1.25ZM73.448 365.856c-11.049.731-14.6 1.775-22 6.465-6.546 4.15-11.124 9.481-14.698 17.119-9.3 19.876-.192 44.148 20.195 53.809l6.503 3.082h253l6.775-3.209c7.443-3.526 15.511-10.99 18.758-17.357 11.812-23.153 1.264-49.355-23.533-58.455-4.733-1.737-11.134-1.842-120-1.975-63.25-.077-119.5.157-125 .521Z"/></svg><span class="sidebar-label">Feitiços</span></button>
     <button class="sidebar-btn sidebar-more" id="sidebar-more-btn" type="button" title="Menu radial" aria-label="Abrir menu de navegação" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span class="sidebar-label">Menu</span></button>
-    <button class="sidebar-btn sidebar-pin" id="sidebar-pin-btn" data-tab="inventory" type="button" title="Atalho rápido (segure Config para trocar)" aria-label="Atalho rápido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 6V4a3 3 0 0 1 6 0v2"/><path d="M8 14h8"/><path d="M8 18h5"/></svg><span class="sidebar-label">Atalho</span></button>
     <button class="sidebar-btn sidebar-gear" id="sidebar-gear-btn" type="button" title="Configurações (segurar para trocar atalho)" aria-label="Configurações" onclick="switchToConfig()"><svg viewBox="-79 -79 685 685" fill="currentColor" fill-rule="evenodd" stroke="none"><path d="M246.771.407c-15.985.795-22.965 2.954-29.739 9.198-6.632 6.113-8.808 10.758-12.22 26.09-4.527 20.337-9.271 27.567-21.921 33.407-4.747 2.192-7.018 2.592-14.62 2.575-10.019-.021-10.31-.127-26.5-9.67-5.225-3.078-11.659-6.136-14.298-6.794-6.261-1.562-16.992-.694-22.779 1.84-5.582 2.446-24.225 18.403-32.423 27.752-17.134 19.54-20.5 25.615-20.5 37 0 8.363 2.175 13.933 9.943 25.469 7.643 11.349 9.057 15.191 9.057 24.619 0 8.643-2.21 15.336-7.1 21.512-3.845 4.854-13.561 11.454-18.2 12.362-17.351 3.399-26.17 5.983-30.5 8.937-5.614 3.832-10.618 10.874-12.696 17.871C.2 239.564-.666 265.411.572 283.433c.908 13.221 1.312 15.295 4.126 21.192 3.244 6.796 8.484 12.197 14.697 15.145 1.878.891 9.149 2.881 16.159 4.423 7.01 1.542 14.695 3.798 17.077 5.013 5.75 2.934 12.848 10.158 15.196 15.467 5.957 13.466 4.506 23.377-5.69 38.87-8.432 12.814-10.366 17.778-10.366 26.611 0 5.848.513 7.867 3.488 13.74 6.695 13.214 35.77 42.427 48.797 49.028 3.236 1.64 7.488 2.809 11.344 3.118 10.961.88 14.077-.136 28.446-9.272 14.381-9.145 20.295-11.199 29.212-10.142 10.042 1.189 21.261 8.509 26.161 17.068 1.286 2.246 3.729 10.054 5.428 17.351 4.214 18.093 7.924 24.687 16.821 29.901 7.882 4.619 13.574 5.372 41.038 5.428 26.202.054 33.592-.716 40.487-4.218 10.142-5.15 14.494-12.245 19.147-31.207 1.841-7.503 4.452-15.396 5.923-17.907 7.091-12.099 21.751-18.521 36.186-15.853 4.751.879 8.365 2.716 18.633 9.474 10.838 7.133 13.697 8.55 19.162 9.502 14.566 2.537 23.278-1.826 44.633-22.348 14.914-14.332 24.421-26.346 26.954-34.063 1.177-3.585 2.14-8.002 2.14-9.815 0-6.184-3.153-13.928-9.996-24.55-8.102-12.577-10.518-19.704-9.689-28.585.741-7.926 3.573-14.364 8.829-20.066 6.408-6.952 11.377-9.351 26.146-12.624 7.265-1.61 15.113-3.842 17.438-4.96 5.698-2.74 12.665-10.718 15.434-17.674 2.181-5.479 2.271-6.875 2.287-35.702.016-28.867-.069-30.213-2.25-35.647-4.12-10.269-13.876-18.661-23.699-20.388-14.569-2.562-23.983-5.465-29.057-8.96-10.396-7.16-14.872-15.738-14.872-28.505 0-9.972 1.238-13.26 10.004-26.571 6.287-9.546 7.968-13.506 8.983-21.153.749-5.649-1.203-13.816-4.782-20.007-7.519-13.006-37.757-42.59-48.713-47.658-3.686-1.705-6.495-2.111-14.611-2.111h-10.048l-11.952 7.116c-14.643 8.718-17.775 9.81-28.049 9.787-6.857-.015-8.991-.456-13.945-2.88-6.254-3.06-13.328-9.436-15.825-14.266-.842-1.628-3.145-9.44-5.119-17.358-1.974-7.92-4.485-16.256-5.581-18.526-4.486-9.293-13.881-15.64-25.609-17.297C281.612.013 262.784-.39 246.771.407Zm38.47 174.875c15.583 4.182 27.148 10.705 38.892 21.935 11.731 11.218 21.254 26.861 25.717 42.246 2.669 9.197 3.732 31.334 1.988 41.353-5.405 31.037-27.113 57.352-57.242 69.389-20.929 8.362-44.583 7.768-66.468-1.667-51.79-22.33-70.516-86.931-39.133-135.005 13.148-20.142 32.402-33.583 56.299-39.302 10.534-2.521 28.39-2.052 39.947 1.051Z"/></svg><span class="sidebar-label">Config</span></button>
   </nav>
   <div class="sidebar-bottom">
@@ -10256,7 +10256,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.46</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.47</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -34203,22 +34203,26 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
 })();
 </script>
 
-<!-- Sidebar Pin Slot: long-press on Config opens radial picker -->
+<!-- Long-press Config: opens radial swap picker (uses center radial-menu style) -->
 <style>
-.sidebar-pin-radial-ov{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s ease}
-.sidebar-pin-radial-ov.open{opacity:1;pointer-events:auto}
-.sidebar-pin-radial{position:relative;width:min(280px,80vw);height:min(280px,80vw)}
-.sidebar-pin-radial-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:0 8px;text-align:center;line-height:1.2}
-.sidebar-pin-radial-item{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease,color .18s ease;-webkit-tap-highlight-color:transparent}
-.sidebar-pin-radial-item:hover,.sidebar-pin-radial-item:active{border-color:var(--magenta);color:var(--magenta);background:color-mix(in srgb,var(--magenta) 14%,var(--bg-card));transform:scale(1.08)}
-.sidebar-pin-radial-item.selected{border-color:var(--magenta);color:var(--magenta);background:color-mix(in srgb,var(--magenta) 18%,var(--bg-card))}
-.sidebar-pin-radial-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.sidebar-pin-radial-item .pin-lbl{position:absolute;top:60px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;pointer-events:none}
+.gear-swap-ov{position:fixed;inset:0;z-index:9999;background:rgba(10,10,13,.92);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .28s cubic-bezier(.2,.8,.2,1)}
+.gear-swap-ov.open{opacity:1;pointer-events:auto}
+.gear-swap-ring{position:relative;width:min(86vw,420px);height:min(86vw,420px);flex-shrink:0}
+.gear-swap-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.78);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;line-height:1.15;padding:0 10px;gap:4px}
+.gear-swap-center small{font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:none;color:rgba(255,255,255,.45)}
+.gear-swap-item{position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);cursor:pointer;transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s,color .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;opacity:0;transform:translate(0,0) scale(.5)}
+.gear-swap-ov.open .gear-swap-item{opacity:1;transform:translate(var(--rx),var(--ry)) scale(1)}
+.gear-swap-item:hover,.gear-swap-item:active,.gear-swap-item.touched{background:var(--magenta);color:#0c0c0e;border-color:var(--magenta);box-shadow:0 0 0 3px color-mix(in srgb,var(--magenta) 28%,transparent),0 0 22px color-mix(in srgb,var(--magenta) 60%,transparent);transform:translate(var(--rx),var(--ry)) scale(1.08)}
+.gear-swap-item.selected{border-color:var(--magenta);background:color-mix(in srgb,var(--magenta) 22%,transparent);color:#fff}
+.gear-swap-item svg{width:24px;height:24px}
+.gear-swap-item .gs-lbl{position:absolute;top:66px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.65);white-space:nowrap;pointer-events:none}
 </style>
 <script>
 (function(){
-  const PIN_KEY='eclipse_sidebar_pin';
+  const PIN_KEY='eclipse_sidebar_gear_swap';
+  const CFG_SVG='<svg viewBox="-79 -79 685 685" fill="currentColor" fill-rule="evenodd" stroke="none"><path d="M246.771.407c-15.985.795-22.965 2.954-29.739 9.198-6.632 6.113-8.808 10.758-12.22 26.09-4.527 20.337-9.271 27.567-21.921 33.407-4.747 2.192-7.018 2.592-14.62 2.575-10.019-.021-10.31-.127-26.5-9.67-5.225-3.078-11.659-6.136-14.298-6.794-6.261-1.562-16.992-.694-22.779 1.84-5.582 2.446-24.225 18.403-32.423 27.752-17.134 19.54-20.5 25.615-20.5 37 0 8.363 2.175 13.933 9.943 25.469 7.643 11.349 9.057 15.191 9.057 24.619 0 8.643-2.21 15.336-7.1 21.512-3.845 4.854-13.561 11.454-18.2 12.362-17.351 3.399-26.17 5.983-30.5 8.937-5.614 3.832-10.618 10.874-12.696 17.871C.2 239.564-.666 265.411.572 283.433c.908 13.221 1.312 15.295 4.126 21.192 3.244 6.796 8.484 12.197 14.697 15.145 1.878.891 9.149 2.881 16.159 4.423 7.01 1.542 14.695 3.798 17.077 5.013 5.75 2.934 12.848 10.158 15.196 15.467 5.957 13.466 4.506 23.377-5.69 38.87-8.432 12.814-10.366 17.778-10.366 26.611 0 5.848.513 7.867 3.488 13.74 6.695 13.214 35.77 42.427 48.797 49.028 3.236 1.64 7.488 2.809 11.344 3.118 10.961.88 14.077-.136 28.446-9.272 14.381-9.145 20.295-11.199 29.212-10.142 10.042 1.189 21.261 8.509 26.161 17.068 1.286 2.246 3.729 10.054 5.428 17.351 4.214 18.093 7.924 24.687 16.821 29.901 7.882 4.619 13.574 5.372 41.038 5.428 26.202.054 33.592-.716 40.487-4.218 10.142-5.15 14.494-12.245 19.147-31.207 1.841-7.503 4.452-15.396 5.923-17.907 7.091-12.099 21.751-18.521 36.186-15.853 4.751.879 8.365 2.716 18.633 9.474 10.838 7.133 13.697 8.55 19.162 9.502 14.566 2.537 23.278-1.826 44.633-22.348 14.914-14.332 24.421-26.346 26.954-34.063 1.177-3.585 2.14-8.002 2.14-9.815 0-6.184-3.153-13.928-9.996-24.55-8.102-12.577-10.518-19.704-9.689-28.585.741-7.926 3.573-14.364 8.829-20.066 6.408-6.952 11.377-9.351 26.146-12.624 7.265-1.61 15.113-3.842 17.438-4.96 5.698-2.74 12.665-10.718 15.434-17.674 2.181-5.479 2.271-6.875 2.287-35.702.016-28.867-.069-30.213-2.25-35.647-4.12-10.269-13.876-18.661-23.699-20.388-14.569-2.562-23.983-5.465-29.057-8.96-10.396-7.16-14.872-15.738-14.872-28.505 0-9.972 1.238-13.26 10.004-26.571 6.287-9.546 7.968-13.506 8.983-21.153.749-5.649-1.203-13.816-4.782-20.007-7.519-13.006-37.757-42.59-48.713-47.658-3.686-1.705-6.495-2.111-14.611-2.111h-10.048l-11.952 7.116c-14.643 8.718-17.775 9.81-28.049 9.787-6.857-.015-8.991-.456-13.945-2.88-6.254-3.06-13.328-9.436-15.825-14.266-.842-1.628-3.145-9.44-5.119-17.358-1.974-7.92-4.485-16.256-5.581-18.526-4.486-9.293-13.881-15.64-25.609-17.297C281.612.013 262.784-.39 246.771.407Zm38.47 174.875c15.583 4.182 27.148 10.705 38.892 21.935 11.731 11.218 21.254 26.861 25.717 42.246 2.669 9.197 3.732 31.334 1.988 41.353-5.405 31.037-27.113 57.352-57.242 69.389-20.929 8.362-44.583 7.768-66.468-1.667-51.79-22.33-70.516-86.931-39.133-135.005 13.148-20.142 32.402-33.583 56.299-39.302 10.534-2.521 28.39-2.052 39.947 1.051Z"/></svg>';
   const PIN_OPTIONS=[
+    {tab:'__config__',label:'Config',vb:'-79 -79 685 685',fill:1,svg:'<path d="M246.771.407c-15.985.795-22.965 2.954-29.739 9.198-6.632 6.113-8.808 10.758-12.22 26.09-4.527 20.337-9.271 27.567-21.921 33.407-4.747 2.192-7.018 2.592-14.62 2.575-10.019-.021-10.31-.127-26.5-9.67-5.225-3.078-11.659-6.136-14.298-6.794-6.261-1.562-16.992-.694-22.779 1.84-5.582 2.446-24.225 18.403-32.423 27.752-17.134 19.54-20.5 25.615-20.5 37 0 8.363 2.175 13.933 9.943 25.469 7.643 11.349 9.057 15.191 9.057 24.619 0 8.643-2.21 15.336-7.1 21.512-3.845 4.854-13.561 11.454-18.2 12.362-17.351 3.399-26.17 5.983-30.5 8.937-5.614 3.832-10.618 10.874-12.696 17.871C.2 239.564-.666 265.411.572 283.433c.908 13.221 1.312 15.295 4.126 21.192 3.244 6.796 8.484 12.197 14.697 15.145 1.878.891 9.149 2.881 16.159 4.423 7.01 1.542 14.695 3.798 17.077 5.013 5.75 2.934 12.848 10.158 15.196 15.467 5.957 13.466 4.506 23.377-5.69 38.87-8.432 12.814-10.366 17.778-10.366 26.611 0 5.848.513 7.867 3.488 13.74 6.695 13.214 35.77 42.427 48.797 49.028 3.236 1.64 7.488 2.809 11.344 3.118 10.961.88 14.077-.136 28.446-9.272 14.381-9.145 20.295-11.199 29.212-10.142 10.042 1.189 21.261 8.509 26.161 17.068 1.286 2.246 3.729 10.054 5.428 17.351 4.214 18.093 7.924 24.687 16.821 29.901 7.882 4.619 13.574 5.372 41.038 5.428 26.202.054 33.592-.716 40.487-4.218 10.142-5.15 14.494-12.245 19.147-31.207 1.841-7.503 4.452-15.396 5.923-17.907 7.091-12.099 21.751-18.521 36.186-15.853 4.751.879 8.365 2.716 18.633 9.474 10.838 7.133 13.697 8.55 19.162 9.502 14.566 2.537 23.278-1.826 44.633-22.348 14.914-14.332 24.421-26.346 26.954-34.063 1.177-3.585 2.14-8.002 2.14-9.815 0-6.184-3.153-13.928-9.996-24.55-8.102-12.577-10.518-19.704-9.689-28.585.741-7.926 3.573-14.364 8.829-20.066 6.408-6.952 11.377-9.351 26.146-12.624 7.265-1.61 15.113-3.842 17.438-4.96 5.698-2.74 12.665-10.718 15.434-17.674 2.181-5.479 2.271-6.875 2.287-35.702.016-28.867-.069-30.213-2.25-35.647-4.12-10.269-13.876-18.661-23.699-20.388-14.569-2.562-23.983-5.465-29.057-8.96-10.396-7.16-14.872-15.738-14.872-28.505 0-9.972 1.238-13.26 10.004-26.571 6.287-9.546 7.968-13.506 8.983-21.153.749-5.649-1.203-13.816-4.782-20.007-7.519-13.006-37.757-42.59-48.713-47.658-3.686-1.705-6.495-2.111-14.611-2.111h-10.048l-11.952 7.116c-14.643 8.718-17.775 9.81-28.049 9.787-6.857-.015-8.991-.456-13.945-2.88-6.254-3.06-13.328-9.436-15.825-14.266-.842-1.628-3.145-9.44-5.119-17.358-1.974-7.92-4.485-16.256-5.581-18.526-4.486-9.293-13.881-15.64-25.609-17.297C281.612.013 262.784-.39 246.771.407Zm38.47 174.875c15.583 4.182 27.148 10.705 38.892 21.935 11.731 11.218 21.254 26.861 25.717 42.246 2.669 9.197 3.732 31.334 1.988 41.353-5.405 31.037-27.113 57.352-57.242 69.389-20.929 8.362-44.583 7.768-66.468-1.667-51.79-22.33-70.516-86.931-39.133-135.005 13.148-20.142 32.402-33.583 56.299-39.302 10.534-2.521 28.39-2.052 39.947 1.051Z"/>'},
     {tab:'progress',label:'Progresso',vb:'-113 -133.5 977 977',fill:1,svg:'<path d="M159.888.864c-8.33 2.543-15.897 8.954-20.144 17.065-2.258 4.313-2.369 5.517-2.667 29-.182 14.336-.721 24.915-1.298 25.5-.599.607-14.831 1.223-36.189 1.567-33.097.533-35.621.703-42.202 2.85-29.716 9.691-49.991 32.129-56.049 62.028-1.357 6.699-1.529 14.965-1.188 57.193.367 45.306.568 50.102 2.449 58.362 4.62 20.288 14.155 42.023 25.438 57.982 8.22 11.628 25.847 29.21 37.867 37.772 17.701 12.608 42.277 23.386 63.224 27.728 9.941 2.06 31.945 3.998 45.759 4.029 4.675.011 8.95.35 9.5.754.55.404 4.375 5.233 8.5 10.73 9.039 12.045 27.526 31.352 38.5 40.206 18.538 14.958 41.74 27.79 62.64 34.645 13.067 4.285 15.813 5.676 20.269 10.263 6.56 6.754 6.707 8.054 6.382 56.187l-.291 43.035-3.006 4.334c-1.968 2.838-4.879 5.285-8.43 7.085l-5.423 2.75-23.07.017c-26.647.02-32.907.97-45.071 6.838-15.709 7.578-26.739 18.482-34.031 33.643-5.494 11.422-6.832 18.717-6.88 37.502-.038 15.085.154 16.929 2.234 21.5 2.864 6.293 8.234 11.904 14.677 15.336l5 2.664h157c131.328 0 157.785-.228 161.803-1.395 5.738-1.666 13.823-8.56 16.997-14.492 1.999-3.737 2.229-5.819 2.527-22.788.37-21.152-.464-26.209-6.395-38.765-6.916-14.642-19.142-26.747-33.932-33.593-11.718-5.425-18.658-6.467-43.081-6.467-25.025 0-28.041-.585-34.069-6.604-6.318-6.308-6.546-8.374-6.172-55.896.356-45.383.142-43.851 7.184-51.335 4.052-4.307 6.614-5.596 19.498-9.81 20.588-6.735 44.287-19.845 62.64-34.654 10.974-8.854 29.461-28.161 38.5-40.206 4.125-5.497 7.864-10.263 8.308-10.59.444-.327 9.087-.894 19.206-1.259 30.555-1.104 51.065-5.841 73.986-17.087 43.478-21.333 73.642-57.571 85.503-102.721 4.591-17.477 5.203-27.372 4.749-76.838-.441-48.157-.444-48.185-6.443-62.448-7.606-18.086-24.589-34.902-42.98-42.559-13.056-5.435-17.632-5.957-52.457-5.976-24.364-.013-31.87-.309-32.683-1.29-.658-.792-1.176-10.504-1.373-25.75-.315-24.369-.328-24.499-3.011-29.585-3.661-6.94-11.677-13.979-18.084-15.882-4.468-1.327-30.88-1.5-218.153-1.424-117.187.047-214.193.43-215.568.85ZM136.953 196.43c.557 56.217.602 57.206 3.249 72 1.477 8.25 4.498 21.659 6.715 29.797 2.217 8.139 3.739 15.269 3.383 15.846-1.644 2.659-23.03-3.591-35.412-10.349-21.429-11.696-38.781-31.905-45.478-52.966-3.816-11.997-4.522-21.581-4.522-61.34 0-36.451.037-37.138 2.25-41.518 1.238-2.45 3.789-5.476 5.669-6.726 3.391-2.254 3.673-2.271 33.5-2.008l30.081.264.565 57Zm541.562-54.77c6.559 4.679 6.524 4.365 6.129 54.539l-.357 45.231-2.562 7.656c-9.009 26.921-29.636 48.751-56.24 59.519-10.183 4.122-22.363 6.959-23.781 5.541-.695-.695-.196-3.848 1.561-9.869 3.694-12.658 7.262-28.209 9.257-40.347 1.452-8.838 1.781-19.366 2.074-66.5.191-30.8.553-56.581.805-57.292.362-1.026 6.588-1.232 30.222-1 28.953.284 29.85.353 32.892 2.522Z"/>'},
     {tab:'inventory',label:'Inventário',vb:'-45 -53 389 389',fill:1,svg:'<path d="M99.589.604c-5.38 1.371-9.084 3.882-14.747 10-7.041 7.604-7.753 10.648-7.753 33.148v16.951h-8v222h159V60.76l-3.25-.839-3.25-.839-.242-7.439c-.398-12.22-2.191-30.633-3.256-33.435-1.283-3.373-10.286-12.895-14.915-15.774-3.571-2.22-3.808-2.232-52.087-2.413-26.675-.1-49.85.163-51.5.583Zm90.708 28.315c3.125 2.048 3.476 3.638 4.318 19.534l.649 12.25h-93.335l.616-10.25c.925-15.374 1.449-18.359 3.736-21.267l2.09-2.657 39.654.337c35.427.301 39.934.52 42.272 2.053ZM19.974 62.083c-6.623 2.366-12.419 7.53-17.309 15.421L0 81.804l.294 90.2c.231 70.671.573 90.827 1.577 93.099 2.117 4.786 9.211 12.55 13.601 14.883 3.627 1.928 5.992 2.231 19.867 2.541l15.75.352V60.703l-13.75.044c-8.596.027-15.105.528-17.365 1.336Zm226.115 109.62v111l14.75-.022c12.112-.018 15.465-.348 18.75-1.845 5.825-2.656 10.337-6.814 14.674-13.523l3.826-5.92V83.013l-3.823-5.905c-4.443-6.862-9.867-11.905-15.612-14.515-3.334-1.514-6.627-1.85-18.315-1.868l-14.25-.022v111Z"/>'},
     {tab:'pericias',label:'Treinamento',vb:'-257.5 -135 1168 1168',fill:1,svg:'<path d="M211.356.252c-54.241 5.07-103.072 27.953-141.527 66.325-41.88 41.788-66.108 96.151-69.528 156-1.194 20.892 2.022 46.252 8.569 67.568 6.994 22.772 35.117 81.609 53.11 111.111l3.768 6.18-10.196 15.32c-29.75 44.702-46.6 90.139-53.26 143.625-7.59 60.938 3.818 126.229 32.08 183.615 24.739 50.228 59.934 91.94 100.484 119.09 22.778 15.251 50.46 24.9 78.567 27.386 15.166 1.342 211.68 1.45 226.744.125 25.052-2.203 49.938-9.927 71.216-22.101 18.268-10.452 44.686-33.616 63.92-56.047 42.465-49.523 70.49-116.883 76.68-184.309 1.68-18.294.567-58.742-2.094-76.063-5.853-38.114-13.149-62.189-28.544-94.196-8.255-17.164-14.86-28.69-25.855-45.122l-7.574-11.317 2.325-3.683c4.012-6.356 21.042-38.025 28.965-53.865 19.73-39.441 28.477-63.85 32.185-89.817 1.917-13.418 1.875-43.263-.08-58.199-9.057-69.181-46.415-129.33-103.407-166.492-20.309-13.243-40.857-22.255-64.635-28.349C455.117-.178 463.173.197 332.856.03c-64.625-.083-119.3.018-121.5.223Zm230.058 117.802c24.825 4.027 46.118 15.155 64.264 33.586 23.308 23.675 34.188 52.24 32.88 86.327-.919 23.985-5.261 38.56-20.436 68.61-5.693 11.275-10.963 21.115-11.711 21.866-1.147 1.154-2.811.513-10.707-4.126-41.259-24.24-85.525-38.757-134.848-44.224-15.583-1.728-49.394-1.985-65.5-.5-47.755 4.406-95.198 19.689-137.318 44.235-5.743 3.346-10.676 5.622-11.126 5.131-1.798-1.964-15.403-28.293-19.509-37.755-4.811-11.085-8.726-23.835-11.049-35.974-1.974-10.319-1.948-32.062.053-42.606 9.42-49.659 50.229-88.562 99.625-94.973 3.478-.451 53.574-.876 111.324-.943 88.005-.103 106.466.115 114.058 1.346Z"/>'},
@@ -34227,7 +34231,7 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
     {tab:'credit',label:'Crédito',vb:'-99 -121 861 861',fill:1,svg:'<path d="M169.523 1.012c-19.909 3.318-37.139 18.27-43.608 37.841-2.625 7.944-2.637 8.123-2.637 39.518v31.536l234.25-.252 234.25-.252.277-31c.274-30.706.253-31.077-2.247-39.135C583.72 19.64 565.68 4.024 545.586.99c-8.836-1.334-368.047-1.312-376.063.023ZM72.969 54.996c-8.41 1.23-21.48 5.99-30.29 11.028C23.551 76.966 8.944 96.476 2.717 119.403l-2.717 10 .002 212.5c.001 198.048.118 212.942 1.726 219 6.761 25.467 24.235 45.265 47.094 53.356 3.826 1.355 8.429 2.766 10.23 3.138 1.8.371 124.65.681 273 .689l269.726.014 8.5-2.686c24.853-7.853 42.475-26.135 50.132-52.011l2.368-8v-342l-2.256-8.464c-7.125-26.732-24.36-44.788-50.9-53.325l-6.844-2.201-251.5-.505c-231.213-.464-251.742-.638-254.5-2.154-4.753-2.614-8.438-6.498-10.525-11.097-1.8-3.966-1.933-6.878-1.953-43.004l-.022-38.75-2.75.123c-1.513.066-5.364.503-8.559.97Zm463.269 274.97c14.17 2.299 29.083 13.605 35.438 26.864 14.065 29.349-1.501 63.043-32.826 71.055-9.455 2.418-12.234 2.482-21.646.502-25.907-5.449-43.443-30.888-39.118-56.748 2.722-16.282 13.534-30.79 27.888-37.422 11.263-5.204 18.299-6.192 30.264-4.251Z"/>'}
   ];
   function getCurrent(){
-    let cur='inventory';
+    let cur='__config__';
     try{const s=localStorage.getItem(PIN_KEY);if(s&&PIN_OPTIONS.some(o=>o.tab===s))cur=s}catch(_){}
     return cur;
   }
@@ -34236,75 +34240,69 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
     if(opt.fill)return '<svg viewBox="'+vb+'" fill="currentColor" stroke="none" fill-rule="evenodd">'+opt.svg+'</svg>';
     return '<svg viewBox="'+vb+'" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+opt.svg+'</svg>';
   }
-  function applyPin(tab){
-    const btn=document.getElementById('sidebar-pin-btn');
+  function applyGearSwap(tab){
+    const btn=document.getElementById('sidebar-gear-btn');
     if(!btn)return;
-    const opt=PIN_OPTIONS.find(o=>o.tab===tab)||PIN_OPTIONS[1];
-    btn.dataset.tab=opt.tab;
-    btn.title=opt.label+' (atalho rápido)';
+    const opt=PIN_OPTIONS.find(o=>o.tab===tab)||PIN_OPTIONS[0];
+    btn.dataset.swapTab=opt.tab;
+    btn.title=opt.label+(opt.tab==='__config__'?' (segure para trocar)':' (segure Config para voltar)');
     btn.setAttribute('aria-label',opt.label);
     btn.innerHTML=_svgFor(opt)+'<span class="sidebar-label">'+opt.label+'</span>';
+    // Update click behavior
+    btn.onclick=(e)=>{
+      if(btn._longTriggered){btn._longTriggered=false;return}
+      const t=btn.dataset.swapTab;
+      if(t==='__config__'){if(typeof switchToConfig==='function')switchToConfig();return}
+      // Activate tab
+      document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.sidebar-btn').forEach(x=>x.classList.remove('active'));
+      const tabEl=document.getElementById('tab-'+t);
+      if(tabEl)tabEl.classList.add('active');
+      btn.classList.add('active');
+    };
   }
-  function savePin(tab){
+  function saveGearSwap(tab){
     try{localStorage.setItem(PIN_KEY,tab)}catch(_){}
-    applyPin(tab);
-    // Ensure tab click works
-    const btn=document.getElementById('sidebar-pin-btn');
-    if(btn&&!btn._wiredClick){
-      btn._wiredClick=true;
-      btn.addEventListener('click',()=>{
-        const t=btn.dataset.tab;
-        const target=document.querySelector('.sidebar-btn[data-tab="'+t+'"]:not(#sidebar-pin-btn)');
-        if(target)target.click();
-        else{
-          // Activate tab directly
-          document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
-          document.querySelectorAll('.sidebar-btn').forEach(x=>x.classList.remove('active'));
-          const tabEl=document.getElementById('tab-'+t);
-          if(tabEl)tabEl.classList.add('active');
-          btn.classList.add('active');
-        }
-      });
-    }
+    applyGearSwap(tab);
   }
   function openPicker(){
-    let ov=document.getElementById('sidebar-pin-radial-ov');
+    let ov=document.getElementById('gear-swap-ov');
     if(ov){ov.remove()}
     ov=document.createElement('div');
-    ov.id='sidebar-pin-radial-ov';
-    ov.className='sidebar-pin-radial-ov';
+    ov.id='gear-swap-ov';
+    ov.className='gear-swap-ov';
     const cur=getCurrent();
     const N=PIN_OPTIONS.length;
-    const radius=98;
+    const radius=Math.min(window.innerWidth,window.innerHeight)*0.32;
     const items=PIN_OPTIONS.map((o,i)=>{
       const ang=(i/N)*Math.PI*2-Math.PI/2;
       const x=Math.cos(ang)*radius;
       const y=Math.sin(ang)*radius;
       const sel=o.tab===cur?' selected':'';
-      return '<button type="button" class="sidebar-pin-radial-item'+sel+'" data-tab="'+o.tab+'" style="transform:translate('+x+'px,'+y+'px)" title="'+o.label+'">'+_svgFor(o)+'<span class="pin-lbl">'+o.label+'</span></button>';
+      return '<button type="button" class="gear-swap-item'+sel+'" data-tab="'+o.tab+'" style="--rx:'+x.toFixed(1)+'px;--ry:'+y.toFixed(1)+'px" title="'+o.label+'">'+_svgFor(o)+'<span class="gs-lbl">'+o.label+'</span></button>';
     }).join('');
-    ov.innerHTML='<div class="sidebar-pin-radial"><div class="sidebar-pin-radial-center">Atalho</div>'+items+'</div>';
+    ov.innerHTML='<div class="gear-swap-ring"><div class="gear-swap-center">Atalho<small>Escolha</small></div>'+items+'</div>';
     document.body.appendChild(ov);
     requestAnimationFrame(()=>ov.classList.add('open'));
-    const close=()=>{ov.classList.remove('open');setTimeout(()=>ov.remove(),240)};
+    const close=()=>{ov.classList.remove('open');setTimeout(()=>ov.remove(),260);document.removeEventListener('keydown',esc)};
+    const esc=(e)=>{if(e.key==='Escape')close()};
     ov.addEventListener('click',e=>{
-      const it=e.target.closest('.sidebar-pin-radial-item');
-      if(it){savePin(it.dataset.tab);close();return}
+      const it=e.target.closest('.gear-swap-item');
+      if(it){saveGearSwap(it.dataset.tab);close();return}
       if(e.target===ov)close();
     });
-    document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',esc)}});
+    document.addEventListener('keydown',esc);
   }
-  // Long-press handler on gear
   function wireLongPress(){
     const gear=document.getElementById('sidebar-gear-btn');
     if(!gear||gear._wiredLong)return;
     gear._wiredLong=true;
-    let tm=null,triggered=false,startX=0,startY=0;
+    let tm=null,startX=0,startY=0;
     const start=(e)=>{
-      triggered=false;
+      gear._longTriggered=false;
       const t=(e.touches?e.touches[0]:e);
       startX=t.clientX;startY=t.clientY;
-      tm=setTimeout(()=>{triggered=true;openPicker();if(navigator.vibrate)try{navigator.vibrate(40)}catch(_){}},520);
+      tm=setTimeout(()=>{gear._longTriggered=true;openPicker();if(navigator.vibrate)try{navigator.vibrate(40)}catch(_){}},520);
     };
     const cancel=()=>{if(tm){clearTimeout(tm);tm=null}};
     const move=(e)=>{
@@ -34315,14 +34313,12 @@ body[data-perf-anim-tabswitch="off"] .sidebar-btn[data-tab].nav-anim svg{animati
     };
     gear.addEventListener('pointerdown',start);
     gear.addEventListener('pointermove',move);
-    gear.addEventListener('pointerup',()=>{cancel();if(triggered){triggered=false}});
+    gear.addEventListener('pointerup',cancel);
     gear.addEventListener('pointercancel',cancel);
     gear.addEventListener('pointerleave',cancel);
-    gear.addEventListener('click',(e)=>{if(triggered){e.preventDefault();e.stopImmediatePropagation();triggered=false}},true);
   }
   function init(){
-    applyPin(getCurrent());
-    savePin(getCurrent());
+    applyGearSwap(getCurrent());
     wireLongPress();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});

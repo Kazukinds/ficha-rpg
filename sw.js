@@ -5,7 +5,7 @@
  * Navigation Preload acelera primeira navegação.
  * Runtime cache tem teto (LRU manual) pra não crescer sem limite.
  */
-const VERSION = 'v3.8.45';
+const VERSION = 'v3.8.48';
 const STATIC_CACHE  = 'eclipse-static-' + VERSION;
 const RUNTIME_CACHE = 'eclipse-runtime-' + VERSION;
 const RUNTIME_MAX   = 60; // máx entries no runtime cache

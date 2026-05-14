@@ -21958,7 +21958,128 @@ function openItemExport(id){
     toast&&toast('Item transferido (backup 20min)');
     close();
   };
+  // ═══ Botão extra: enviar via Wi-Fi (LAN P2P) ═══
+  const wifiBtn=document.createElement('button');
+  wifiBtn.type='button';wifiBtn.className='lout-btn primary';
+  wifiBtn.style.cssText='width:100%;margin-top:8px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border:none';
+  wifiBtn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:-2px"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> Enviar via Wi-Fi';
+  wifiBtn.onclick=()=>{close();window.openSendItemWifi(it.id)};
+  ov.querySelector('.lout-body').appendChild(wifiBtn);
 }
+
+// ═══ TRADE P2P via Wi-Fi (LAN) ═══════════════════════════════════════
+window._tradeInit=(function(){
+  if(!window.EclipseNative||!EclipseNative.startTradeServer)return false;
+  try{EclipseNative.startTradeServer();return true}catch(_){return false}
+})();
+function _myLocalIp(){try{return EclipseNative.getLocalIp()}catch(_){return '0.0.0.0'}}
+function _validIp(ip){return /^\d{1,3}(\.\d{1,3}){3}$/.test(String(ip||'').trim())}
+window.openSendItemWifi=function(itemId){
+  const it=(window.inventory||[]).find(x=>x.id===itemId);if(!it)return toast&&toast('Item não encontrado','warn');
+  if(!window.EclipseNative||!EclipseNative.sendTrade)return toast&&toast('Trade P2P só funciona no app Android','info');
+  const myIp=_myLocalIp();
+  const ov=document.createElement('div');ov.className='lout-overlay open';
+  ov.innerHTML=`
+    <div class="lout-modal" style="max-width:440px">
+      <div class="lout-head">
+        <h3>Enviar item via Wi-Fi</h3>
+        <button class="lout-close" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="lout-body">
+        <div style="padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;font-size:12px">
+          <div style="color:var(--text-dim);margin-bottom:4px">Seu IP (na mesma Wi-Fi):</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--magenta)">${_esc(myIp)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary)">Item: <b style="color:var(--text-primary)">${_esc(it.name)}</b></div>
+        <div>
+          <label style="font-size:11px;color:var(--text-dim);display:block;margin-bottom:4px">IP do destinatário</label>
+          <input type="text" id="trade-ip-input" placeholder="192.168.x.x" inputmode="numeric" style="width:100%;padding:11px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:14px;outline:none">
+        </div>
+        <div style="display:flex;gap:8px"><button class="lout-btn" id="trade-cancel" style="flex:1">Cancelar</button><button class="lout-btn primary" id="trade-send" style="flex:1">Enviar</button></div>
+        <div id="trade-status" style="font-size:11px;color:var(--text-dim);text-align:center;min-height:14px"></div>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  const close=()=>{ov.remove()};
+  ov.querySelector('.lout-close').onclick=close;
+  ov.querySelector('#trade-cancel').onclick=close;
+  ov.addEventListener('click',e=>{if(e.target===ov)close()});
+  ov.querySelector('#trade-send').onclick=()=>{
+    const ip=ov.querySelector('#trade-ip-input').value.trim();
+    if(!_validIp(ip)){toast&&toast('IP inválido','warn');return}
+    const status=ov.querySelector('#trade-status');status.textContent='Enviando...';status.style.color='var(--text-dim)';
+    const payload={
+      type:'send',
+      from:myIp,
+      fromName:(window.profileData&&profileData.charname)||'Jogador',
+      item:_serializeItem(it),
+      ts:Date.now()
+    };
+    window.__tradeSendResult=function(ok,err){
+      if(ok){
+        status.textContent='Enviado. Aguardando aceitação...';
+        status.style.color='var(--green)';
+        // Backup do item por 20min caso destinatário rejeite
+        _itemTempPush(JSON.parse(JSON.stringify(it)));
+        window.inventory=(window.inventory||[]).filter(x=>x.id!==it.id);
+        if(typeof saveGame==='function')try{saveGame()}catch(_){}
+        if(typeof renderGrid==='function')renderGrid();
+        toast&&toast('Item enviado (backup 20min)','success');
+        setTimeout(close,1200);
+      } else {
+        status.textContent='Falha: '+err;
+        status.style.color='var(--red)';
+        toast&&toast('Falha ao enviar: '+err,'error');
+      }
+      window.__tradeSendResult=null;
+    };
+    try{EclipseNative.sendTrade(ip,JSON.stringify(payload))}
+    catch(e){status.textContent='Erro: '+(e.message||e);status.style.color='var(--red)'}
+  };
+  setTimeout(()=>{const inp=ov.querySelector('#trade-ip-input');if(inp)inp.focus()},80);
+};
+// Handler: chega um item de outro device via HTTP server
+window.__tradeReceived=function(peerIp,payloadStr){
+  let data;try{data=JSON.parse(payloadStr)}catch(_){return}
+  if(!data||data.type!=='send'||!data.item)return;
+  const ov=document.createElement('div');ov.className='lout-overlay open';
+  const fromName=_esc(data.fromName||'Jogador');
+  const itemName=_esc(data.item.name||'Item');
+  ov.innerHTML=`
+    <div class="lout-modal" style="max-width:420px">
+      <div class="lout-head">
+        <h3>Item recebido via Wi-Fi</h3>
+        <button class="lout-close" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="lout-body">
+        <div style="text-align:center;padding:14px 0">
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px">${fromName} <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim)">(${_esc(peerIp)})</span> enviou:</div>
+          <div style="font-size:18px;font-weight:800;color:var(--magenta)">${itemName}</div>
+        </div>
+        <div style="display:flex;gap:8px"><button class="lout-btn danger" id="trade-reject" style="flex:1">Rejeitar</button><button class="lout-btn primary" id="trade-accept" style="flex:1">Aceitar</button></div>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  const close=()=>{ov.remove()};
+  ov.querySelector('.lout-close').onclick=close;
+  ov.querySelector('#trade-reject').onclick=()=>{toast&&toast('Item rejeitado','info');close()};
+  ov.querySelector('#trade-accept').onclick=()=>{
+    try{
+      // data.item é wrapped struct {__type:'eclipse-item',v,item:{...}}
+      const wrapped=data.item;
+      if(!wrapped||wrapped.__type!=='eclipse-item'||!wrapped.item)throw new Error('payload inválido');
+      const newItem=JSON.parse(JSON.stringify(wrapped.item));
+      newItem.id=Date.now()+Math.floor(Math.random()*1000);
+      window.inventory=window.inventory||[];window.inventory.push(newItem);
+      if(typeof saveGame==='function')try{saveGame()}catch(_){}
+      if(typeof renderGrid==='function')renderGrid();
+      if(typeof renderDashLists==='function')try{renderDashLists()}catch(_){}
+      toast&&toast(`"${newItem.name}" adicionado ao inventário`,'success');
+    }catch(e){toast&&toast('Erro: '+(e.message||e),'error')}
+    close();
+  };
+  try{navigator.vibrate&&navigator.vibrate([50,30,50])}catch(_){}
+};
 /* ═══ BIBLIOTECA — IMPORTAR PDF + EXTRAÇÃO DE HABILIDADES ═══ */
 let _PDFJS_PROMISE=null;
 function _loadPdfJs(){

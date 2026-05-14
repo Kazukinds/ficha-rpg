@@ -3,10 +3,8 @@ package com.fichaeclipse.widgets;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.app.PendingIntent;
 import android.content.pm.PackageInstaller;
 import java.io.FileInputStream;
-import java.io.OutputStream;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -58,6 +56,20 @@ import android.app.PendingIntent;
 import androidx.core.app.NotificationCompat;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.NetworkInterface;
+import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.util.Enumeration;
+import java.nio.charset.StandardCharsets;
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
 
 public class MainActivity extends Activity {
 
@@ -550,6 +562,163 @@ public class MainActivity extends Activity {
                     splash.animate().alpha(0f).setDuration(180).withEndAction(() -> splash.setVisibility(View.GONE)).start();
                 }
             });
+        }
+
+        // ═══ TRADE BRIDGE — P2P item trade via LAN HTTP ═══
+        @JavascriptInterface
+        public String getLocalIp() {
+            // Tenta WifiManager primeiro (resposta direta no LAN Wi-Fi)
+            try {
+                WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if (wm != null) {
+                    int ipInt = wm.getConnectionInfo().getIpAddress();
+                    if (ipInt != 0) return Formatter.formatIpAddress(ipInt);
+                }
+            } catch (Exception ignored) {}
+            // Fallback: scan NetworkInterfaces
+            try {
+                Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+                while (nis.hasMoreElements()) {
+                    NetworkInterface ni = nis.nextElement();
+                    if (ni.isLoopback() || !ni.isUp()) continue;
+                    Enumeration<InetAddress> addrs = ni.getInetAddresses();
+                    while (addrs.hasMoreElements()) {
+                        InetAddress a = addrs.nextElement();
+                        if (a instanceof Inet4Address && !a.isLoopbackAddress()) {
+                            return a.getHostAddress();
+                        }
+                    }
+                }
+            } catch (Exception ignored) {}
+            return "0.0.0.0";
+        }
+
+        @JavascriptInterface
+        public boolean startTradeServer() {
+            return MainActivity.this._startTradeServer();
+        }
+
+        @JavascriptInterface
+        public void stopTradeServer() {
+            MainActivity.this._stopTradeServer();
+        }
+
+        @JavascriptInterface
+        public void sendTrade(String ip, String jsonPayload) {
+            // Não-bloqueante: dispara thread, callback via window.__tradeSendResult
+            new Thread(() -> _doSendTrade(ip, jsonPayload)).start();
+        }
+    }
+
+    // ═══ TRADE HTTP SERVER ═══
+    private static final int TRADE_PORT = 8765;
+    private ServerSocket tradeServerSocket;
+    private Thread tradeServerThread;
+
+    private boolean _startTradeServer() {
+        if (tradeServerThread != null && tradeServerThread.isAlive()) return true;
+        tradeServerThread = new Thread(() -> {
+            try {
+                tradeServerSocket = new ServerSocket(TRADE_PORT);
+                while (!Thread.currentThread().isInterrupted() && !tradeServerSocket.isClosed()) {
+                    try {
+                        Socket client = tradeServerSocket.accept();
+                        new Thread(() -> _handleTradeClient(client)).start();
+                    } catch (Exception ignored) {}
+                }
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    if (webView != null) webView.evaluateJavascript(
+                        "window.__tradeServerError&&window.__tradeServerError('" + e.getMessage().replace("'", "") + "')", null);
+                });
+            }
+        }, "trade-server");
+        tradeServerThread.setDaemon(true);
+        tradeServerThread.start();
+        return true;
+    }
+
+    private void _stopTradeServer() {
+        try { if (tradeServerSocket != null) tradeServerSocket.close(); } catch (Exception ignored) {}
+        if (tradeServerThread != null) tradeServerThread.interrupt();
+        tradeServerSocket = null;
+        tradeServerThread = null;
+    }
+
+    private void _handleTradeClient(Socket client) {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+            String line; int contentLength = 0; StringBuilder headers = new StringBuilder();
+            while ((line = in.readLine()) != null && line.length() > 0) {
+                headers.append(line).append("\n");
+                if (line.toLowerCase().startsWith("content-length:")) {
+                    try { contentLength = Integer.parseInt(line.split(":")[1].trim()); } catch (Exception ignored) {}
+                }
+            }
+            StringBuilder body = new StringBuilder();
+            if (contentLength > 0) {
+                char[] buf = new char[contentLength];
+                int read = 0;
+                while (read < contentLength) {
+                    int n = in.read(buf, read, contentLength - read);
+                    if (n < 0) break;
+                    read += n;
+                }
+                body.append(buf, 0, read);
+            }
+            String payload = body.toString();
+            String peerIp = client.getInetAddress().getHostAddress();
+            // Callback JS: window.__tradeReceived(peerIp, payload)
+            String esc = payload.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n").replace("\r", "");
+            runOnUiThread(() -> {
+                if (webView != null) webView.evaluateJavascript(
+                    "window.__tradeReceived&&window.__tradeReceived('" + peerIp + "','" + esc + "')", null);
+            });
+            // HTTP 200 OK
+            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8)), false);
+            String body200 = "{\"ok\":true}";
+            out.print("HTTP/1.1 200 OK\r\n");
+            out.print("Content-Type: application/json; charset=utf-8\r\n");
+            out.print("Access-Control-Allow-Origin: *\r\n");
+            out.print("Content-Length: " + body200.getBytes(StandardCharsets.UTF_8).length + "\r\n");
+            out.print("Connection: close\r\n\r\n");
+            out.print(body200);
+            out.flush();
+        } catch (Exception ignored) {}
+        try { client.close(); } catch (Exception ignored) {}
+    }
+
+    private void _doSendTrade(String ip, String payload) {
+        Socket s = null;
+        try {
+            s = new Socket();
+            s.connect(new java.net.InetSocketAddress(ip, TRADE_PORT), 5000);
+            s.setSoTimeout(8000);
+            byte[] bytes = payload.getBytes(StandardCharsets.UTF_8);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(s.getOutputStream(), StandardCharsets.UTF_8)), false);
+            out.print("POST /trade HTTP/1.1\r\n");
+            out.print("Host: " + ip + ":" + TRADE_PORT + "\r\n");
+            out.print("Content-Type: application/json; charset=utf-8\r\n");
+            out.print("Content-Length: " + bytes.length + "\r\n");
+            out.print("Connection: close\r\n\r\n");
+            out.print(payload);
+            out.flush();
+            // Lê resposta (descarta — apenas confirma sucesso)
+            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder resp = new StringBuilder();
+            String line; while ((line = in.readLine()) != null) resp.append(line).append("\n");
+            runOnUiThread(() -> {
+                if (webView != null) webView.evaluateJavascript(
+                    "window.__tradeSendResult&&window.__tradeSendResult(true,null)", null);
+            });
+        } catch (Exception e) {
+            String err = e.getMessage() == null ? "erro" : e.getMessage().replace("'", "");
+            runOnUiThread(() -> {
+                if (webView != null) webView.evaluateJavascript(
+                    "window.__tradeSendResult&&window.__tradeSendResult(false,'" + err + "')", null);
+            });
+        } finally {
+            try { if (s != null) s.close(); } catch (Exception ignored) {}
         }
     }
 

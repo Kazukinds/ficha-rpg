@@ -972,7 +972,7 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .donut-svg:hover circle[data-slice]{opacity:.4}
 .donut-svg circle[data-slice]:hover{opacity:1}
 
-.dual-gear{width:24px;height:24px;flex-shrink:0;aspect-ratio:1/1;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:color .2s,border-color .2s}
+.dual-gear{width:24px;height:24px;flex-shrink:0;aspect-ratio:1/1;border-radius:6px;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:color .2s,border-color .2s}
 .dual-gear:hover{color:var(--magenta);border-color:var(--magenta)}
 .dual-gear svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .status-list{display:flex;flex-direction:column;gap:10px}
@@ -2515,7 +2515,7 @@ html.no-radius,html.no-radius *{border-radius:0!important}
 .size-opt{padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-xs);cursor:pointer;color:var(--text-dim);transition:all .15s}
 .size-opt:hover{border-color:var(--border-light);color:var(--text-secondary)}
 .size-opt.active{border-color:var(--magenta);color:var(--magenta);background:var(--magenta-bg)}
-.size-gear{width:28px;height:28px;background:var(--bg-input);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .3s;transform:rotate(15deg);flex-shrink:0}
+.size-gear{width:28px;height:28px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .3s;transform:none;flex-shrink:0}
 .size-gear:hover{color:var(--magenta);border-color:var(--magenta-dim);transform:rotate(90deg)}
 .size-gear.active{color:var(--magenta);border-color:var(--magenta);background:var(--magenta-bg);transform:rotate(0deg)}
 .size-gear svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -2681,7 +2681,7 @@ input[type="number"]{-moz-appearance:textfield}
 @keyframes xp-shimmer{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
 @media(prefers-reduced-motion:reduce){.xp-fill::before{animation:none}.xp-fill{transition:none}}
 .xp-fill::after{display:none}
-.xp-gear{width:34px;height:34px;min-width:34px;min-height:34px;aspect-ratio:1/1;flex-shrink:0;flex-grow:0;margin-left:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .3s;transform:rotate(15deg);box-sizing:border-box;padding:0}
+.xp-gear{width:34px;height:34px;min-width:34px;min-height:34px;aspect-ratio:1/1;flex-shrink:0;flex-grow:0;margin-left:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .3s;transform:none;box-sizing:border-box;padding:0}
 .xp-gear:hover{color:var(--magenta);border-color:var(--magenta-dim);transform:rotate(90deg)}
 .xp-gear svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .progress-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm)}
@@ -6662,6 +6662,9 @@ html.app-booting #toast,html.app-booting .save-toast,html.app-booting .update-ba
 /* Remove rotações decorativas dos botões em repouso (ficavam tortos) */
 .xp-gear,.attr-gear,.size-gear{transform:none!important}
 .xp-gear:hover,.attr-gear:hover,.size-gear:hover{transform:scale(1.06)!important}
+/* Gears agora rounded square (não circulo) — match com skill-icon-btn */
+.attr-gear,.veh-cfg-btn{border-radius:8px!important}
+.xp-gear,.size-gear,.dual-gear{border-radius:8px!important}
 
 /* Campos de perfil vazios — sem travessão, apenas espaço limpo */
 .profile-field-val.empty{min-height:38px;color:var(--text-dim);font-style:normal;font-weight:400;cursor:pointer}

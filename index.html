@@ -1960,7 +1960,7 @@ body.inv-dragging-active .inv-cell:hover .item-icon svg{transform:none}
 .re4-top-btn svg{width:14px;height:14px}
 .re4-case-frame .inv-grid{margin:14px 14px 22px 14px;width:calc(100% - 28px)}
 .re4-case-bottom{display:flex;align-items:center;justify-content:center;padding:0;margin-top:-2px}
-.re4-expand-btn{display:inline-flex;align-items:center;justify-content:center;width:64px;height:28px;padding:6px 18px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,transform .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:5}
+.re4-expand-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;aspect-ratio:1/1;flex:0 0 32px;padding:0;background:transparent;border:none;border-radius:8px;color:var(--text-dim);cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,transform .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:5;box-sizing:border-box}
 @keyframes lock-shake{0%{transform:translateX(-50%) translateY(-50%) scale(.4);opacity:0}15%{transform:translateX(-50%) translateY(-50%) scale(1.1);opacity:1}25%{transform:translateX(calc(-50% - 4px)) translateY(-50%) scale(1)}40%{transform:translateX(calc(-50% + 4px)) translateY(-50%) scale(1)}55%{transform:translateX(calc(-50% - 3px)) translateY(-50%) scale(1)}70%{transform:translateX(calc(-50% + 2px)) translateY(-50%) scale(1)}85%{transform:translateX(-50%) translateY(-50%) scale(1);opacity:1}100%{transform:translateX(-50%) translateY(-50%) scale(.6);opacity:0}}
 .re4-expand-btn.locked-shake::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='10' width='16' height='11' rx='2'/><path d='M8 10V7a4 4 0 0 1 8 0v3'/><circle cx='12' cy='15.5' r='1.4' fill='%23ef4444'/></svg>") no-repeat center/contain;pointer-events:none;animation:lock-shake .7s cubic-bezier(.36,.07,.19,.97);z-index:10}
 .re4-expand-btn.locked-shake svg{opacity:0}
@@ -6523,8 +6523,13 @@ html.app-booting #toast,html.app-booting .save-toast,html.app-booting .update-ba
     z-index:200;
   }
   [data-theme="light"] .topbar{background:color-mix(in srgb,#fff 55%,transparent)!important;border-color:color-mix(in srgb,rgba(0,0,0,.1) 70%,transparent);box-shadow:0 12px 32px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.08)}
-  .topbar-row-1{justify-content:space-between!important;align-items:center;gap:10px}
-  .topbar-actions{justify-content:flex-end;margin-left:auto;flex-shrink:0;gap:6px}
+  /* Pill flutuante já fica abaixo da safe-area, não precisa desviar do notch — zera padding cutout-aware */
+  .topbar-row-1{justify-content:space-between!important;align-items:center;gap:10px;padding-left:0!important;padding-right:0!important}
+  body[data-cutout="island"] .topbar-row-1,
+  body[data-cutout="notch"] .topbar-row-1,
+  body[data-cutout="punch"] .topbar-row-1{padding-left:0!important;padding-right:0!important}
+  .topbar-welcome{flex:0 1 auto;min-width:0}
+  .topbar-actions{justify-content:flex-end;margin-left:auto;flex:0 0 auto;flex-shrink:0;gap:6px}
   /* Content compensa topbar fixa (sobe até embaixo da pill) */
   .main-wrapper{padding-top:calc(72px + env(safe-area-inset-top,0px))}
   .content{padding-top:6px}
@@ -6638,8 +6643,13 @@ html.app-booting #toast,html.app-booting .save-toast,html.app-booting .update-ba
 }
 /* Quando elemento tem border-radius:50% inline + width definido — height segue */
 [style*="border-radius:50%"],[style*="border-radius: 50%"]{aspect-ratio:1/1}
-/* Count chips/pills permanecem com altura mínima fixa pra parecer simétrico */
-.notif-count,.minical-head-count{min-width:1.8em;height:1.6em;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+/* Count chips: width=height pra ficarem circulares (border-radius:50%). Pra >2 dígitos vira pill */
+.notif-count,.minical-head-count{
+  min-width:1.8em;height:1.8em;padding:0 .35em;
+  display:inline-flex;align-items:center;justify-content:center;
+  box-sizing:border-box;border-radius:999px;
+  font-variant-numeric:tabular-nums;line-height:1
+}
 
 /* ═══════════ POLIMENTO GERAL ═══════════ */
 .card{transition:border-color .2s,transform .2s,box-shadow .2s}
@@ -23128,7 +23138,7 @@ window.renderThemeSlots=function(){
   const c=document.getElementById('cfg-theme-slots');if(!c)return;
   const variants=_loadThemeVariants();
   if(!variants.length){c.innerHTML='<div style="font-size:11px;color:var(--text-dim);text-align:center;padding:12px">Nenhuma variante salva</div>';return}
-  c.innerHTML=variants.map((v,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px"><span style="width:18px;height:18px;border-radius:50%;background:${v.magenta||'#fe1455'};flex-shrink:0;border:1px solid rgba(255,255,255,.15)"></span><span style="flex:1;font-size:12px;color:var(--text-primary)">${v.name}</span><button type="button" onclick="applyThemeVariant(${i})" style="padding:4px 8px;font-size:10px;font-weight:700;background:var(--magenta-bg);border:1px solid var(--magenta-dim);color:var(--magenta);border-radius:4px;cursor:pointer">Aplicar</button><button type="button" onclick="deleteThemeVariant(${i})" style="padding:4px 6px;font-size:10px;background:transparent;border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:4px;cursor:pointer">×</button></div>`).join('');
+  c.innerHTML=variants.map((v,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px"><span style="width:18px;height:18px;border-radius:50%;background:${v.magenta||'#fe1455'};flex-shrink:0;border:1px solid rgba(255,255,255,.15)"></span><span style="flex:1;font-size:12px;color:var(--text-primary)">${v.name}</span><button type="button" onclick="applyThemeVariant(${i})" style="padding:4px 10px;height:28px;font-size:10px;font-weight:700;background:var(--magenta-bg);border:1px solid var(--magenta-dim);color:var(--magenta);border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">Aplicar</button><button type="button" onclick="deleteThemeVariant(${i})" style="width:28px;height:28px;min-width:28px;aspect-ratio:1/1;flex:0 0 28px;padding:0;font-size:14px;line-height:1;background:transparent;border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box">×</button></div>`).join('');
 };
 window.addEventListener('load',()=>{try{renderThemeSlots()}catch(_){}});
 // HUD de vitalidade na câmera removido — entalhe respeitado via safe-area global
@@ -28999,10 +29009,9 @@ window._openArchetypePickerLegacy=function(){
       <div class="arch-pick-cta"><span>${p.cta||'Aplicar'}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </button>`;
   };
-  const cards=ARCHETYPE_PRESETS.map(p=>renderCard(p)).join('');
+  // Cards de preset (LÓGICO/INSTINTIVO/VIGOROSO/PRÓPRIO) removidos a pedido — só sortear ou manual
   body.innerHTML=intro+
-    `<div class="arch-pick-grid arch-pick-grid-3 arch-pick-shuffle">${cards}</div>
-    <button type="button" class="arch-pick-surprise" id="arch-pick-surprise" aria-label="Me surpreenda — sortear um dos 3 arquétipos">
+    `<button type="button" class="arch-pick-surprise" id="arch-pick-surprise" aria-label="Me surpreenda — sortear um dos 3 arquétipos">
       <span class="aps-cards" aria-hidden="true">
         <span class="aps-card aps-c1"></span>
         <span class="aps-card aps-c2"></span>
@@ -29202,7 +29211,11 @@ function _openCustomArchetype(){
       if(row)row.classList.toggle('has-points',v>0);
     });
     const apply=document.getElementById('arch-apply');
-    if(apply)apply.disabled=(rem!==0);
+    // Permite salvar com pontos sobrando (rem>0) — só bloqueia se exceder cap (rem<0)
+    if(apply){
+      apply.disabled=(rem<0);
+      apply.textContent=rem>0?`Aplicar (${rem} pts sobrando)`:'Aplicar';
+    }
   }
   body.querySelectorAll('input[type="range"][data-attr]').forEach(rng=>{
     rng.addEventListener('input',()=>{

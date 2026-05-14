@@ -709,17 +709,9 @@ public class MainActivity extends Activity {
     }
 
     private void _installApk(File apk) {
-        // Tenta PackageInstaller Session (silent update, sem Play Protect prompt em updates)
-        // Requer: REQUEST_INSTALL_PACKAGES + mesma signing key + API 31+ pra USER_ACTION_NOT_REQUIRED
-        if (Build.VERSION.SDK_INT >= 31) {
-            try {
-                _installViaSession(apk);
-                return;
-            } catch (Exception e) {
-                // Fallback pra Intent.ACTION_VIEW se sessão falhar
-            }
-        }
-        // Fallback legacy: abre installer dialog do sistema
+        // REVERT: Session installer estava silenciando install em devices sem installer-of-record.
+        // Voltar pra Intent.ACTION_VIEW direto (mostra dialog do sistema, install confiável).
+        // Session install (PackageInstaller API) ficou disponível via _installViaSession se precisar testar.
         try {
             Uri contentUri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

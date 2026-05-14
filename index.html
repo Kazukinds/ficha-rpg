@@ -6577,6 +6577,38 @@ html.app-booting #toast,html.app-booting .save-toast,html.app-booting .update-ba
 .topbar-icon-btn{width:38px;height:38px;flex-shrink:0}
 .profile-avatar{aspect-ratio:1/1}
 
+/* ═══════════ ANTI-OVAL — força 1:1 em tudo redondo/quadrado ═══════════
+   Captura elementos que deveriam ser círculo/quadrado mas viram oval por
+   flex stretch ou align-items default. Usa class patterns + attribute. */
+[class*="-dot"],[class*="-orb"],[class*="-circle"],[class*="-badge"]:not(.notif-badge):not(.rid-badge),
+[class*="-avatar"],[class*="-icon-btn"],[class*="icon-btn"],
+[class*="-gear"],[class*="-close"]:not(.modal-close):not(.register-close),
+[class*="-pill-dot"],[class*="-mini-dot"],
+.sidebar-btn,.topbar-icon-btn,.notif-icon,
+.profile-avatar,.profile-hero-back,.profile-hero-action,
+.skill-icon,.peri-cat-dot,.pericia-rank,.pericia-roll-btn,
+.summary-block-icon,.summary-sub .dot,.stat-block-sub .dot,
+.ficha-cond .dot,.load-dots span,.agm-spinner,
+.ritual-main-nav-btn,.ritual-main-nav-dot,.ritual-back-btn,.ritual-side-item-dot,
+.forja-side-pts-circle,.forja-sect-arrow,.forja-sub-back,.forja-sub-close,
+.feit-badge-logo,.feit-badge-del,.feit-color-sw,.add-nav-btn,
+.equip-conjunto-btn,.elemento-result-orb,.elemento-swap-orb,
+.minical-nav,.mc-cancel,.lvl-grid-close,.origem-picker-close,
+.hab-picker-close,.sk-icon-close,.arq-slot-close,.arq-slot-num,
+.profile-avatar-edit-btn,.tab-soon-ico,.inv-empty-icon,.mv-empty-icon,
+.credit-log-icon,.opt-check,.toast-close,.save-toast-close,
+.biblio-toc-close,.biblio-toc-dot,.adv-locked-ico,.app-confirm-icon,
+.credit-modal-icon,.arch-benef-dot,.forja-status-mark,
+.inv-card-btn,.ota-icon,.notif-badge,.app-splash .splash-dot,
+.splash-ring,.peri-cat-grid > *::before,.week-today-dot{
+  aspect-ratio:1/1!important;
+  flex-shrink:0!important;
+  flex-grow:0!important;
+  box-sizing:border-box;
+}
+/* Quando elemento tem border-radius:50% inline + width definido — height segue */
+[style*="border-radius:50%"],[style*="border-radius: 50%"]{aspect-ratio:1/1}
+
 /* ═══════════ POLIMENTO GERAL ═══════════ */
 .card{transition:border-color .2s,transform .2s,box-shadow .2s}
 .card:hover{border-color:var(--border-light)}

@@ -10595,7 +10595,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.73</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.74</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -15274,7 +15274,7 @@ function _dashEmptyHandCircle(size){
   </div>`;
 }
 function _dashWeaponWidget(prim,sec){
-  if(!prim){return `<div class="dash-hunt-widget single dash-hunt-empty">${_dashEmptyHandCircle(200)}</div>`;}
+  if(!prim){return '';}
   const isTwoHand=!!prim.twoHanded;
   const showSec=!isTwoHand&&sec&&sec.id!==prim.id;
   return `<div class="dash-hunt-widget${showSec?' dual':' single'}" data-prim="${prim.id}" ${showSec?`data-sec="${sec.id}"`:''}>
@@ -28728,6 +28728,9 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.74',date:'2026-05-15',title:'Empty hand widget removido (em vez de encolhido)',items:[
+    {tag:'fix',text:'_dashWeaponWidget retorna string vazia quando sem arma. Empty hand circle não renderiza mais — card Inventário só mostra header até ter armas equipadas.'}
+  ]},
   {version:'v3.8.73',date:'2026-05-15',title:'Empty hand widget encolhido em TODAS viewports',items:[
     {tag:'fix',text:'Fix anterior (v3.8.72) era portrait-only. Em landscape void preto continuava. Min-height global 240px→160px + .dash-hunt-empty 130px diâmetro universal.'}
   ]},

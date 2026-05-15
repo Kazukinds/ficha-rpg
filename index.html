@@ -838,6 +838,8 @@ svg{stroke-linecap:round;stroke-linejoin:round}
 .dash-grid{display:grid;grid-template-columns:340px 1fr 280px;gap:10px}
 
 .item-list-section{grid-row:auto;max-height:420px;overflow:hidden;display:flex;flex-direction:column}
+/* Esconde card Inventário do dashboard quando ambas listas estão vazias */
+.dash-grid .item-list-section:has(#dash-weapons:empty):has(#dash-consumables:empty){display:none}
 .item-list-section .item-list{flex:0 1 auto;overflow-y:auto;min-height:0}
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color .2s}
 .card.card-square{border-radius:4px}
@@ -10595,7 +10597,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.74</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.75</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -18669,6 +18671,12 @@ function renderXP(){
   const el=document.getElementById('evo-level');if(el)el.textContent=playerLevel;
   const ex=document.getElementById('evo-xp');if(ex)ex.textContent=playerXP.toLocaleString();
   const em=document.getElementById('evo-xpmax');if(em)em.textContent=xpToNext.toLocaleString();
+  // Esconde Evolução card no dashboard quando sem XP/Stage progress (evita void preto enorme)
+  const evoCard=document.getElementById('evolucao-card');
+  if(evoCard){
+    const hasData=playerLevel>0||playerXP>0||playerStage>0||stageXP>0||(Array.isArray(xpLog)&&xpLog.length>0);
+    evoCard.style.display=hasData?'':'none';
+  }
 }
 function addXP(amount,desc){
   if(amount<=0)return;
@@ -28728,6 +28736,10 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.75',date:'2026-05-15',title:'Esconde cards vazios no dashboard (Inventário + Evolução)',items:[
+    {tag:'fix',text:'Inventário card: CSS :has hide quando ambas listas (dash-weapons + dash-consumables) vazias.'},
+    {tag:'fix',text:'Evolução card: renderXP esconde quando sem dados (level=0, XP=0, stage=0, xpLog vazio). Reaparece auto quando ganha XP.'}
+  ]},
   {version:'v3.8.74',date:'2026-05-15',title:'Empty hand widget removido (em vez de encolhido)',items:[
     {tag:'fix',text:'_dashWeaponWidget retorna string vazia quando sem arma. Empty hand circle não renderiza mais — card Inventário só mostra header até ter armas equipadas.'}
   ]},

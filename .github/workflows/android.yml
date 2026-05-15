@@ -114,3 +114,27 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/Eclipse.apk
+
+      - name: Cap releases to last 10 (delete older + their tags)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          KEEP=10
+          echo "Keeping latest $KEEP releases, deleting the rest..."
+          # Lista releases ordenadas por createdAt desc, pula as KEEP mais recentes, deleta o resto.
+          # --cleanup-tag remove a tag git associada também (sem deixar tag órfã).
+          old_tags=$(gh release list --limit 200 --json tagName,createdAt \
+            --jq 'sort_by(.createdAt) | reverse | .['"$KEEP"':] | .[].tagName')
+          if [ -z "$old_tags" ]; then
+            echo "Nothing to delete — releases <= $KEEP."
+            exit 0
+          fi
+          echo "Old tags marked for deletion:"
+          echo "$old_tags"
+          while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            echo "→ deleting release $tag"
+            gh release delete "$tag" --yes --cleanup-tag || echo "  (skip — failed to delete $tag)"
+          done <<< "$old_tags"

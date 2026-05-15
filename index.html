@@ -10587,7 +10587,7 @@ try{if(window.EclipseNative&&EclipseNative.hideSplash)EclipseNative.hideSplash()
             </div>
             <div class="cfg-block">
               <h4 class="cfg-block-title">Sobre</h4>
-              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.69</span></div>
+              <div class="cfg-row"><span class="cfg-row-label">Versão</span><span class="cfg-row-val" id="cfg-app-ver">v3.8.70</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Build</span><span class="cfg-row-val" id="cfg-app-build">386</span></div>
               <div class="cfg-row"><span class="cfg-row-label">Plataforma</span><span class="cfg-row-val" id="cfg-app-plat">Web</span></div>
             </div>
@@ -28720,6 +28720,11 @@ window.addEventListener('load',async()=>{
 
 // ═══ CHANGELOG / ATUALIZAÇÕES ═══
 const APP_CHANGELOG=[
+  {version:'v3.8.70',date:'2026-05-15',title:'Edge-to-edge real — barra preta inferior eliminada',items:[
+    {tag:'fix',text:'Barra preta debaixo do conteúdo no APK: flags legadas SYSTEM_UI_FLAG_* mantinham safe-area-inset reservado pra nav bar mesmo escondida.'},
+    {tag:'fix',text:'Migrado pra WindowCompat.setDecorFitsSystemWindows(false) + WindowInsetsControllerCompat.hide(systemBars). WebView ocupa altura total.'},
+    {tag:'fix',text:'BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE: swipe da borda mostra transient bars que somem sozinhas.'}
+  ]},
   {version:'v3.8.69',date:'2026-05-15',title:'Fullscreen immersive restaurado no APK Capacitor',items:[
     {tag:'fix',text:'MainActivity Capacitor (build-app/android) era só BridgeActivity vazio — sem flags immersive. StatusBar + NavBar apareciam no APK gerado.'},
     {tag:'fix',text:'Adicionado _enterImmersive() com SYSTEM_UI_FLAG_FULLSCREEN | HIDE_NAVIGATION | IMMERSIVE_STICKY. Reaplica em onResume + onWindowFocusChanged.'},
